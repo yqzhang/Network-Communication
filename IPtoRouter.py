@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+# Author: Yunqi Zhang
+# Email: yqzhang@ucsd.edu
+
+# Describe the routers
 class Router:
 	router = ""
 	port = ""
@@ -8,6 +13,7 @@ class Router:
 		self.port = port
 		self.valid_till = valid_till
 	
+# Describe the IP addresses
 class IP:
 	IP = ""
 	valid_till = 0
@@ -15,8 +21,9 @@ class IP:
 	def __init__(self, IP, valid_till):
 		self.IP = IP
 		self.valid_till = valid_till
-
-class ISISRouter:
+	
+# Describe the map between IP addresses and routers
+class IPRouter:
 	IPtoRouter = {}
 	RoutertoIP = {}
 
@@ -26,50 +33,52 @@ class ISISRouter:
 		count = 0
 		for line in file:
 			if line[0] != '#':
-				count++
+				count += 1
 				data = line.split(",")
-				insert(data[0], data[1], data[2], data[3])
+				self.insert(data[0], data[1], data[2], data[3])
 		print("%d lines inserted."%count)
 	
 	def __del__(self):
 		# TODO: Nothing
 		pass
 		
-	def insert(ip_address, router, port, valid_till):
+	def insert(self, ip_address, router, port, valid_till):
 		# Insert data into the table
-		if IPtoRouter.has_key(ip_address):
-			list = IPtoRouter[ip_address]
-			for i in xrange(len(list)):
+		if ip_address in self.IPtoRouter:
+			list = self.IPtoRouter[ip_address]
+			for i in range(len(list)):
 				if list[i].valid_till > valid_till:
 					list.insert(i, Router(router, port, valid_till))
 					break
 			else:
 				list.append(Router(router, port, valid_till))
 		else:
-			IPtoRouter[ip_address] = [Router(router, port, valid_till)]
+			self.IPtoRouter[ip_address] = [Router(router, port, valid_till)]
 		
-		if RoutertoIP.has_key(router + ":" + port):
-			list = RoutertoIP[router + ":" + port]
-			for i in xrange(len(list)):
+		if router + ":" + port in self.RoutertoIP:
+			list = self.RoutertoIP[router + ":" + port]
+			for i in range(len(list)):
 				if list[i].valid_till > valid_till:
 					list.insert(i, IP(ip_address, valid_till))
 					break
 			else:
 				list.append(IP(ip_address, valid_till))
 		else:
-			RoutertoIP[router + ":" + port] = [IP(ip_address, valid_till)]
+			self.RoutertoIP[router + ":" + port] = [IP(ip_address, valid_till)]
 		
-	def delete(ip_address, router, port, valid_till):
+	def delete(self, ip_address, router, port, valid_till):
 		# Delete certain data from the table
+		pass
 		
-	def update(ip_address, router, port, valid_till):
+	def update(self, ip_address, router, port, valid_till):
 		# Update certain data in the table
+		pass
 		
-	def query_by_ip(ip_address, time):
+	def query_by_ip(self, ip_address, time):
 		# Query by IP address and timestamp
 		# Return router and port
-		if IPtoRouter.has_key(ip_address):
-			for router in IPtoRouter[ip_address]:
+		if ip_address in self.IPtoRouter:
+			for router in self.IPtoRouter[ip_address]:
 				if time <= router.valid_till:
 					return router
 			else:
@@ -77,11 +86,11 @@ class ISISRouter:
 		else:
 			return NULL
 		
-	def query_by_router(router, port, time):
+	def query_by_router(self, router, port, time):
 		# Query by router, port and time
 		# Return IP address
-		if RoutertoIP.has_key(router + ":" + port):
-			for ip in RoutertoIP[router + ":" + port]:
+		if (router + ":" + port) in self.RoutertoIP:
+			for ip in self.RoutertoIP[router + ":" + port]:
 				if time <= ip.valid_till:
 					return ip.IP
 			else:
@@ -89,3 +98,5 @@ class ISISRouter:
 		else:
 			return NULL
 		
+# For test
+#IPRouter("C:\\Users\\Del\\Desktop\\ipToRouters.txt")
