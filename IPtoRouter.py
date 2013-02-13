@@ -11,7 +11,7 @@ class Router:
 	def __init__(self, router, port, valid_till):
 		self.router = router
 		self.port = port
-		self.valid_till = valid_till
+		self.valid_till = int(valid_till)
 	
 # Describe the IP addresses
 class IP:
@@ -20,7 +20,7 @@ class IP:
 	
 	def __init__(self, IP, valid_till):
 		self.IP = IP
-		self.valid_till = valid_till
+		self.valid_till = int(valid_till)
 	
 # Describe the map between IP addresses and routers
 class IPRouter:
@@ -35,7 +35,7 @@ class IPRouter:
 			if line[0] != '#':
 				count += 1
 				data = line.split(",")
-				self.insert(data[0], data[1], data[2], data[3])
+				self.insert(data[0], data[1], data[2], int(data[3]))
 		print("%d lines inserted."%count)
 	
 	def __del__(self):
@@ -99,4 +99,6 @@ class IPRouter:
 			return NULL
 		
 # For test
-#IPRouter("C:\\Users\\Del\\Desktop\\ipToRouters.txt")
+# r = IPRouter("C:\\Users\\Del\\Desktop\\ipToRouters.txt")
+# print(r.query_by_ip("137.164.80.1", 253402300797).router)
+# print(r.query_by_router("cyp-6509-msfc", "Vlan851", 253402300797))
