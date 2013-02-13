@@ -21,19 +21,23 @@ class ISISFailure:
 	
 	def __init__(self, filename):
 		# Parse the data from file
-		file = open(filename)
-		count = 0
-		for line in file:
-			if line[0] != '#':
-				count += 1
-				data = line.split(",")
-				self.insert(data[0], data[1], data[2], data[3], int(data[4][:-3]), int(data[5][:-3]))
-		print("%d lines inserted."%count)
+		self.append(filename)
 		
 	def __del__(self):
 		# TODO: Nothing
 		pass
-		
+	
+	def append(self, filename):
+		# Append the map from raw data
+		file = open(filename)
+		count = 0
+		for line in file:
+			if line[0] != "#":
+				count += 1
+				data = line.split(",")
+				self.insert(data[0], data[1], data[2], data[3], int(data[4][:-3]), int(data[5][:-3]))
+		print("%d lines inserted."%count)
+	
 	def insert(self, router1, port1, router2, port2, failure_start, failure_end):
 		# Insert data into the map[router1]
 		if router1 in self.failureMap:

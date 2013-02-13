@@ -29,6 +29,14 @@ class IPRouter:
 
 	def __init__(self, filename):
 		# Parse the data from file
+		self.append(filename)
+	
+	def __del__(self):
+		# TODO: Nothing
+		pass
+	
+	def append(self, filename):
+		# Append the maps from raw data
 		file = open(filename)
 		count = 0
 		for line in file:
@@ -38,10 +46,6 @@ class IPRouter:
 				self.insert(data[0], data[1], data[2], int(data[3]))
 		print("%d lines inserted."%count)
 	
-	def __del__(self):
-		# TODO: Nothing
-		pass
-		
 	def insert(self, ip_address, router, port, valid_till):
 		# Insert data into the table
 		if ip_address in self.IPtoRouter:
