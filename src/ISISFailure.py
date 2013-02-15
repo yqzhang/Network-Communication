@@ -17,7 +17,7 @@ class Failure:
 
 # Describe the ISISFailure
 class ISISFailure:
-	failureMap = {}
+	failureMap = dict()
 	
 	def __init__(self, filename):
 		# Parse the data from file
