@@ -34,9 +34,16 @@ class ISISFailure:
 		for line in file:
 			if line[0] != "#":
 				count += 1
-				data = line.split(",")
+				data = line[:-1].split(",")
 				self.insert(data[0], data[1], data[2], data[3], int(data[4][:-3]), int(data[5][:-3]))
+		self.sort()
 		print("%d lines inserted."%count)
+	
+	def sort(self):
+		# Sort the data by failure start time
+		for k, v in self.failureMap.items():
+			for key, value in v.items():
+				value = sorted(value, key = lambda failure: failure.failure_start)
 	
 	def insert(self, router1, port1, router2, port2, failure_start, failure_end):
 		# Insert data into the map[router1]
@@ -44,12 +51,7 @@ class ISISFailure:
 			routerMap = self.failureMap[router1]
 			if port1 in routerMap:
 				list = routerMap[port1]
-				for i in range(len(list)):
-					if list[i].failure_start > failure_start:
-						list.insert(i, Failure(router2, port2, failure_start, failure_end))
-						break
-				else:
-					list.append(Failure(router2, port2, failure_start, failure_end))
+				list.append(Failure(router2, port2, failure_start, failure_end))
 			else:
 				routerMap[port1] = [Failure(router2, port2, failure_start, failure_end)]
 		else:
@@ -62,12 +64,7 @@ class ISISFailure:
 			routerMap = self.failureMap[router2]
 			if port2 in routerMap:
 				list = routerMap[port2]
-				for i in range(len(list)):
-					if list[i].failure_start > failure_start:
-						list.insert(i, Failure(router1, port1, failure_start, failure_end))
-						break
-				else:
-					list.append(Failure(router1, port1, failure_start, failure_end))
+				list.append(Failure(router1, port1, failure_start, failure_end))
 			else:
 				routerMap[port2] = [Failure(router1, port1, failure_start, failure_end)]
 		else:
@@ -100,7 +97,7 @@ class ISISFailure:
 			return NULL
 		
 # For test
-# f = ISISFailure("C:\\Users\\Del\\Desktop\\isis_failures_old.txt")
-# failures = f.query_by_router_port("lax-dc2", "GigabitEthernet4/0/7")
-# for ite in failures:
-# 	print("%s %s %d %d" % (ite.router, ite.port, ite.failure_start, ite.failure_end))
+f = ISISFailure("C:\\Users\\Del\\Desktop\\isis_failures_old.txt")
+failures = f.query_by_router_port("lax-dc2", "GigabitEthernet4/0/7")
+for ite in failures:
+	print("%s %s %d %d" % (ite.router, ite.port, ite.failure_start, ite.failure_end))
