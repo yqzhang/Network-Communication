@@ -24,45 +24,48 @@ class IP:
 	
 # Describe the map between IP addresses and routers
 class IPRouter:
-	IPtoRouter = {}
-	RoutertoIP = {}
+	IPtoRouter = dict()
+	RoutertoIP = dict()
 
 	def __init__(self, filename):
 		# Parse the data from file
+		self.append(filename)
+	
+	def __del__(self):
+		# TODO: Nothing
+		pass
+	
+	def append(self, filename):
+		# Append the maps from raw data
 		file = open(filename)
 		count = 0
 		for line in file:
 			if line[0] != '#':
 				count += 1
-				data = line.split(",")
+				data = line[:-1].split(",")
 				self.insert(data[0], data[1], data[2], int(data[3]))
+		self.sort()
 		print("%d lines inserted."%count)
 	
-	def __del__(self):
-		# TODO: Nothing
-		pass
+	def sort(self):
+		# Sort the maps by valid_till
+		for key, value in self.IPtoRouter.items():
+			value = sorted(value, key = lambda router: router.valid_till)
 		
+		for key, value in self.RoutertoIP.items():
+			value = sorted(value, key = lambda ip: ip.valid_till)
+	
 	def insert(self, ip_address, router, port, valid_till):
 		# Insert data into the table
 		if ip_address in self.IPtoRouter:
 			list = self.IPtoRouter[ip_address]
-			for i in range(len(list)):
-				if list[i].valid_till > valid_till:
-					list.insert(i, Router(router, port, valid_till))
-					break
-			else:
-				list.append(Router(router, port, valid_till))
+			list.append(Router(router, port, valid_till))
 		else:
 			self.IPtoRouter[ip_address] = [Router(router, port, valid_till)]
 		
 		if router + ":" + port in self.RoutertoIP:
 			list = self.RoutertoIP[router + ":" + port]
-			for i in range(len(list)):
-				if list[i].valid_till > valid_till:
-					list.insert(i, IP(ip_address, valid_till))
-					break
-			else:
-				list.append(IP(ip_address, valid_till))
+			list.append(IP(ip_address, valid_till))
 		else:
 			self.RoutertoIP[router + ":" + port] = [IP(ip_address, valid_till)]
 		
@@ -99,6 +102,6 @@ class IPRouter:
 			return NULL
 		
 # For test
-# r = IPRouter("C:\\Users\\Del\\Desktop\\ipToRouters.txt")
-# print(r.query_by_ip("137.164.80.1", 253402300797).router)
-# print(r.query_by_router("cyp-6509-msfc", "Vlan851", 253402300797))
+r = IPRouter("C:\\Users\\Del\\Desktop\\ipToRouters.txt")
+print(r.query_by_ip("137.164.80.1", 253402300797).router)
+print(r.query_by_router("cyp-6509-msfc", "Vlan851", 253402300797))
