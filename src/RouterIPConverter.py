@@ -42,6 +42,12 @@ class RouterIPConverter:
 		#TODO:question need to ask,future work may need
 		#if IP != '' and RouterPort != '' and Time != '':
 			#tmpResult = self.__lookup__(IP,RouterPort,'')
+	
+	def LookUpIP(self,IP):
+		if IP in self.IpDict:
+			return True
+		else:
+			return False
 
 	def __lookup__(self,IP,RouterPort,Time):
 		if Time == '':
