@@ -42,7 +42,7 @@ class RouterIPConverter:
 		#TODO:question need to ask,future work may need
 		#if IP != '' and RouterPort != '' and Time != '':
 			#tmpResult = self.__lookup__(IP,RouterPort,'')
-	
+
 	def LookUpIP(self,IP):
 		if IP in self.IpDict:
 			return True
@@ -65,14 +65,14 @@ class RouterIPConverter:
 			# is simply to make the result prettier
 			return set(result)
 		else:
-			# process over IP and RouterPort are the same, so 
+			# process over IP and RouterPort are the same, so
 			# we just need to find out which one of them is empty
 			PointerNotEmpty = self.IpDict if RouterPort == '' else self.RouterPortDict
 			PointerEmpty = self.IpDict if RouterPort != '' else self.RouterPortDict
 			Key = IP if RouterPort == '' else RouterPort
 
 			# find out those tuples where the time stamp of that tuple
-			# is greater than the query time 
+			# is greater than the query time
 			# TODO:Equal or not?
 			keyLines = PointerNotEmpty[Key]
 			keyTimePairs = dict()
@@ -85,35 +85,3 @@ class RouterIPConverter:
 			minKey = min(keyTimePairs.keys())
 			result = PointerEmpty[keyTimePairs[minKey]]
 			return result
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
