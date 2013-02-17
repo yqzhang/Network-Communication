@@ -1,0 +1,35 @@
+qdx:
+I have reconstructed the code I wrote into single class Utils in the Utils.py
+file. Please CHECK the ExamplesUsingUtils.py file to see how to use it. There
+One intesting question problem:
+The * in the end of a trace route request means that the destination was arrived
+right? If yes, why is there exist data like this:
+"
+START
+Sun Nov  4 08:54:21 UTC 2012
+2012-11-04 08:53:40.796655
+ 2012-11-04 08:54:21.943366
+ traceroute to 137.164.16.21 (137.164.16.21), 15 hops max, 60 byte packets
+ 
+  1  cse-hazard-gateway.ucsd.edu (132.239.17.1)  0.298 ms  0.309 ms
+ 
+  2  ebu3b-6509-nodem-core-interconnect-vl901-gw-255-130.ucsd.edu (132.239.255.130)  0.379 ms  0.325 ms
+ 
+  3  mx0--nodem-core-30ge.ucsd.edu (132.239.254.162)  0.230 ms  0.224 ms
+ 
+  4  dc-sdg-agg1--ucsd-1.cenic.net (137.164.23.53)  0.358 ms  0.394 ms
+ 
+  5  dc-riv-core1--sdg-agg1-10ge.cenic.net (137.164.47.110)  9.308 ms  9.369 ms
+ 
+  6  dc-tri-core1--riv-core1-10ge-2.cenic.net (137.164.46.78)  18.828 ms  18.895 ms
+ 
+  7  dc-oak-core1--tri-core1-10ge-2.cenic.net (137.164.46.2)  20.454 ms  20.521 ms
+ 
+  8  dc-oak-isp1--oak-core1-10ge.cenic.net (137.164.47.159)  163.077 ms *
+ 
+
+END
+"
+Where the reached destination IP is not the same as the destination claimed before the trace route actually begin?
+
+I have already asked daniel, he has not reply to me yet.
