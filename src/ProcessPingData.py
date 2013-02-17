@@ -41,7 +41,7 @@ def ProcessPingData(dataFilePath,outputFilePath,IpLookUp):
 			line = dataF.readline()
 			while not line.startswith('END'):
 				line = line[5:]
-				# this is when empty line or 
+				# this is when empty line or
 				# line with * only was encountered
 				if len(line) <= 10:
 					if '*' in line:
@@ -75,7 +75,7 @@ def ProcessPingData(dataFilePath,outputFilePath,IpLookUp):
 
 PingDataPath = "./Cenic_failure_data/pings/"
 fileNames = os.listdir(PingDataPath)
- 
+
 tmpFileNames = []
 for i in fileNames:
 	s = i.split('_')
@@ -91,8 +91,3 @@ for i in tmpFileNames:
 		if j.startswith(i):
 			print i,j
 			ProcessPingData('./Cenic_failure_data/pings/'+j,'./Cenic_failure_data/formatpings/'+i,IPlookUp)
-
-
-
-
-
