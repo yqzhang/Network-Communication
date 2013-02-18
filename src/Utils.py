@@ -35,6 +35,8 @@ class Utils:
 					self.__ReadFormatedPindDataFromOneFile__(self.SourceIDMap[j],\
 							self.FormatedPingDataPath+i)
 					break
+		for i in self.SourceIDMap.items():
+			self.SourceIDMap[i[1]] = i[0]
 	
 	# read from formated files
 	def __ReadFormatedPindDataFromOneFile__(self,sourceID,filePath):
@@ -212,13 +214,46 @@ class Utils:
 		outputF.close()
 
 	# use either the names or id for SourceID, an IP string for DestinationIP
+	# ATTENTION: this function is a generator!
 	def FindPing(self,SourceID,DestinationIP):
-		if isinstance(SourceID,int):
-			return self.FormatedPingDataDict[SourceID][DestinationIP]
+		if SourceID != '':
+			if SourceID not in self.SourceIDMap and SourceID not in\
+			self.SourceID.values:
+				raise RuntimeError("Illegal SourceID !")
+
+			IntID = SourceID if isinstance(SourceID,int) else self.SourceIDMap[SourceID]
+			if  DestinationIP != '':
+				if DestinationIP in self.FormatedPingDataDict[IntID]:
+					for i in self.FormatedPingDataDict[IntID][DestinationIP]:
+						yield i
+				else:
+					print "This Source"+str(SourceID)+" has never issued \
+							trace-route to destination:"+DestinationIP+" !"
+			else:
+				for i in self.FormatedPingDataDict[IntID].values():
+					for j in i:
+						yield j
 		else:
-			#print SourceID,self.SourceIDMap[SourceID]
-			#print self.FormatedPingDataDict[self.SourceIDMap[SourceID]].items()[0][0]
-			return self.FormatedPingDataDict[self.SourceIDMap[SourceID]][DestinationIP]
+			if DestinationIP != '':
+				for i in range(6):
+					if DestinationIP in self.FormatedPingDataDict[i]:
+						for j in self.FormatedPingDataDict[i][DestinationIP]:
+							yield j
+					else:
+						print self.SourceIDMap[0]
+						print "This Source"+self.SourceIDMap[i]+" has never issued \
+								trace-route to destination:"+DestinationIP+" !"
+			else:
+				for i in range(6):
+					for j in self.FormatedPingDataDict[i].values():
+						for k in j:
+							yield k
+
+		#if isinstance(SourceID,int):
+		#else:
+			##print SourceID,self.SourceIDMap[SourceID]
+			##print self.FormatedPingDataDict[self.SourceIDMap[SourceID]].items()[0][0]
+			#return self.FormatedPingDataDict[][DestinationIP]
 
 	# @Params:	IP, regex: "\+\d\.\+\d\.\+\d\.\+\d"
 	# 			RouterPort, "<RouterName>,<Port>"
