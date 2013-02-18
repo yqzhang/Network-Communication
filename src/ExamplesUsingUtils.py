@@ -19,11 +19,18 @@ test = Utils(FormatedPingDataPath='./Cenic_failure_data/formatpings/')
 
 # this next line must be done in order to execute the line after it.
 test.ReadFormatedPingDataIntoMemory()
-# The following is the id of each source. You can call
-# FindPing(SourceID,DestinationIP) using both ID or name(int or string) for the
-# param <SourceID>
-#SourceIDMap = {'ucsb':0,'ucla':1,'ucsd':2,'ucdavis':3,'berkeley':4,'ucsc':5}
+# Attention!!! the test.FindPing function is a generato!
+# find ip data from ucsd to ip 137.164.16.21
 for i in test.FindPing('ucsd','137.164.16.21'):
+	print i
+# find ip data from any where to 137.164.16.21
+for i in test.FindPing('','137.164.16.21'):
+	print i
+# find ip data from ucsb to any where
+for i in test.FindPing('ucsb',''):
+	print i
+# find ip data from anywhere to anywhere
+for i in test.FindPing('',''):
 	print i
 
 #print test.LookUp('137.164.16.1','lax-dc2,Loopback1','')
