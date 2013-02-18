@@ -1,5 +1,8 @@
+# Author: 	Dexin Qi
+# Email: 	deqi@ucsd.edu
 import os,time
 
+# This is the class used to format the cenic data
 class Utils:
 	FormatedPingDataPath = './'
 	SourceIDMap = {'ucsb':0,'ucla':1,'ucsd':2,'ucdavis':3,'berkeley':4,'ucsc':5}
@@ -21,7 +24,7 @@ class Utils:
 		else:
 			self.FormatedPingDataPath = FormatedPingDataPath
 
-	# has to be done in order to execute LookUpPingData()
+	# has to be done in order to execute FindPing()
 	def ReadFormatedPingDataIntoMemory(self):
 		formatedFiles = os.listdir(self.FormatedPingDataPath)
 		self.FormatedPingDataDict = dict()
@@ -35,7 +38,7 @@ class Utils:
 	
 	# read from formated files
 	def __ReadFormatedPindDataFromOneFile__(self,sourceID,filePath):
-		print sourceID,filePath
+		print "Reading from:",sourceID,filePath
 		data = open(filePath,'r')
 		self.FormatedPingDataDict[sourceID] = dict()
 		line = data.readline()
@@ -209,7 +212,7 @@ class Utils:
 		outputF.close()
 
 	# use either the names or id for SourceID, an IP string for DestinationIP
-	def LookUpPingData(self,SourceID,DestinationIP):
+	def FindPing(self,SourceID,DestinationIP):
 		if isinstance(SourceID,int):
 			return self.FormatedPingDataDict[SourceID][DestinationIP]
 		else:

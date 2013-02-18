@@ -15,9 +15,15 @@ from Utils import Utils
 # you, becase the original ping data has some weird things that did not follow
 # the format of the data, which can not be correctly formated.
 test = Utils(FormatedPingDataPath='./Cenic_failure_data/formatpings/')
+
+
 # this next line must be done in order to execute the line after it.
 test.ReadFormatedPingDataIntoMemory()
-for i in test.LookUpPingData('ucsd','137.164.16.21'):
+# The following is the id of each source. You can call
+# FindPing(SourceID,DestinationIP) using both ID or name(int or string) for the
+# param <SourceID>
+#SourceIDMap = {'ucsb':0,'ucla':1,'ucsd':2,'ucdavis':3,'berkeley':4,'ucsc':5}
+for i in test.FindPing('ucsd','137.164.16.21'):
 	print i
 
 #print test.LookUp('137.164.16.1','lax-dc2,Loopback1','')
