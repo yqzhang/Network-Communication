@@ -27,7 +27,7 @@ class IPRouter:
 	IPtoRouter = dict()
 	RoutertoIP = dict()
 
-	def __init__(self, filename):
+	def __init__(self, filename = "../data/maps/ipToRouters.txt"):
 		# Parse the data from file
 		self.append(filename)
 	
@@ -102,7 +102,7 @@ class IPRouter:
 			return NULL
 		
 # For test
-r = IPRouter("C:\\Users\\Del\\Desktop\\ipToRouters.txt")
-r = IPRouter("./ipToRouters.txt")
-print(r.query_by_ip("137.164.80.1", 253402300797).router)
-print(r.query_by_router("cyp-6509-msfc", "Vlan851", 253402300797))
+# r = IPRouter("C:\\Users\\Del\\Desktop\\ipToRouters.txt")
+# r = IPRouter("./ipToRouters.txt")
+# print(r.query_by_ip("137.164.80.1", 253402300797).router)
+# print(r.query_by_router("cyp-6509-msfc", "Vlan851", 253402300797))

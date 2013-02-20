@@ -20,9 +20,10 @@ class ISISFailure:
 	failureMap = dict()
 	failureList = list()
 	
-	def __init__(self, filename):
+	def __init__(self, filename = "../data/isis_failures/isis_failures_old.txt ../data/isis_failures/isis_fails_2012-11-01--2013_02_07.txt"):
 		# Parse the data from file
-		self.append(filename)
+		for file in filename[:-1].split(" "):
+			self.append(file)
 		
 	def __del__(self):
 		# TODO: Nothing
@@ -106,7 +107,7 @@ class ISISFailure:
                         
 		
 # For test
-f = ISISFailure("C:\\Users\\Del\\Desktop\\isis_failures_old.txt")
-failures = f.query_by_router_port("lax-dc2", "GigabitEthernet4/0/7")
-for ite in failures:
-	print("%s %s %d %d" % (ite.router, ite.port, ite.failure_start, ite.failure_end))
+# f = ISISFailure("C:\\Users\\Del\\Desktop\\isis_failures_old.txt")
+# failures = f.query_by_router_port("lax-dc2", "GigabitEthernet4/0/7")
+# for ite in failures:
+#	print("%s %s %d %d" % (ite.router, ite.port, ite.failure_start, ite.failure_end))
