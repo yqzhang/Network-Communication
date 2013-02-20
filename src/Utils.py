@@ -23,10 +23,10 @@ class Utils:
 		PingDataPath = "../data/pings/"):
 		if os.name == 'nt':
 			currentDir = os.getcwd()
-			print currentDir
+			print(currentDir)
 			self.ParentDir = os.path.dirname(currentDir)
-			print os.getcwd()
-			print self.ParentDir
+			print(os.getcwd())
+			print(self.ParentDir)
 
 		if self.ParentDir != '':
 			if IPtoRouterFilePath.startswith('../'):
@@ -48,19 +48,23 @@ class Utils:
 	def ReadFormatedPingDataIntoMemory(self):
 		formatedFiles = os.listdir(self.FormatedPingDataPath)
 		self.FormatedPingDataDict = dict()
-
+		tmpForReverseDict = []
+		for i in self.SourceIDMap.items():
+			tmpForReverseDict.append([i[1],i[0]])
+		for i in tmpForReverseDict:
+			self.SourceIDMap[i[0]] = i[1]
+			
 		for i in formatedFiles:
 			for j in self.SourceIDMap:
-				if j in i:
+				if str(j) in i:
 					self.__ReadFormatedPindDataFromOneFile__(self.SourceIDMap[j],\
 							self.FormatedPingDataPath+i)
 					break
-		for i in self.SourceIDMap.items():
-			self.SourceIDMap[i[1]] = i[0]
+		
 	
 	# read from formated files
 	def __ReadFormatedPindDataFromOneFile__(self,sourceID,filePath):
-		print "Reading from:",sourceID,filePath
+		print("Reading from:",sourceID,filePath)
 		data = open(filePath,'r')
 		self.FormatedPingDataDict[sourceID] = dict()
 		line = data.readline()
@@ -153,7 +157,7 @@ class Utils:
 		for i in tmpFileNames:
 			for j in fileNames:
 				if j.startswith(i):
-					print i,j
+					print(i,j)
 					self.__ProcessPingData__(PingDataPath+j,FormatDataPath+i)
 
 	# Data Format:
@@ -174,18 +178,18 @@ class Utils:
 					endTime = line[1:20]
 					endTime = time.mktime(time.strptime(endTime, '%Y-%m-%d %H:%M:%S'))
 				except ValueError:
-					print "Error: There are something in the original ping data\
+					print( "Error: There are something in the original ping data\
 							file:"+dataFilePath+" that did not follow the time format.\
 							The following are 100 lines of code after that exact\
 							line(included), hope this will help you locate those lines.\
 							And all the process of this data file will be\
-							skipped, but the rest of the files will be processed."
+							skipped, but the rest of the files will be processed.")
 					# WARNING: May be I should have set a line number counter to
 					# track which line was wrong, but I'm not doing it right now
 					# since I have eliminated the disordered data in the current
 					# data.
 					for i in range(100):
-						print line
+						print(line)
 						line = dataF.readline()
 					return 0
 
@@ -196,9 +200,9 @@ class Utils:
 				destination = tmps[4][1:-2]
 				# check if there is any tuple of data has different behavior
 				if destination != tmpd:
-					print '''Warning: the destination and the one followed in the
-					round brackets are not matched, in file:'''+dataFilePath
-					print line
+					print('''Warning: the destination and the one followed in the
+					round brackets are not matched, in file:'''+dataFilePath)
+					print(line)
 
 				# arrival flag
 				success = False
@@ -252,17 +256,17 @@ class Utils:
 	def FindPing(self,SourceID,DestinationIP):
 		if SourceID != '':
 			if SourceID not in self.SourceIDMap and SourceID not in\
-			self.SourceID.values:
+			self.SourceIDMap.values():
 				raise RuntimeError("Illegal SourceID !")
 
-			IntID = SourceID if isinstance(SourceID,int) else self.SourceIDMap[SourceID]
+			IntID = self.SourceIDMap[SourceID] if isinstance(SourceID,int) else SourceID
 			if  DestinationIP != '':
 				if DestinationIP in self.FormatedPingDataDict[IntID]:
 					for i in self.FormatedPingDataDict[IntID][DestinationIP]:
 						yield i
 				else:
-					print "This Source"+str(SourceID)+" has never issued \
-							trace-route to destination:"+DestinationIP+" !"
+					print("This Source"+str(SourceID)+" has never issued \
+							trace-route to destination:"+DestinationIP+" !")
 			else:
 				for i in self.FormatedPingDataDict[IntID].values():
 					for j in i:
@@ -274,9 +278,9 @@ class Utils:
 						for j in self.FormatedPingDataDict[i][DestinationIP]:
 							yield j
 					else:
-						print self.SourceIDMap[0]
-						print "This Source"+self.SourceIDMap[i]+" has never issued \
-								trace-route to destination:"+DestinationIP+" !"
+						print(self.SourceIDMap[0])
+						print("This Source"+self.SourceIDMap[i]+" has never issued \
+								trace-route to destination:"+DestinationIP+" !")
 			else:
 				for i in range(6):
 					for j in self.FormatedPingDataDict[i].values():

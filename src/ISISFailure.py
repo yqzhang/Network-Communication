@@ -8,9 +8,9 @@ import os
 class Failure:
 	router = ""
 	port = ""
-	failure_start = 0
-	failure_end = 0
-	
+	failure_start = ""
+	failure_end = ""
+
 	def __init__(self, router, port, failure_start, failure_end):
 		self.router = router
 		self.port = port
@@ -21,17 +21,17 @@ class Failure:
 class ISISFailure:
 	failureMap = dict()
 	failureList = list()
-	
+
 	def __init__(self, filename = "../data/isis_failures/isis_failures_old.txt ../data/isis_failures/isis_fails_2012-11-01--2013_02_07.txt"):
 		# Parse the data from file
-		for file in filename[:-1].split(" "):
-                        parentDir = os.path.dirname(os.getcwd())
+		for file in filename.split(" "):
+			parentDir = os.path.dirname(os.getcwd())
 			self.append(parentDir + file[2:])
-		
+
 	def __del__(self):
 		# TODO: Nothing
 		pass
-	
+
 	def append(self, filename):
 		# Append the map from raw data
 		file = open(filename)
@@ -40,16 +40,16 @@ class ISISFailure:
 			if line[0] != "#":
 				count += 1
 				data = line[:-1].split(",")
-				self.insert(data[0], data[1], data[2], data[3], int(data[4][:-3]), int(data[5][:-3]))
+				self.insert(data[0], data[1], data[2], data[3], data[4], data[5])
 		self.sort()
-		print("%d lines inserted."%count)
-	
+		print("%d lines inserted from file %s. [output from ISISFailure.py]"%(count, filename))
+
 	def sort(self):
 		# Sort the data by failure start time
 		for k, v in self.failureMap.items():
 			for key, value in v.items():
 				value = sorted(value, key = lambda failure: failure.failure_start)
-	
+
 	def insert(self, router1, port1, router2, port2, failure_start, failure_end):
 		# Insert data into the map[router1]
 		if router1 in self.failureMap:
@@ -63,7 +63,7 @@ class ISISFailure:
 			routerMap = {}
 			routerMap[port1] = [Failure(router2, port2, failure_start, failure_end)]
 			self.failureMap[router1] = routerMap
-                	
+
 		# Insert data into the map[router2]
 		if router2 in self.failureMap:
 			routerMap = self.failureMap[router2]
@@ -79,22 +79,22 @@ class ISISFailure:
 
 		# Insert data into the list
 		temp = [router1, port1, router2, port2, failure_start, failure_end]
-		failureList.append(temp)
-	
+		self.failureList.append(temp)
+
 	def delete(self, router1, port1, router2, port2, failure_start, failure_end):
 		# Delete certain data from the map
 		pass
-		
+
 	def update(self, router1, port1, router2, port2, failure_start, failure_end):
 		# Update certain data in the map
 		pass
-		
+
 	def query_by_router(self, router):
 		if router in self.failureMap:
 			return self.failureMap[router]
 		else:
 			return NULL
-		
+
 	def query_by_router_port(self, router,port):
 		if router in self.failureMap:
 			routerMap = self.failureMap[router]
@@ -106,11 +106,11 @@ class ISISFailure:
 			return NULL
 
 	def traverse(self):
-                return self.failureList
-                        
-		
+		return self.failureList
+
+
 # For test
-# f = ISISFailure("C:\\Users\\Del\\Desktop\\isis_failures_old.txt")
+f = ISISFailure()
 # failures = f.query_by_router_port("lax-dc2", "GigabitEthernet4/0/7")
 # for ite in failures:
 #	print("%s %s %d %d" % (ite.router, ite.port, ite.failure_start, ite.failure_end))

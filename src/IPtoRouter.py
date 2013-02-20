@@ -8,7 +8,7 @@ import os
 class Router:
 	router = ""
 	port = ""
-	valid_till = 0
+	valid_till = ""
 	
 	def __init__(self, router, port, valid_till):
 		self.router = router
@@ -18,11 +18,11 @@ class Router:
 # Describe the IP addresses
 class IP:
 	IP = ""
-	valid_till = 0
+	valid_till = ""
 	
 	def __init__(self, IP, valid_till):
 		self.IP = IP
-		self.valid_till = int(valid_till)
+		self.valid_till = valid_till
 	
 # Describe the map between IP addresses and routers
 class IPRouter:
@@ -46,9 +46,9 @@ class IPRouter:
 			if line[0] != '#':
 				count += 1
 				data = line[:-1].split(",")
-				self.insert(data[0], data[1], data[2], int(data[3]))
+				self.insert(data[0], data[1], data[2], data[3])
 		self.sort()
-		print("%d lines inserted."%count)
+		print("%d lines inserted from file %s. [output from IPtoRouter.py]"%(count, filename))
 	
 	def sort(self):
 		# Sort the maps by valid_till
