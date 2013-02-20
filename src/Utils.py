@@ -1,6 +1,7 @@
 # Author: 	Dexin Qi
 # Email: 	deqi@ucsd.edu
 import os,time
+import traceback
 
 # This is the class used to format the cenic data
 class Utils:
@@ -20,7 +21,7 @@ class Utils:
 		PingDataPath = "./Cenic_failure_data/pings/"):
 		self.ReadRouterIPDataIntoMemory(IPtoRouterFilePath)
 		if NeedFormat:
-			FormatPingData(PingDataPath,FormatedPingDataPath)
+			self.FormatPingData(PingDataPath,FormatedPingDataPath)
 		else:
 			self.FormatedPingDataPath = FormatedPingDataPath
 
@@ -192,22 +193,28 @@ class Utils:
 						if self.LookUpIP(tmpIP):
 							hopList.append(tmpIP)
 						# * at the end implies successful arrival
-						if line.endswith('*\n'):
-							success = True
-							break
+						#if line.endswith('*\n'):
+							#success = True
+							#break
 					line = dataF.readline()
-
-				# write formated data into file
-				outputF.write(str(startTime)+','+str(endTime)+','\
-						+destination+','+str(success)+':')
-				for i in hopList[:-2]:
-					outputF.write(i+',')
-				# this if statement exists because there is ping localhost
-				# exists in the data, and there is no way 127.0.0.1
-				# can be found in LookUpIP
-				if len(hopList) > 0:
-					outputF.write(hopList[-1])
-				outputF.write('\n')
+				if self.LookUpIP(destination):
+					if len(hopList) >= 1:
+						if self.LookUpIP(hopList[-1]):
+							destRouterStart = self.LookUp(destination,'',startTime)
+							destRouterEnd = self.LookUp(hopList[-1],'',endTime)
+							if destRouterEnd.split(',')[0] == destRouterStart.split(',')[0]:
+								success = True
+					# write formated data into file
+					outputF.write(str(startTime)+','+str(endTime)+','\
+							+destination+','+str(success)+':')
+					for i in hopList[:-2]:
+						outputF.write(i+',')
+					# this if statement exists because there is ping localhost
+					# exists in the data, and there is no way 127.0.0.1
+					# can be found in LookUpIP
+					if len(hopList) > 0:
+						outputF.write(hopList[-1])
+					outputF.write('\n')
 			else:
 				line = dataF.readline()
 		dataF.close()
@@ -248,12 +255,6 @@ class Utils:
 					for j in self.FormatedPingDataDict[i].values():
 						for k in j:
 							yield k
-
-		#if isinstance(SourceID,int):
-		#else:
-			##print SourceID,self.SourceIDMap[SourceID]
-			##print self.FormatedPingDataDict[self.SourceIDMap[SourceID]].items()[0][0]
-			#return self.FormatedPingDataDict[][DestinationIP]
 
 	# @Params:	IP, regex: "\+\d\.\+\d\.\+\d\.\+\d"
 	# 			RouterPort, "<RouterName>,<Port>"
