@@ -2,6 +2,8 @@
 # Author: Yunqi Zhang
 # Email: yqzhang@ucsd.edu
 
+import os
+
 # Describe the routers
 class Router:
 	router = ""
@@ -29,7 +31,8 @@ class IPRouter:
 
 	def __init__(self, filename = "../data/maps/ipToRouters.txt"):
 		# Parse the data from file
-		self.append(filename)
+		parentDir = os.path.dirname(os.getcwd())
+		self.append(parentDir + filename[2:])
 	
 	def __del__(self):
 		# TODO: Nothing
@@ -103,6 +106,6 @@ class IPRouter:
 		
 # For test
 # r = IPRouter("C:\\Users\\Del\\Desktop\\ipToRouters.txt")
-# r = IPRouter("./ipToRouters.txt")
+# r = IPRouter()
 # print(r.query_by_ip("137.164.80.1", 253402300797).router)
 # print(r.query_by_router("cyp-6509-msfc", "Vlan851", 253402300797))
