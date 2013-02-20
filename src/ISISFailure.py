@@ -18,6 +18,7 @@ class Failure:
 # Describe the ISISFailure
 class ISISFailure:
 	failureMap = dict()
+	failureList = list()
 	
 	def __init__(self, filename):
 		# Parse the data from file
@@ -71,6 +72,10 @@ class ISISFailure:
 			routerMap = {}
 			routerMap[port2] = [Failure(router1, port1, failure_start, failure_end)]
 			self.failureMap[router2] = routerMap
+
+		# Insert data into the list
+		temp = [router1, port1, router2, port2, failure_start, failure_end]
+		failureList.append(temp)
 	
 	def delete(self, router1, port1, router2, port2, failure_start, failure_end):
 		# Delete certain data from the map
@@ -95,6 +100,10 @@ class ISISFailure:
 				return NULL
 		else:
 			return NULL
+
+	def traverse(self):
+                return self.failureList
+                        
 		
 # For test
 f = ISISFailure("C:\\Users\\Del\\Desktop\\isis_failures_old.txt")
