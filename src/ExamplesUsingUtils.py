@@ -14,8 +14,8 @@ from Utils import Utils
 # do not try to format the original ping data again, just use the ones I sent
 # you, becase the original ping data has some weird things that did not follow
 # the format of the data, which can not be correctly formated.
-#test = Utils(NeedFormat = True,FormatedPingDataPath='./Cenic_failure_data/formatpings/')
-test = Utils(FormatedPingDataPath='./Cenic_failure_data/formatpings/')
+#test = Utils(NeedFormat = True)
+test = Utils(FormatedPingDataPath='../data/formatpings/')
 
 
 # this next line must be done in order to execute the line after it.
@@ -24,15 +24,15 @@ test.ReadFormatedPingDataIntoMemory()
 # find ip data from ucsd to ip 137.164.16.21
 for i in test.FindPing('ucsd','137.164.16.21'):
 	print i
-find ip data from any where to 137.164.16.21
-for i in test.FindPing('','137.164.16.21'):
-	print i
+#find ip data from any where to 137.164.16.21
+#for i in test.FindPing('','137.164.16.21'):
+	#print i
 # find ip data from ucsb to any where
-for i in test.FindPing('ucsb',''):
-	print i
+#for i in test.FindPing('ucsb',''):
+	#print i
 # find ip data from anywhere to anywhere
-for i in test.FindPing('',''):
-	print i
+#for i in test.FindPing('',''):
+	#print i
 
 #print test.LookUp('137.164.16.1','lax-dc2,Loopback1','')
 print test.LookUp('137.164.16.21','',1351875873)
