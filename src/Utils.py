@@ -1,12 +1,14 @@
 # Author: 	Dexin Qi
 # Email: 	deqi@ucsd.edu
-import os,time
+import os
+import time
 import traceback
 
 # This is the class used to format the cenic data
 class Utils:
-	FormatedPingDataPath = './'
+	FormatedPingDataPath = '../data/formatpings/'
 	SourceIDMap = {'ucsb':0,'ucla':1,'ucsd':2,'ucdavis':3,'berkeley':4,'ucsc':5}
+	ParentDir = ''
 
 	# You have to provide at least <IPtoRouterFilePath> and <PingDataPath>, if the
 	# ping data are already formatted, you can fill in the <FormatDataPath> so
@@ -16,9 +18,26 @@ class Utils:
 	# And the two params that must be fill in has default values, replace the default
 	# if you are not following the naming rules in the default value.
 	def __init__(self,
-		IPtoRouterFilePath="./Cenic_failure_data/maps/ipToRouters.txt",\
-		NeedFormat = False,FormatedPingDataPath='./',\
-		PingDataPath = "./Cenic_failure_data/pings/"):
+		IPtoRouterFilePath="../data/maps/ipToRouters.txt",\
+		NeedFormat = False,FormatedPingDataPath='../data/formatpings/',\
+		PingDataPath = "../data/pings/"):
+		if os.name == 'nt':
+			currentDir = os.getcwd()
+			print currentDir
+			self.ParentDir = os.path.dirname(currentDir)
+			print os.getcwd()
+			print self.ParentDir
+
+		if self.ParentDir != '':
+			if IPtoRouterFilePath.startswith('../'):
+				IPtoRouterFilePath = self.ParentDir+IPtoRouterFilePath[2:].replace('/','\\')
+			if FormatedPingDataPath.startswith('../'):
+				FormatedPingDataPath = self.ParentDir+FormatedPingDataPath[2:].replace('/','\\')
+			if PingDataPath.startswith('../'):
+				PingDataPath = self.ParentDir+PingDataPath[2:].replace('/','\\')
+			if FormatedPingDataPath.startswith('../'):
+				self.FormatedPingDataPath = self.ParentDir +\
+				self.FormatedPingDataPath[2:].replace('/','\\')
 		self.ReadRouterIPDataIntoMemory(IPtoRouterFilePath)
 		if NeedFormat:
 			self.FormatPingData(PingDataPath,FormatedPingDataPath)
@@ -70,7 +89,10 @@ class Utils:
 
 	# read the RouterIP file into memory
 	def ReadRouterIPDataIntoMemory(self,\
-			IPtoRouterFilePath="./Cenic_failure_data/maps/ipToRouters.txt"):
+			IPtoRouterFilePath="../data/maps/ipToRouters.txt"):
+		if self.ParentDir != '':
+			if IPtoRouterFilePath.startswith('../'):
+				IPtoRouterFilePath = self.ParentDir+IPtoRouterFilePath[2:].replace('/','\\')
 		# Reading ip to router data into memory
 		# line number->IP and IP->line numbers
 		self.IpDict = dict()
@@ -114,8 +136,13 @@ class Utils:
 
 	# @param PingDataPath, specify where the original ping data files are
 	# @param FormatDataPath, specify where the formated data should be stored
-	def	FormatPingData(self,PingDataPath="./Cenic_failure_data/pings/",\
-			FormatDataPath='./Cenic_failure_data/formatpings/'):
+	def	FormatPingData(self,PingDataPath="../data/pings/",\
+			FormatDataPath='../data/formatpings/'):
+		if self.ParentDir != '':
+			if FormatDataPath.startswith('../'):
+				FormatDataPath = self.ParentDir+FormatDataPath[2:].replace('/','\\')
+			if PingDataPath.startswith('../'):
+				PingDataPath = self.ParentDir+PingDataPath[2:].replace('/','\\')
 		self.FormatedPingDataPath = FormatDataPath
 		fileNames = os.listdir(PingDataPath)
 		tmpFileNames = []
