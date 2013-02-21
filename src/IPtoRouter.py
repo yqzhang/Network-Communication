@@ -88,9 +88,9 @@ class IPRouter:
 				if time <= router.valid_till:
 					return router
 			else:
-				return NULL
+				return None
 		else:
-			return NULL
+			return None
 		
 	def query_by_router(self, router, port, time):
 		# Query by router, port and time
@@ -100,9 +100,9 @@ class IPRouter:
 				if time <= ip.valid_till:
 					return ip.IP
 			else:
-				return NULL
+				return None
 		else:
-			return NULL
+			return None
 		
 # For test
 # r = IPRouter("C:\\Users\\Del\\Desktop\\ipToRouters.txt")

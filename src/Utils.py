@@ -48,19 +48,19 @@ class Utils:
 	def ReadFormatedPingDataIntoMemory(self):
 		formatedFiles = os.listdir(self.FormatedPingDataPath)
 		self.FormatedPingDataDict = dict()
+		
+		for i in formatedFiles:
+			for j in self.SourceIDMap:
+				if j in i:
+					self.__ReadFormatedPindDataFromOneFile__(self.SourceIDMap[j],\
+							self.FormatedPingDataPath+i)
+					break
+		print(self.FormatedPingDataDict.keys())
 		tmpForReverseDict = []
 		for i in self.SourceIDMap.items():
 			tmpForReverseDict.append([i[1],i[0]])
 		for i in tmpForReverseDict:
 			self.SourceIDMap[i[0]] = i[1]
-			
-		for i in formatedFiles:
-			for j in self.SourceIDMap:
-				if str(j) in i:
-					self.__ReadFormatedPindDataFromOneFile__(self.SourceIDMap[j],\
-							self.FormatedPingDataPath+i)
-					break
-		
 	
 	# read from formated files
 	def __ReadFormatedPindDataFromOneFile__(self,sourceID,filePath):
@@ -259,14 +259,15 @@ class Utils:
 			self.SourceIDMap.values():
 				raise RuntimeError("Illegal SourceID !")
 
-			IntID = self.SourceIDMap[SourceID] if isinstance(SourceID,int) else SourceID
+			IntID = SourceID if isinstance(SourceID,int) else self.SourceIDMap[SourceID]
 			if  DestinationIP != '':
 				if DestinationIP in self.FormatedPingDataDict[IntID]:
 					for i in self.FormatedPingDataDict[IntID][DestinationIP]:
 						yield i
 				else:
-					print("This Source"+str(SourceID)+" has never issued \
-							trace-route to destination:"+DestinationIP+" !")
+					pass
+					#print("This Source"+str(SourceID)+" has never issued \
+					#		trace-route to destination:"+DestinationIP+" !")
 			else:
 				for i in self.FormatedPingDataDict[IntID].values():
 					for j in i:
@@ -278,9 +279,10 @@ class Utils:
 						for j in self.FormatedPingDataDict[i][DestinationIP]:
 							yield j
 					else:
-						print(self.SourceIDMap[0])
-						print("This Source"+self.SourceIDMap[i]+" has never issued \
-								trace-route to destination:"+DestinationIP+" !")
+						pass
+					#	print(self.SourceIDMap[0])
+					#	print("This Source"+self.SourceIDMap[i]+" has never issued \
+					#			trace-route to destination:"+DestinationIP+" !")
 			else:
 				for i in range(6):
 					for j in self.FormatedPingDataDict[i].values():

@@ -93,7 +93,7 @@ class ISISFailure:
 		if router in self.failureMap:
 			return self.failureMap[router]
 		else:
-			return NULL
+			return None
 
 	def query_by_router_port(self, router,port):
 		if router in self.failureMap:
@@ -101,9 +101,9 @@ class ISISFailure:
 			if port in routerMap:
 				return routerMap[port]
 			else:
-				return NULL
+				return None
 		else:
-			return NULL
+			return None
 
 	def traverse(self):
 		return self.failureList
