@@ -53,7 +53,7 @@ class Utils:
 					self.__ReadFormatedPindDataFromOneFile__(self.SourceIDMap[j],\
 							self.FormatedPingDataPath+i)
 					break
-		print(self.FormatedPingDataDict.keys())
+		#print(self.FormatedPingDataDict.keys())
 		tmpForReverseDict = []
 		for i in self.SourceIDMap.items():
 			tmpForReverseDict.append([i[1],i[0]])
@@ -264,8 +264,8 @@ class Utils:
 						yield i
 				else:
 					pass
-					#print("This Source"+str(SourceID)+" has never issued \
-					#		trace-route to destination:"+DestinationIP+" !")
+					print("This Source"+str(SourceID)+" has never issued \
+							trace-route to destination:"+DestinationIP+" !")
 			else:
 				for i in self.FormatedPingDataDict[IntID].values():
 					for j in i:
@@ -277,10 +277,9 @@ class Utils:
 						for j in self.FormatedPingDataDict[i][DestinationIP]:
 							yield j
 					else:
-						print self.SourceIDMap[i]
-					#	print(self.SourceIDMap[0])
-					#	print("This Source"+self.SourceIDMap[i]+" has never issued \
-					#			trace-route to destination:"+DestinationIP+" !")
+						print(self.SourceIDMap[i])
+						print("This Source"+self.SourceIDMap[i]+" has never issued \
+								trace-route to destination:"+DestinationIP+" !")
 			else:
 				for i in range(6):
 					for j in self.FormatedPingDataDict[i].values():
