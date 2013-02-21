@@ -278,8 +278,8 @@ class Utils:
 						yield i
 				else:
 					pass
-					print("This Source"+str(SourceID)+" has never issued \
-							trace-route to destination:"+DestinationIP+" !")
+					#print("This Source"+str(SourceID)+" has never issued \
+					#		trace-route to destination:"+DestinationIP+" !")
 			else:
 				for i in findDataSet[IntID].values():
 					for j in i:
@@ -291,9 +291,10 @@ class Utils:
 						for j in findDataSet[i][DestinationIP]:
 							yield j
 					else:
-						print(self.SourceIDMap[i])
-						print("This Source"+self.SourceIDMap[i]+" has never issued \
-								trace-route to destination:"+DestinationIP+" !")
+						pass
+						#print(self.SourceIDMap[i])
+						#print("This Source"+self.SourceIDMap[i]+" has never issued \
+						#		trace-route to destination:"+DestinationIP+" !")
 			else:
 				for i in range(6):
 					for j in findDataSet[i].values():

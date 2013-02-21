@@ -34,8 +34,6 @@ class FailureDetection:
 		retval["BEFORE"] = dict()
 		retval["DURING"] = dict()
 		retval["AFTER"]  = dict()
-		failure_start = failure_start
-		failure_end = failure_end
 		
 		for i in range(6):
 			ifBefore = True
@@ -43,7 +41,9 @@ class FailureDetection:
 			retval["BEFORE"][i] = None
 			retval["DURING"][i] = None
 			retval["AFTER"][i]  = None
-			for data in self.util.FindPing(i, IP):
+			
+			# Search by the last hop
+			for data in self.util.FindPing(i, IP, 1):
 				if data[1] < failure_start:
 					# Before
 					preData = data
@@ -62,10 +62,15 @@ class FailureDetection:
 	def lookUpByRouter(self, router, port, failure_start, failure_end):
 		#Convert router:port to IP and call lookUpByIP()
 		ip_start = self.iprouter.query_by_router(router, port, failure_start)
-		if ip_start == None:
-			print("%s,%s,%f,%f"%(router,port,failure_start,failure_end))
+		#if ip_start == None:
+		#	print("%s,%s,%f,%f"%(router,port,failure_start,failure_end))
 			
 		ip_end = self.iprouter.query_by_router(router, port, failure_end)
+		
+		if ip_start == None or ip_end == None:
+			#print("No IP addresses assigned T_T")
+			return None
+		
 		if ip_start != ip_end:
 			# TODO: We need to figure it out if this happens a lot
 			print("Error! IP address changed during failure.")
@@ -77,6 +82,9 @@ class FailureDetection:
 			return self.lookUpByIP(ip_start, failure_start, failure_end)
 
 	def lookUp(self):
+		# Output file "route_change.txt"
+		file = open("route_change.txt", "w")
+	
 		# Traverse the failure list and look them up
 		for fail in self.failureList:
 			router1 = fail[0]
@@ -88,27 +96,43 @@ class FailureDetection:
 			# Format: router1, port1, router2, port2, failure_start, failure_end
 			src_ping = self.lookUpByRouter(router1, port1, failure_start, failure_end)
 			dst_ping = self.lookUpByRouter(router2, port2, failure_start, failure_end)
+			
+			if src_ping == None and dst_ping == None:
+				continue
+			
+			ifRouted = False
 			for i in range(6):
-				if src_ping["BEFORE"][i] != None:
+				if src_ping == None:
+					pass
+				elif src_ping["BEFORE"][i] != None:
+					ifRouted = True
+					file.write("Trace Router from node %d to source:\n"%i)
 					# Before failure
-					print("Before failure:")
-					print(src_ping["BEFORE"][i])
+					file.write("\tBefore failure:\n")
+					file.write("\t\t" + str(src_ping["BEFORE"][i]) + "\n")
 					# During failure
-					print("During failure:")
-					print(src_ping["DURING"][i])
+					file.write("\tDuring failure:\n")
+					file.write("\t\t" + str(src_ping["DURING"][i]) + "\n")
 					# After failure
-					print("After failure:")
-					print(src_ping["AFTER"][i])
-				if src_ping["BEFORE"][i] != None:
+					file.write("\tAfter failure:\n")
+					file.write("\t\t" + str(src_ping["AFTER"][i]) + "\n")
+					
+				if dst_ping == None:
+					pass
+				elif dst_ping["BEFORE"][i] != None:
+					ifRouted = True
+					file.write("Trace Router from node %d to destination:"%i)
 					# Before failure
-					print("Before failure:")
-					print(dst_ping["BEFORE"][i])
+					file.write("\tBefore failure:\n")
+					file.write("\t\t" + str(dst_ping["BEFORE"][i]) + "\n")
 					# During failure
-					print("During failure:")
-					print(dst_ping["DURING"][i])
+					file.write("\tDuring failure:\n")
+					file.write("\t\t" + str(dst_ping["DURING"][i]) + "\n")
 					# After failure
-					print("After failure:")
-					print(dst_ping["AFTER"][i])
+					file.write("\tAfter failure:\n")
+					file.write("\t\t" + str(dst_ping["AFTER"][i]) + "\n")
+			if ifRouted == True:
+				file.write("Failure: %s:%s -> %s:%s @ %f - %f\n\n"%(router1, port1, router2, port2, failure_start, failure_end))
 
 fd = FailureDetection()
 fd.lookUp()
