@@ -23,21 +23,19 @@ class Utils:
 		PingDataPath = "../data/pings/"):
 		if os.name == 'nt':
 			currentDir = os.getcwd()
-			print(currentDir)
 			self.ParentDir = os.path.dirname(currentDir)
-			print(os.getcwd())
-			print(self.ParentDir)
 
 		if self.ParentDir != '':
 			if IPtoRouterFilePath.startswith('../'):
-				IPtoRouterFilePath = self.ParentDir+IPtoRouterFilePath[2:].replace('/','\\')
+				IPtoRouterFilePath = self.ParentDir+IPtoRouterFilePath[2:]
 			if FormatedPingDataPath.startswith('../'):
-				FormatedPingDataPath = self.ParentDir+FormatedPingDataPath[2:].replace('/','\\')
+				FormatedPingDataPath = self.ParentDir+FormatedPingDataPath[2:]
 			if PingDataPath.startswith('../'):
-				PingDataPath = self.ParentDir+PingDataPath[2:].replace('/','\\')
+				PingDataPath = self.ParentDir+PingDataPath[2:]
 			if FormatedPingDataPath.startswith('../'):
 				self.FormatedPingDataPath = self.ParentDir +\
-				self.FormatedPingDataPath[2:].replace('/','\\')
+				self.FormatedPingDataPath[2:]
+
 		self.ReadRouterIPDataIntoMemory(IPtoRouterFilePath)
 		if NeedFormat:
 			self.FormatPingData(PingDataPath,FormatedPingDataPath)
@@ -96,7 +94,7 @@ class Utils:
 			IPtoRouterFilePath="../data/maps/ipToRouters.txt"):
 		if self.ParentDir != '':
 			if IPtoRouterFilePath.startswith('../'):
-				IPtoRouterFilePath = self.ParentDir+IPtoRouterFilePath[2:].replace('/','\\')
+				IPtoRouterFilePath = self.ParentDir+IPtoRouterFilePath[2:]
 		# Reading ip to router data into memory
 		# line number->IP and IP->line numbers
 		self.IpDict = dict()
@@ -144,9 +142,9 @@ class Utils:
 			FormatDataPath='../data/formatpings/'):
 		if self.ParentDir != '':
 			if FormatDataPath.startswith('../'):
-				FormatDataPath = self.ParentDir+FormatDataPath[2:].replace('/','\\')
+				FormatDataPath = self.ParentDir+FormatDataPath[2:]
 			if PingDataPath.startswith('../'):
-				PingDataPath = self.ParentDir+PingDataPath[2:].replace('/','\\')
+				PingDataPath = self.ParentDir+PingDataPath[2:]
 		self.FormatedPingDataPath = FormatDataPath
 		fileNames = os.listdir(PingDataPath)
 		tmpFileNames = []
@@ -238,7 +236,7 @@ class Utils:
 					# write formated data into file
 					outputF.write(str(startTime)+','+str(endTime)+','\
 							+destination+','+str(success)+':')
-					for i in hopList[:-2]:
+					for i in hopList[:-1]:
 						outputF.write(i+',')
 					# this if statement exists because there is ping localhost
 					# exists in the data, and there is no way 127.0.0.1
@@ -279,7 +277,7 @@ class Utils:
 						for j in self.FormatedPingDataDict[i][DestinationIP]:
 							yield j
 					else:
-						pass
+						print self.SourceIDMap[i]
 					#	print(self.SourceIDMap[0])
 					#	print("This Source"+self.SourceIDMap[i]+" has never issued \
 					#			trace-route to destination:"+DestinationIP+" !")
@@ -300,12 +298,6 @@ class Utils:
 		return self.__lookup__(IP,RouterPort,Time)
 		#if IP != '' and RouterPort != '' and Time != '':
 			#tmpResult = self.__lookup__(IP,RouterPort,'')
-
-	def LookUpIP(self,IP):
-		if IP in self.IpDict:
-			return True
-		else:
-			return False
 
 	def __lookup__(self,IP,RouterPort,Time):
 		if Time == '':
@@ -343,4 +335,9 @@ class Utils:
 			result = PointerEmpty[keyTimePairs[minKey]]
 			return result
 
+	def LookUpIP(self,IP):
+		if IP in self.IpDict:
+			return True
+		else:
+			return False
 
