@@ -22,11 +22,10 @@ class ISISFailure:
 	failureMap = dict()
 	failureList = list()
 
-	def __init__(self, filename = "../data/isis_failures/isis_failures_old.txt ../data/isis_failures/isis_fails_2012-11-01--2013_02_07.txt"):
+	def __init__(self, filename = "../data/isis_failures/isis_fails_2012-11-01--2013_02_07.txt"):
 		# Parse the data from file
-		for file in filename.split(" "):
-			parentDir = os.path.dirname(os.getcwd())
-			self.append(parentDir + file[2:])
+		parentDir = os.path.dirname(os.getcwd())
+		self.append(parentDir + filename[2:])
 
 	def __del__(self):
 		# TODO: Nothing
