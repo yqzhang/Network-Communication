@@ -16,6 +16,7 @@ class FailureDetection:
 	failureList = list()
 	util = Utils()
 	iprouter = IPRouter()
+	ipcounter = 0
 
 	# Source ID Map for ping data
 	SourceIDMap = {'ucsb':0,'ucla':1,'ucsd':2,'ucdavis':3,'berkeley':4,'ucsc':5}
@@ -69,8 +70,7 @@ class FailureDetection:
 		
 		if ip_start == None or ip_end == None:
 			#print("No IP addresses assigned T_T")
-			return None
-		
+			self.ipcounter += 1		
 		if ip_start != ip_end:
 			# TODO: We need to figure it out if this happens a lot
 			print("Error! IP address changed during failure.")
@@ -133,6 +133,7 @@ class FailureDetection:
 					file.write("\t\t" + str(dst_ping["AFTER"][i]) + "\n")
 			if ifRouted == True:
 				file.write("Failure: %s:%s -> %s:%s @ %f - %f\n\n"%(router1, port1, router2, port2, failure_start, failure_end))
+		print(self.ipcounter)
 
 fd = FailureDetection()
 fd.lookUp()
