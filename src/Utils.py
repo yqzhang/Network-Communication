@@ -46,6 +46,7 @@ class Utils:
 	def ReadFormatedPingDataIntoMemory(self):
 		formatedFiles = os.listdir(self.FormatedPingDataPath)
 		self.FormatedPingDataDict = dict()
+		self.PindLastHopDict = dict()
 		
 		for i in formatedFiles:
 			for j in self.SourceIDMap:
@@ -65,6 +66,7 @@ class Utils:
 		print("Reading from:",sourceID,filePath)
 		data = open(filePath,'r')
 		self.FormatedPingDataDict[sourceID] = dict()
+		self.PindLastHopDict[sourceID] = dict()
 		line = data.readline()
 		while True:
 			line = data.readline()
@@ -83,10 +85,16 @@ class Utils:
 			tmpTuple.append(sfront[2])
 			tmpTuple.append(True if sfront[3]=='True' else False)
 			tmpTuple.append(sback)
+			lasthopKey = sback[-1]
 			if sfront[2] in self.FormatedPingDataDict[sourceID]:
 				self.FormatedPingDataDict[sourceID][sfront[2]].append(tmpTuple)
 			else:
 				self.FormatedPingDataDict[sourceID][sfront[2]] = [tmpTuple]
+
+			if lasthopKey in self.PindLastHopDict[sourceID]:
+				self.PindLastHopDict[sourceID][lasthopKey].append(tmpTuple)
+			else:
+				self.PindLastHopDict[sourceID][lasthopKey] = [tmpTuple]
 		data.close()
 
 	# read the RouterIP file into memory
@@ -249,9 +257,15 @@ class Utils:
 		dataF.close()
 		outputF.close()
 
+	
 	# use either the names or id for SourceID, an IP string for DestinationIP
 	# ATTENTION: this function is a generator!
-	def FindPing(self,SourceID,DestinationIP):
+	def FindPing(self,SourceID,DestinationIP,KeyByDest= 0):
+		if KeyByDest == 0:
+			findDataSet = self.FormatedPingDataDict
+		else:
+			findDataSet = self.PindLastHopDict
+
 		if SourceID != '':
 			if SourceID not in self.SourceIDMap and SourceID not in\
 			self.SourceIDMap.values():
@@ -259,22 +273,22 @@ class Utils:
 
 			IntID = SourceID if isinstance(SourceID,int) else self.SourceIDMap[SourceID]
 			if  DestinationIP != '':
-				if DestinationIP in self.FormatedPingDataDict[IntID]:
-					for i in self.FormatedPingDataDict[IntID][DestinationIP]:
+				if DestinationIP in findDataSet[IntID]:
+					for i in findDataSet[IntID][DestinationIP]:
 						yield i
 				else:
 					pass
 					print("This Source"+str(SourceID)+" has never issued \
 							trace-route to destination:"+DestinationIP+" !")
 			else:
-				for i in self.FormatedPingDataDict[IntID].values():
+				for i in findDataSet[IntID].values():
 					for j in i:
 						yield j
 		else:
 			if DestinationIP != '':
 				for i in range(6):
-					if DestinationIP in self.FormatedPingDataDict[i]:
-						for j in self.FormatedPingDataDict[i][DestinationIP]:
+					if DestinationIP in findDataSet[i]:
+						for j in findDataSet[i][DestinationIP]:
 							yield j
 					else:
 						print(self.SourceIDMap[i])
@@ -282,7 +296,7 @@ class Utils:
 								trace-route to destination:"+DestinationIP+" !")
 			else:
 				for i in range(6):
-					for j in self.FormatedPingDataDict[i].values():
+					for j in findDataSet[i].values():
 						for k in j:
 							yield k
 
