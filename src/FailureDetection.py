@@ -34,8 +34,8 @@ class FailureDetection:
 		retval["BEFORE"] = dict()
 		retval["DURING"] = dict()
 		retval["AFTER"]  = dict()
-		failure_start = float(failure_start)
-		failure_end = float(failure_end)
+		failure_start = failure_start
+		failure_end = failure_end
 		
 		for i in range(6):
 			ifBefore = True
@@ -62,12 +62,18 @@ class FailureDetection:
 	def lookUpByRouter(self, router, port, failure_start, failure_end):
 		#Convert router:port to IP and call lookUpByIP()
 		ip_start = self.iprouter.query_by_router(router, port, failure_start)
+		if ip_start == None:
+			print("%s,%s,%f,%f"%(router,port,failure_start,failure_end))
+			
 		ip_end = self.iprouter.query_by_router(router, port, failure_end)
 		if ip_start != ip_end:
 			# TODO: We need to figure it out if this happens a lot
 			print("Error! IP address changed during failure.")
 			return None
 		else:
+			#print(ip_start)
+			#print(failure_start)
+			#print(failure_end)
 			return self.lookUpByIP(ip_start, failure_start, failure_end)
 
 	def lookUp(self):
@@ -77,8 +83,8 @@ class FailureDetection:
 			port1 = fail[1]
 			router2 = fail[2]
 			port2 = fail[3]
-			failure_start = fail[4]
-			failure_end = fail[5]
+			failure_start = float(fail[4])
+			failure_end = float(fail[5])
 			# Format: router1, port1, router2, port2, failure_start, failure_end
 			src_ping = self.lookUpByRouter(router1, port1, failure_start, failure_end)
 			dst_ping = self.lookUpByRouter(router2, port2, failure_start, failure_end)

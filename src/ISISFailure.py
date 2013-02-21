@@ -8,8 +8,8 @@ import os
 class Failure:
 	router = ""
 	port = ""
-	failure_start = ""
-	failure_end = ""
+	failure_start = 0.0
+	failure_end = 0.0
 
 	def __init__(self, router, port, failure_start, failure_end):
 		self.router = router
@@ -37,10 +37,11 @@ class ISISFailure:
 		file = open(filename)
 		count = 0
 		for line in file:
+			line = line.strip()
 			if line[0] != "#":
 				count += 1
-				data = line[:-1].split(",")
-				self.insert(data[0], data[1], data[2], data[3], data[4], data[5])
+				data = line.split(",")
+				self.insert(data[0], data[1], data[2], data[3], float(data[4]), float(data[5]))
 		self.sort()
 		print("%d lines inserted from file %s. [output from ISISFailure.py]"%(count, filename))
 

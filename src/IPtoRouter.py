@@ -8,17 +8,17 @@ import os
 class Router:
 	router = ""
 	port = ""
-	valid_till = ""
+	valid_till = 0.0
 	
 	def __init__(self, router, port, valid_till):
 		self.router = router
 		self.port = port
-		self.valid_till = int(valid_till)
+		self.valid_till = valid_till
 	
 # Describe the IP addresses
 class IP:
 	IP = ""
-	valid_till = ""
+	valid_till = 0.0
 	
 	def __init__(self, IP, valid_till):
 		self.IP = IP
@@ -43,10 +43,11 @@ class IPRouter:
 		file = open(filename)
 		count = 0
 		for line in file:
+			line = line.strip()
 			if line[0] != '#':
 				count += 1
-				data = line[:-1].split(",")
-				self.insert(data[0], data[1], data[2], data[3])
+				data = line.split(",")
+				self.insert(data[0], data[1], data[2], float(data[3]))
 		self.sort()
 		print("%d lines inserted from file %s. [output from IPtoRouter.py]"%(count, filename))
 	
@@ -106,6 +107,6 @@ class IPRouter:
 		
 # For test
 # r = IPRouter("C:\\Users\\Del\\Desktop\\ipToRouters.txt")
-# r = IPRouter()
+r = IPRouter()
 # print(r.query_by_ip("137.164.80.1", 253402300797).router)
 # print(r.query_by_router("cyp-6509-msfc", "Vlan851", 253402300797))
