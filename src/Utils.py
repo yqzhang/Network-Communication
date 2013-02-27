@@ -239,8 +239,12 @@ class Utils:
 						if self.LookUpIP(hopList[-1]):
 							destRouterStart = self.LookUp(destination,'',startTime)
 							destRouterEnd = self.LookUp(hopList[-1],'',endTime)
-							if destRouterEnd.split(',')[0] == destRouterStart.split(',')[0]:
+							if destRouterEnd == None or destRouterStart == None:
+								pass
+							elif destRouterEnd.split(',')[0] == destRouterStart.split(',')[0]:
 								success = True
+							else:
+								pass
 					# write formated data into file
 					outputF.write(str(startTime)+','+str(endTime)+','\
 							+destination+','+str(success)+':')
