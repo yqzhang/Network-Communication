@@ -20,16 +20,20 @@ test = Utils(FormatedPingDataPath='../data/formatpings/')
 
 # this next line must be done in order to execute the line after it.
 test.ReadFormatedPingDataIntoMemory()
+
 # Attention!!! the test.FindPing function is a generato!
 # find ip data from ucsd to ip 137.164.16.21
-for i in test.FindPing('','137.164.47.120',KeyByDest = 1):
-	print i
+#for i in test.FindPing('','137.164.47.120',KeyByDest = 1):
+	#print i
+
 #find ip data from any where to 137.164.16.21
 #for i in test.FindPing('','137.164.16.21'):
 	#print i
+
 # find ip data from ucsb to any where
 #for i in test.FindPing('ucsb',''):
 	#print i
+
 # find ip data from anywhere to anywhere
 #for i in test.FindPing('',''):
 	#print i
@@ -37,6 +41,7 @@ for i in test.FindPing('','137.164.47.120',KeyByDest = 1):
 #print test.LookUp('137.164.16.1','lax-dc2,Loopback1','')
 #print test.LookUp('137.164.16.21','',1351875873)
 #print test.LookUp('137.164.47.159','',1351875915)
+#print test.LookUp('137.164.16.46', '', 1351869317.0)
 #print test.LookUp('','lax-ts-1-mgmt,FastEthernet0/0.10',253402300798)
 #testip = test.LookUp('','sa-cc-1,GigabitEthernet0/1',1353318771.0)
 #print testip

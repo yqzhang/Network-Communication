@@ -345,9 +345,13 @@ class Utils:
 
 			# find out the time stamp that is closest to the query time
 			# which should be the one we are looking for
-			minKey = min(keyTimePairs.keys())
-			result = PointerEmpty[keyTimePairs[minKey]]
-			return result
+			if len(keyTimePairs) == 0:
+				print "Warning: No such information in data!"
+				return None
+			else:
+				minKey = min(keyTimePairs.keys())
+				result = PointerEmpty[keyTimePairs[minKey]]
+				return result
 
 	def LookUpIP(self,IP):
 		if IP in self.IpDict:
