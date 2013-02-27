@@ -14,8 +14,8 @@ from Utils import Utils
 # do not try to format the original ping data again, just use the ones I sent
 # you, becase the original ping data has some weird things that did not follow
 # the format of the data, which can not be correctly formated.
-#test = Utils(NeedFormat = True)
-test = Utils(FormatedPingDataPath='../data/formatpings/')
+test = Utils(NeedFormat = True)
+#test = Utils(FormatedPingDataPath='../data/formatpings/')
 
 
 # this next line must be done in order to execute the line after it.
@@ -23,8 +23,8 @@ test.ReadFormatedPingDataIntoMemory()
 
 # Attention!!! the test.FindPing function is a generato!
 # find ip data from ucsd to ip 137.164.16.21
-#for i in test.FindPing('','137.164.47.120',KeyByDest = 1):
-	#print i
+for i in test.FindPing('','137.164.47.120',KeyByDest = 1):
+	print i
 
 #find ip data from any where to 137.164.16.21
 #for i in test.FindPing('','137.164.16.21'):
