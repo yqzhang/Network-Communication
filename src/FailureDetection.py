@@ -32,31 +32,29 @@ class FailureDetection:
 		# Look up the ping data from Utils.py
 		# Search by IP address
 		retval = dict()
-		retval["BEFORE"] = dict()
-		retval["DURING"] = dict()
-		retval["AFTER"]  = dict()
 		
 		for i in range(6):
 			ifBefore = True
 			preData = None
-			retval["BEFORE"][i] = None
-			retval["DURING"][i] = None
-			retval["AFTER"][i]  = None
+			retval[i] = list()
 			
 			# Search by the last hop
 			for data in self.util.FindPing(i, IP, 1):
 				if data[1] < failure_start:
 					# Before
 					preData = data
-				elif data[0] > failure_start and ifBefore == True:
+				elif data[0] > failure_start and data[0] < (failure_end + 30.0) and ifBefore == True:
 					# During
-					retval["BEFORE"][i] = preData
-					retval["DURING"][i] = data
+					if preData != None:
+						retval[i].append(preData)
+					retval[i].append(data)
 					ifBefore = False
-				elif data[0] > failure_end:
+				elif data[0] > (failure_end + 30.0):
 					# After
-					retval["AFTER"][i] = data
 					break
+				else:
+					# During
+					retval[i].append(data)
 
 		return retval
 
@@ -81,9 +79,39 @@ class FailureDetection:
 			#print(failure_end)
 			return self.lookUpByIP(ip_start, failure_start, failure_end)
 
+	def diff(self, list_1, list_2):
+		if len(list_1) != len(list_2):
+			return True
+		else:
+			i = 0
+			length = len(list_1)
+			while i < length:
+				if list_1[i] != list_2[i]:
+					return True
+				i += 1
+			return False
+	
+	def removeAll_list(self, l, item):
+		while item in l:
+			l.remove(item)
+	
+	def diffWithStars(self, list_1, list_2):
+		self.removeAll_list(list_1, "* *")
+		self.removeAll_list(list_2, "* *")
+		return self.diff(list_1, list_2)
+	
+	def ifChanged(self, ping_list):
+		length = len(ping_list)
+		#print("length: %d"%length)
+		for i in range(length - 1):
+			if self.diff(ping_list[i][4], ping_list[i + 1][4]) == True:
+				return True
+		else:
+			return False
+			
 	def lookUp(self):
-		# Output file "route_change.txt"
-		file = open("route_change.txt", "w")
+		# Output file "route_change.xml"
+		file = open("route_change.xml", "w")
 	
 		# Traverse the failure list and look them up
 		for fail in self.failureList:
@@ -97,42 +125,34 @@ class FailureDetection:
 			src_ping = self.lookUpByRouter(router1, port1, failure_start, failure_end)
 			dst_ping = self.lookUpByRouter(router2, port2, failure_start, failure_end)
 			
+			output_buffer = "<Failure>\n\t<Source>" + router1 + ":" + port1 + "</source>\n"
+			output_buffer += "\t<destination>" + router2 + ":" + port2 + "</destination>\n"
+			output_buffer += "\t<start>" + str(failure_start) + "</start>\n"
+			output_buffer += "\t<end>" + str(failure_end) + "</end>\n"
+			
 			if src_ping == None and dst_ping == None:
 				continue
-			
+
 			ifRouted = False
 			for i in range(6):
-				if src_ping == None:
-					pass
-				elif src_ping["BEFORE"][i] != None:
+				output_buffer += "\t<source id=" + str(i) + ">\n"
+				if src_ping != None and src_ping[i] != None and self.ifChanged(src_ping[i]) == True:
 					ifRouted = True
-					file.write("Trace Router from node %d to source:\n"%i)
-					# Before failure
-					file.write("\tBefore failure:\n")
-					file.write("\t\t" + str(src_ping["BEFORE"][i]) + "\n")
-					# During failure
-					file.write("\tDuring failure:\n")
-					file.write("\t\t" + str(src_ping["DURING"][i]) + "\n")
-					# After failure
-					file.write("\tAfter failure:\n")
-					file.write("\t\t" + str(src_ping["AFTER"][i]) + "\n")
+					output_buffer += "\t\t<to=source>\n"
+					for ping in src_ping[i]:
+						output_buffer += "\t\t\t<ping>" + str(ping) + "</ping>\n"
+					output_buffer += "\t\t</to>\n"
 					
-				if dst_ping == None:
-					pass
-				elif dst_ping["BEFORE"][i] != None:
+				if dst_ping != None and dst_ping[i] != None and self.ifChanged(dst_ping[i]) == True:
 					ifRouted = True
-					file.write("Trace Router from node %d to destination:"%i)
-					# Before failure
-					file.write("\tBefore failure:\n")
-					file.write("\t\t" + str(dst_ping["BEFORE"][i]) + "\n")
-					# During failure
-					file.write("\tDuring failure:\n")
-					file.write("\t\t" + str(dst_ping["DURING"][i]) + "\n")
-					# After failure
-					file.write("\tAfter failure:\n")
-					file.write("\t\t" + str(dst_ping["AFTER"][i]) + "\n")
+					output_buffer += "\t\t<to=destination>\n"
+					for ping in dst_ping[i]:
+						output_buffer += "\t\t\t<ping>" + str(ping) + "</ping>\n"
+					output_buffer += "\t\t</to>\n"
+				output_buffer += "\t</source id=" + str(i) + ">\n"
+			output_buffer += "</Failure>\n"
 			if ifRouted == True:
-				file.write("Failure: %s:%s -> %s:%s @ %f - %f\n\n"%(router1, port1, router2, port2, failure_start, failure_end))
+				file.write(output_buffer)
 		print(self.ipcounter)
 
 fd = FailureDetection()
