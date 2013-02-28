@@ -105,7 +105,7 @@ class FailureDetection:
 		length = len(ping_list)
 		#print("length: %d"%length)
 		for i in range(length - 1):
-			if self.diff(ping_list[i][4], ping_list[i + 1][4]) == True:
+			if self.diffWithStars(ping_list[i][4], ping_list[i + 1][4]) == True:
 				return True
 		else:
 			return False
@@ -120,11 +120,15 @@ class FailureDetection:
 		map_count = 0
 		no_ip_count = 0
 		non_reachable_count = 0
+		question_count = 0
+		both_count = 0
 
 		# Traverse the failure list and look them up
 		for fail in self.failureList:
 			# Statistics
 			failure_count += 1
+			if fail[1] == "??" or fail[3] == "??":
+				question_count += 1
 		
 			router1 = fail[0]
 			port1 = fail[1]
@@ -147,10 +151,13 @@ class FailureDetection:
 
 			ifRouted = False
 			ifReachable = True
+			ifSrc = False
+			ifDes = False
 			for i in range(6):
 				output_buffer += "\t<source id=\"" + str(i) + "\">\n"
 				if src_ping != None and src_ping[i] != None and self.ifChanged(src_ping[i]) == True:
 					ifRouted = True
+					ifSrc = True
 					output_buffer += "\t\t<to=source>\n"
 					for ping in src_ping[i]:
 						if ping[0] < failure_start:
@@ -165,6 +172,7 @@ class FailureDetection:
 
 				if dst_ping != None and dst_ping[i] != None and self.ifChanged(dst_ping[i]) == True:
 					ifRouted = True
+					ifDes = True
 					output_buffer += "\t\t<to=destination>\n"
 					for ping in dst_ping[i]:
 						if ping[0] < failure_start:
@@ -183,12 +191,16 @@ class FailureDetection:
 			if ifRouted == True:
 				map_count += 1
 				file.write(output_buffer)
+			if ifSrc == True and ifDes == True:
+				both_count += 1
 		# Statistics
 		print("------------------------------STATISTICS---------------------------------")
 		print("Total failure: %d" %failure_count)
 		print("Mapped failure count: %d" %map_count)
 		print("No IP address: %d" %no_ip_count)
 		print("Caused inreachable: %d" %non_reachable_count)
+		print("Question port: %d" %question_count)
+		print("Both end nodes have been pinged: %d" %both_count)
 
 fd = FailureDetection()
 fd.lookUp()
