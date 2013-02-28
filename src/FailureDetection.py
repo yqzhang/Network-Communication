@@ -135,19 +135,29 @@ class FailureDetection:
 
 			ifRouted = False
 			for i in range(6):
-				output_buffer += "\t<source id=" + str(i) + ">\n"
+				output_buffer += "\t<source id=\"" + str(i) + "\">\n"
 				if src_ping != None and src_ping[i] != None and self.ifChanged(src_ping[i]) == True:
 					ifRouted = True
 					output_buffer += "\t\t<to=source>\n"
 					for ping in src_ping[i]:
-						output_buffer += "\t\t\t<ping>" + str(ping) + "</ping>\n"
+						if ping[0] < failure_start:
+							output_buffer += "\t\t\t<before>" + str(ping[3]) + ", " + str(ping[4]) + "</before>\n"
+						elif ping[0] < failure_end:
+							output_buffer += "\t\t\t<during>" + str(ping[3]) + ", " + str(ping[4]) + "</during>\n"
+						else:
+							output_buffer += "\t\t\t<after>" + str(ping[3]) + ", " + str(ping[4]) + "</after>\n"
 					output_buffer += "\t\t</to>\n"
 
 				if dst_ping != None and dst_ping[i] != None and self.ifChanged(dst_ping[i]) == True:
 					ifRouted = True
 					output_buffer += "\t\t<to=destination>\n"
 					for ping in dst_ping[i]:
-						output_buffer += "\t\t\t<ping>" + str(ping) + "</ping>\n"
+						if ping[0] < failure_start:
+							output_buffer += "\t\t\t<before>" + str(ping[3]) + ", " + str(ping[4]) + "</before>\n"
+						elif ping[0] < failure_end:
+							output_buffer += "\t\t\t<during>" + str(ping[3]) + ", " + str(ping[4]) + "</during>\n"
+						else:
+							output_buffer += "\t\t\t<after>" + str(ping[3]) + ", " + str(ping[4]) + "</during>\n"
 					output_buffer += "\t\t</to>\n"
 				output_buffer += "\t</source>\n"
 			output_buffer += "</Failure>\n"
