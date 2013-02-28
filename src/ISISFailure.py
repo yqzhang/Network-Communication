@@ -110,7 +110,7 @@ class ISISFailure:
 
 
 # For test
-f = ISISFailure()
+# f = ISISFailure()
 # failures = f.query_by_router_port("lax-dc2", "GigabitEthernet4/0/7")
 # for ite in failures:
 #	print("%s %s %d %d" % (ite.router, ite.port, ite.failure_start, ite.failure_end))

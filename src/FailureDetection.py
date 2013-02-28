@@ -49,7 +49,7 @@ class FailureDetection:
 						retval[i].append(preData)
 					retval[i].append(data)
 					ifBefore = False
-				elif data[0] > (failure_end + 30.0):
+				elif data[0] > (failure_end + 60.0):
 					# After
 					break
 				else:
@@ -69,7 +69,8 @@ class FailureDetection:
 		if ip_start == None or ip_end == None:
 			#print("No IP addresses assigned T_T")
 			self.ipcounter += 1
-		if ip_start != ip_end:
+			return None
+		elif ip_start != ip_end:
 			# TODO: We need to figure it out if this happens a lot
 			print("Error! IP address changed during failure.")
 			return None
@@ -111,10 +112,20 @@ class FailureDetection:
 
 	def lookUp(self):
 		# Output file "route_change.xml"
+		# Output in xml format
 		file = open("route_change.xml", "w")
+		
+		# Statistics
+		failure_count = 0
+		map_count = 0
+		no_ip_count = 0
+		non_reachable_count = 0
 
 		# Traverse the failure list and look them up
 		for fail in self.failureList:
+			# Statistics
+			failure_count += 1
+		
 			router1 = fail[0]
 			port1 = fail[1]
 			router2 = fail[2]
@@ -131,9 +142,11 @@ class FailureDetection:
 			output_buffer += "\t<end>" + str(failure_end) + "</end>\n"
 
 			if src_ping == None and dst_ping == None:
+				no_ip_count += 1
 				continue
 
 			ifRouted = False
+			ifReachable = True
 			for i in range(6):
 				output_buffer += "\t<source id=\"" + str(i) + "\">\n"
 				if src_ping != None and src_ping[i] != None and self.ifChanged(src_ping[i]) == True:
@@ -146,6 +159,8 @@ class FailureDetection:
 							output_buffer += "\t\t\t<during>" + str(ping[3]) + ", " + str(ping[4]) + "</during>\n"
 						else:
 							output_buffer += "\t\t\t<after>" + str(ping[3]) + ", " + str(ping[4]) + "</after>\n"
+						if ping[3] == False:
+							ifReachable = False
 					output_buffer += "\t\t</to>\n"
 
 				if dst_ping != None and dst_ping[i] != None and self.ifChanged(dst_ping[i]) == True:
@@ -157,13 +172,23 @@ class FailureDetection:
 						elif ping[0] < failure_end:
 							output_buffer += "\t\t\t<during>" + str(ping[3]) + ", " + str(ping[4]) + "</during>\n"
 						else:
-							output_buffer += "\t\t\t<after>" + str(ping[3]) + ", " + str(ping[4]) + "</during>\n"
+							output_buffer += "\t\t\t<after>" + str(ping[3]) + ", " + str(ping[4]) + "</after>\n"
+						if ping[3] == False:
+							ifReachable = False
 					output_buffer += "\t\t</to>\n"
 				output_buffer += "\t</source>\n"
 			output_buffer += "</Failure>\n"
+			if ifReachable == False:
+				non_reachable_count += 1
 			if ifRouted == True:
+				map_count += 1
 				file.write(output_buffer)
-		print(self.ipcounter)
+		# Statistics
+		print("------------------------------STATISTICS---------------------------------")
+		print("Total failure: %d" %failure_count)
+		print("Mapped failure count: %d" %map_count)
+		print("No IP address: %d" %no_ip_count)
+		print("Caused inreachable: %d" %non_reachable_count)
 
 fd = FailureDetection()
 fd.lookUp()
