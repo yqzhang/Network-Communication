@@ -32,12 +32,12 @@ class FailureDetection:
 		# Look up the ping data from Utils.py
 		# Search by IP address
 		retval = dict()
-		
+
 		for i in range(6):
 			ifBefore = True
 			preData = None
 			retval[i] = list()
-			
+
 			# Search by the last hop
 			for data in self.util.FindPing(i, IP, 1):
 				if data[1] < failure_start:
@@ -63,12 +63,12 @@ class FailureDetection:
 		ip_start = self.iprouter.query_by_router(router, port, failure_start)
 		#if ip_start == None:
 		#	print("%s,%s,%f,%f"%(router,port,failure_start,failure_end))
-			
+
 		ip_end = self.iprouter.query_by_router(router, port, failure_end)
-		
+
 		if ip_start == None or ip_end == None:
 			#print("No IP addresses assigned T_T")
-			self.ipcounter += 1		
+			self.ipcounter += 1
 		if ip_start != ip_end:
 			# TODO: We need to figure it out if this happens a lot
 			print("Error! IP address changed during failure.")
@@ -90,16 +90,16 @@ class FailureDetection:
 					return True
 				i += 1
 			return False
-	
+
 	def removeAll_list(self, l, item):
 		while item in l:
 			l.remove(item)
-	
+
 	def diffWithStars(self, list_1, list_2):
 		self.removeAll_list(list_1, "* *")
 		self.removeAll_list(list_2, "* *")
 		return self.diff(list_1, list_2)
-	
+
 	def ifChanged(self, ping_list):
 		length = len(ping_list)
 		#print("length: %d"%length)
@@ -108,11 +108,11 @@ class FailureDetection:
 				return True
 		else:
 			return False
-			
+
 	def lookUp(self):
 		# Output file "route_change.xml"
 		file = open("route_change.xml", "w")
-	
+
 		# Traverse the failure list and look them up
 		for fail in self.failureList:
 			router1 = fail[0]
@@ -124,12 +124,12 @@ class FailureDetection:
 			# Format: router1, port1, router2, port2, failure_start, failure_end
 			src_ping = self.lookUpByRouter(router1, port1, failure_start, failure_end)
 			dst_ping = self.lookUpByRouter(router2, port2, failure_start, failure_end)
-			
+
 			output_buffer = "<Failure>\n\t<Source>" + router1 + ":" + port1 + "</source>\n"
 			output_buffer += "\t<destination>" + router2 + ":" + port2 + "</destination>\n"
 			output_buffer += "\t<start>" + str(failure_start) + "</start>\n"
 			output_buffer += "\t<end>" + str(failure_end) + "</end>\n"
-			
+
 			if src_ping == None and dst_ping == None:
 				continue
 
@@ -142,14 +142,14 @@ class FailureDetection:
 					for ping in src_ping[i]:
 						output_buffer += "\t\t\t<ping>" + str(ping) + "</ping>\n"
 					output_buffer += "\t\t</to>\n"
-					
+
 				if dst_ping != None and dst_ping[i] != None and self.ifChanged(dst_ping[i]) == True:
 					ifRouted = True
 					output_buffer += "\t\t<to=destination>\n"
 					for ping in dst_ping[i]:
 						output_buffer += "\t\t\t<ping>" + str(ping) + "</ping>\n"
 					output_buffer += "\t\t</to>\n"
-				output_buffer += "\t</source id=" + str(i) + ">\n"
+				output_buffer += "\t</source>\n"
 			output_buffer += "</Failure>\n"
 			if ifRouted == True:
 				file.write(output_buffer)
