@@ -28,6 +28,7 @@ class IP:
 class IPRouter:
 	IPtoRouter = dict()
 	RoutertoIP = dict()
+	RoutertoPort = dict()
 
 	def __init__(self, filename = "../data/maps/ipToRouters.txt"):
 		# Parse the data from file
@@ -58,6 +59,10 @@ class IPRouter:
 		
 		for key, value in self.RoutertoIP.items():
 			value = sorted(value, key = lambda ip: ip.valid_till)
+		
+		for key, value in self.RoutertoPort.items():
+			for k, v in value.items():
+				v = sorted(v, key = lambda ip: ip.valid_till)
 	
 	def insert(self, ip_address, router, port, valid_till):
 		# Insert data into the table
@@ -72,6 +77,17 @@ class IPRouter:
 			list.append(IP(ip_address, valid_till))
 		else:
 			self.RoutertoIP[router + ":" + port] = [IP(ip_address, valid_till)]
+		
+		if router in self.RoutertoPort:
+			if port in self.RoutertoPort[router]:
+				self.RoutertoPort[router][port].append(IP(ip_address, valid_till))
+			else:
+				self.RoutertoPort[router][port] = []
+				self.RoutertoPort[router][port].append(IP(ip_address, valid_till))
+		else:
+			self.RoutertoPort[router] = dict()
+			self.RoutertoPort[router][port] = []
+			self.RoutertoPort[router][port].append(IP(ip_address, valid_till))
 		
 	def delete(self, ip_address, router, port, valid_till):
 		# Delete certain data from the table
@@ -104,9 +120,28 @@ class IPRouter:
 				return None
 		else:
 			return None
+	
+	def query_without_port(self, router, time):
+		# Query by router and time without port
+		# Return a list of IP addresses
+		if router in self.RoutertoPort:
+			retval = []
+			for key, value in self.RoutertoPort[router].items():
+				# print(value)
+				for ip in value:
+					if time <= ip.valid_till:
+						retval.append(ip.IP)
+						break
+		else:
+			return None
 		
+		if len(retval) == 0:
+			return None
+		else:
+			return retval
+	
 # For test
 # r = IPRouter("C:\\Users\\Del\\Desktop\\ipToRouters.txt")
 # r = IPRouter()
-# print(r.query_by_ip("137.164.80.1", 253402300797).router)
+# print(r.query_without_port("cyp-6509-msfc", 253402300797))
 # print(r.query_by_router("cyp-6509-msfc", "Vlan851", 253402300797))
