@@ -16,7 +16,6 @@ class FailureDetection:
 	failureList = list()
 	util = Utils()
 	iprouter = IPRouter()
-	ipcounter = 0
 
 	# Source ID Map for ping data
 	SourceIDMap = {'ucsb':0,'ucla':1,'ucsd':2,'ucdavis':3,'berkeley':4,'ucsc':5}
@@ -28,10 +27,17 @@ class FailureDetection:
 		# Initiate Utils
 		self.util.ReadFormatedPingDataIntoMemory()
 
-	def lookUpByIP(self, IP, failure_start, failure_end):
+	def lookUpByIP(self, IP, failure_start, failure_end, destination):
 		# Look up the ping data from Utils.py
 		# Search by IP address
 		retval = dict()
+		
+		# @parameter: destination determines whether to look up for destination or last hop
+		# True for destination, False for last hop
+		if destination == True:
+			query_method = 0
+		else:
+			query_method = 1
 
 		for i in range(6):
 			ifBefore = True
@@ -39,46 +45,45 @@ class FailureDetection:
 			retval[i] = list()
 
 			# Search by the last hop
-			for data in self.util.FindPing(i, IP, 1):
-				if data[1] < failure_start:
-					# Before
-					preData = data
-				elif data[0] > failure_start and data[0] < (failure_end + 30.0) and ifBefore == True:
-					# During
-					if preData != None:
-						retval[i].append(preData)
-					retval[i].append(data)
-					ifBefore = False
-				elif data[0] > (failure_end + 60.0):
-					# After
-					break
-				else:
-					# During
-					retval[i].append(data)
+			for ip in IP:
+				for data in self.util.FindPing(i, ip, query_method):
+					if data[1] < failure_start:
+						# Before
+						preData = data
+					elif data[0] > failure_start and data[0] < (failure_end + 30.0) and ifBefore == True:
+						# During
+						if preData != None:
+							retval[i].append(preData)
+						retval[i].append(data)
+						ifBefore = False
+					elif data[0] > (failure_end + 100.0):
+						# After
+						break
+					else:
+						# During
+						retval[i].append(data)
 
 		return retval
 
-	def lookUpByRouter(self, router, port, failure_start, failure_end):
+	def lookUpByRouter(self, router, port, failure_start, failure_end, ifPort):
+		ip_list = []
 		#Convert router:port to IP and call lookUpByIP()
-		ip_start = self.iprouter.query_by_router(router, port, failure_start)
-		#if ip_start == None:
-		#	print("%s,%s,%f,%f"%(router,port,failure_start,failure_end))
+		if ifPort == True:
+			ip_list.append(self.iprouter.query_by_router(router, port, failure_start))
+		else:
+			ip_list = self.iprouter.query_without_port(router, failure_start)
 
-		ip_end = self.iprouter.query_by_router(router, port, failure_end)
-
-		if ip_start == None or ip_end == None:
+		if ip_list == None:
 			#print("No IP addresses assigned T_T")
-			self.ipcounter += 1
-			return None
-		elif ip_start != ip_end:
-			# TODO: We need to figure it out if this happens a lot
-			print("Error! IP address changed during failure.")
 			return None
 		else:
-			#print(ip_start)
+			#print(ip_list)
 			#print(failure_start)
 			#print(failure_end)
-			return self.lookUpByIP(ip_start, failure_start, failure_end)
+			if ifPort == True:
+				return self.lookUpByIP(ip_list, failure_start, failure_end, False)
+			else:
+				return self.lookUpByIP(ip_list, failure_start, failure_end, True)
 
 	def diff(self, list_1, list_2):
 		if len(list_1) != len(list_2):
@@ -105,7 +110,7 @@ class FailureDetection:
 		length = len(ping_list)
 		#print("length: %d"%length)
 		for i in range(length - 1):
-			if self.diffWithStars(ping_list[i][4], ping_list[i + 1][4]) == True:
+			if self.diff(ping_list[i][4], ping_list[i + 1][4]) == True:
 				return True
 		else:
 			return False
@@ -137,8 +142,8 @@ class FailureDetection:
 			failure_start = float(fail[4])
 			failure_end = float(fail[5])
 			# Format: router1, port1, router2, port2, failure_start, failure_end
-			src_ping = self.lookUpByRouter(router1, port1, failure_start, failure_end)
-			dst_ping = self.lookUpByRouter(router2, port2, failure_start, failure_end)
+			src_ping = self.lookUpByRouter(router1, port1, failure_start, failure_end, False)
+			dst_ping = self.lookUpByRouter(router2, port2, failure_start, failure_end, False)
 
 			output_buffer = "<Failure>\n\t<Source>" + router1 + ":" + port1 + "</source>\n"
 			output_buffer += "\t<destination>" + router2 + ":" + port2 + "</destination>\n"
@@ -161,11 +166,11 @@ class FailureDetection:
 					output_buffer += "\t\t<to=source>\n"
 					for ping in src_ping[i]:
 						if ping[0] < failure_start:
-							output_buffer += "\t\t\t<before>" + str(ping[3]) + ", " + str(ping[4]) + "</before>\n"
+							output_buffer += "\t\t\t<before>" + str(ping[2]) + ", " + str(ping[3]) + ", " + str(ping[4]) + "</before>\n"
 						elif ping[0] < failure_end:
-							output_buffer += "\t\t\t<during>" + str(ping[3]) + ", " + str(ping[4]) + "</during>\n"
+							output_buffer += "\t\t\t<during>" + str(ping[2]) + ", " + str(ping[3]) + ", " + str(ping[4]) + "</during>\n"
 						else:
-							output_buffer += "\t\t\t<after>" + str(ping[3]) + ", " + str(ping[4]) + "</after>\n"
+							output_buffer += "\t\t\t<after>" + str(ping[2]) + ", " + str(ping[3]) + ", " + str(ping[4]) + "</after>\n"
 						if ping[3] == False:
 							ifReachable = False
 					output_buffer += "\t\t</to>\n"
@@ -176,11 +181,11 @@ class FailureDetection:
 					output_buffer += "\t\t<to=destination>\n"
 					for ping in dst_ping[i]:
 						if ping[0] < failure_start:
-							output_buffer += "\t\t\t<before>" + str(ping[3]) + ", " + str(ping[4]) + "</before>\n"
+							output_buffer += "\t\t\t<before>" + str(ping[2]) + ", " + str(ping[3]) + ", " + str(ping[4]) + "</before>\n"
 						elif ping[0] < failure_end:
-							output_buffer += "\t\t\t<during>" + str(ping[3]) + ", " + str(ping[4]) + "</during>\n"
+							output_buffer += "\t\t\t<during>" + str(ping[2]) + ", " + str(ping[3]) + ", " + str(ping[4]) + "</during>\n"
 						else:
-							output_buffer += "\t\t\t<after>" + str(ping[3]) + ", " + str(ping[4]) + "</after>\n"
+							output_buffer += "\t\t\t<after>" + str(ping[2]) + ", " + str(ping[3]) + ", " + str(ping[4]) + "</after>\n"
 						if ping[3] == False:
 							ifReachable = False
 					output_buffer += "\t\t</to>\n"
