@@ -65,9 +65,10 @@ class FailureDetection:
 
 		return retval
 
-	def lookUpByRouter(self, router, port, failure_start, failure_end, ifPort):
+	def lookUpByRouter(self, router, port, failure_start, failure_end, ifPort, ip):
 		ip_list = []
 		#Convert router:port to IP and call lookUpByIP()
+		ip.append(self.iprouter.query_by_router(router, port, failure_start))
 		if ifPort == True:
 			ip_list.append(self.iprouter.query_by_router(router, port, failure_start))
 		else:
@@ -141,12 +142,17 @@ class FailureDetection:
 			port2 = fail[3]
 			failure_start = float(fail[4])
 			failure_end = float(fail[5])
+			
+			src_ip = list()
+			dst_ip = list()
 			# Format: router1, port1, router2, port2, failure_start, failure_end
-			src_ping = self.lookUpByRouter(router1, port1, failure_start, failure_end, False)
-			dst_ping = self.lookUpByRouter(router2, port2, failure_start, failure_end, False)
+			src_ping = self.lookUpByRouter(router1, port1, failure_start, failure_end, False, src_ip)
+			dst_ping = self.lookUpByRouter(router2, port2, failure_start, failure_end, False, dst_ip)
 
 			output_buffer = "<Failure>\n\t<Source>" + router1 + ":" + port1 + "</source>\n"
 			output_buffer += "\t<destination>" + router2 + ":" + port2 + "</destination>\n"
+			output_buffer += "\t<src_ip>" + str(src_ip[0]) + "</src_ip>\n"
+			output_buffer += "\t<dst_ip>" + str(dst_ip[0]) + "</dst_ip>\n"
 			output_buffer += "\t<start>" + str(failure_start) + "</start>\n"
 			output_buffer += "\t<end>" + str(failure_end) + "</end>\n"
 
