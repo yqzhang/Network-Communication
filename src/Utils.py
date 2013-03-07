@@ -319,15 +319,22 @@ class Utils:
 
 	def __lookup__(self,IP,RouterPort,Time):
 		if Time == '':
+			result = []
+			if RouterPort == '':
+				for i in self.IpDict[IP]:
+					result.append([self.RouterPortDict[i],self.TimeDict[i]])
+				return result
+
 			# by intersect the lines from IP and RouterPort
 			# we can get the time stamps where this ip assignment
 			# is valid
 			IPLines = self.IpDict[IP]
 			RPLines = self.RouterPortDict[RouterPort]
 			resultLines = set(IPLines).intersection(RPLines)
-			result = []
 			for i in resultLines:
 				result.append(self.TimeDict[i])
+
+
 
 			# some duplicate data are found in the data set, this
 			# is simply to make the result prettier
