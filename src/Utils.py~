@@ -256,7 +256,7 @@ class Utils:
 						outputF.write(hopList[-1])
 					outputF.write('\n')
 				else:
-					print "Destination",destination,"not in CENIC, ignore"
+					print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 			else:
 				line = dataF.readline()
 		dataF.close()
