@@ -358,7 +358,7 @@ class Utils:
 			# find out the time stamp that is closest to the query time
 			# which should be the one we are looking for
 			if len(keyTimePairs) == 0:
-				print("Warning: No such information in data!")
+				#print("Warning: No such information in data!")
 				return None
 			else:
 				minKey = min(keyTimePairs.keys())
