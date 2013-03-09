@@ -42,19 +42,18 @@ def nonExistentLinkAnalysis():
 	dataFile.close()
 
 	print "=================================================="
-	test = Utils()
-	test.ReadFormatedPingDataIntoMemory()
-	linkmap = LinkMap.LinkMap("../data/maps/links_new_format.txt")
-	for i in countLink:
+	#test = Utils()
+	#test.ReadFormatedPingDataIntoMemory()
+	#linkmap = LinkMap.LinkMap("../data/maps/links_new_format.txt")
+	#for i in countLink:
 #TODO: 
 #1.Write code here to get the router information of the ip of link i,
 # use that to look up in the link map to see if the router mentioned above
 # exists, how long did they last, is it possible that they are just missed?
-		
 
-		links = linkmap.getLinks2(i)
-		for j in links.items():
-			print j
-		print "--------------------------------------------"
+		#links = linkmap.getLinks2(i)
+		#for j in links.items():
+			#print j
+		#print "--------------------------------------------"
 	
 nonExistentLinkAnalysis()
