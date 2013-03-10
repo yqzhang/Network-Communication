@@ -12,7 +12,7 @@ class PingFailureVerifier:
         self.isis_path = '../data/isis_failures/isis_fails_2012-11-01--2013_02_07.txt'
         self.util = Utils.Utils()
         self.util.ReadFormatedPingDataIntoMemory()
-        self.link_map = LinkMap.LinkMap("../data/maps/links_new_format.txt")
+        self.link_map = LinkMap.LinkMap()
         self.isis_failure = ISISFailure.ISISFailure()
 
     def loopDetect(self, record):
@@ -359,5 +359,8 @@ class PingFailureVerifier:
         result.append([self.util.LookUp(hop.strip(), '', record[0]).strip() for hop in record[4] if (not '* *' in hop) and (not self.util.LookUp(hop.strip(), '', record[0]) == None) ])
         return [str(r) for r in result]
 
-#p = PingFailureVerifier()
-#print p.getNonExistentLinks()
+p = PingFailureVerifier()
+##with open("test2.out", "w") as f:
+##    for item in p.getNonExistentLinks():
+##        f.write(str(item) + "\r")
+p.test_2()
