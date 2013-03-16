@@ -22,10 +22,12 @@ def nonExistentLinkAnalysis():
 	countLink = set()
 	countLinkNotLast = set()
 	routeCount = set()
-	for i in p.getNonExistentLinks():
+	for i in p.weightFilter(p.getNonExistentLinks()):
 		route = i[4]
-		link = i[5][0]
 		countDest.add(i[2])
+		#TODO: loop over all missing links in case there are multiple 
+		#missing links in a single route
+		link = i[5][0]
 		time = (float(i[0])+float(i[1]))/2
 		linkroute1 = test.LookUp(link[0],'',time)
 		linkroute2 = test.LookUp(link[1],'',time)
@@ -37,7 +39,10 @@ def nonExistentLinkAnalysis():
 			s1 = linkroute1.split(',')
 			s2 = linkroute2.split(',')
 			linkInfo = linkmapold.getValidTime(s1[0],s1[1],s2[0],s2[1])
-			logFile.write(str(linkInfo)+"\n\n")
+			logFile.write(str(linkInfo)+"\n")
+			logFile.write(link[0]+","+link[1]+"\n")
+			logFile.write(str(test.ReverseLookup(float(i[0]),float(i[1]),i[2]))+"\n")
+			logFile.write("====================================================================\n")
 			routeCount.add(linkroute1+":"+linkroute2)
 		countLink.add(link)
 		for j in range(len(link)):

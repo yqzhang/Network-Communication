@@ -195,7 +195,6 @@ class Utils:
 			reverseF.write(str(i[1])+"\n")
 		reverseF.close()
 
-
 	# Data Format:
 	# <start time>,<end time>,<destination>,<fail or success>:[<hops>,..]
 	def __ProcessPingData__(self,dataFilePath,outputFilePath):
@@ -314,8 +313,9 @@ class Utils:
 		outputF.close()
 
 	def ReverseLookup(self,startTime,endTime,Dest):
+		'''Given start and end time with the destination IP, return the
+		trace-route data position'''
 		return self.ReverseLookupDict[(startTime,endTime,Dest)]
-
 	
 	# use either the names or id for SourceID, an IP string for DestinationIP
 	# ATTENTION: this function is a generator!
@@ -425,4 +425,3 @@ class Utils:
 		else:
 			return False
 
-#TODO: add reverse lookup from formatpings to original data
