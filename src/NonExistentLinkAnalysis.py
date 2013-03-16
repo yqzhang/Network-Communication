@@ -45,6 +45,7 @@ def nonExistentLinkAnalysis():
 				logFile.write("====================================================================\n")
 				routeCount.add(linkroute1+":"+linkroute2)
 			countLink.add(link)
+
 			for j in range(len(link)):
 				if route[-(j+1)] != link[-(j+1)]:
 					count.add(i[2])
