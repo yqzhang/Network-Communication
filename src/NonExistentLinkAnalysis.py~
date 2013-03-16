@@ -26,6 +26,8 @@ def nonExistentLinkAnalysis():
 	#for i in p.getNonExistentLinks():
 		route = i[4]
 		countDest.add(i[2])
+		#TODO: loop over all missing links in case there are multiple 
+		#missing links in a single route
 		links = i[5]
 		for link in links:
 			time = (float(i[0])+float(i[1]))/2
