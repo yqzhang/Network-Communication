@@ -7,9 +7,6 @@ None
 oak-dc2,GigabitEthernet1/0/0	per-cc-1,GigabitEthernet0/1
 None
 
-tus-agg1,GigabitEthernet7/0/0	cu-gw,GigabitEthernet0/1.2043
-None
-
 lax-agg1,GigabitEthernet6/0/0	sbar-cc,FastEthernet0/1
 None
 
@@ -101,9 +98,6 @@ frg-agg1,GigabitEthernet7/0/0	fre-agg2,GigabitEthernet2/0/0
 None
 
 tri-core1,TenGigE0/0/0/3	cho-usd,GigabitEthernet0/1
-None
-
-tus-agg1,GigabitEthernet5/0/0	cu-gw,GigabitEthernet0/1.2043
 None
 
 svl-core1,TenGigE0/2/0/3	sanmateo-cc-1,GigabitEthernet0/2
