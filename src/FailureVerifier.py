@@ -242,6 +242,22 @@ class PingFailureVerifier:
                 record.append(has_nonexistent_link)
                 result.append(record)
         return result
+
+    def weightFilter(self, records):
+        new_records = []
+        for rec in records:
+            links = rec.pop()
+            result = []
+            for item in links:
+                router1 = self.util.LookUp(item[0], '', rec[0]).strip().split(',')[0]
+                router2 = self.util.LookUp(item[1], '', rec[0]).strip().split(',')[0]
+##              print router1, router2, self.link_map.getWeight(router1, router2)
+                if self.link_map.getWeight(router1, router2) == 0:
+                    result.append(item)
+            if len(result) > 0:
+                rec.append(result)
+                new_records.append(rec)
+        return new_records
     
     
     def test(self):
@@ -360,7 +376,7 @@ class PingFailureVerifier:
         return [str(r) for r in result]
 
 p = PingFailureVerifier()
-##with open("test2.out", "w") as f:
-##    for item in p.getNonExistentLinks():
-##        f.write(str(item) + "\r")
-p.test_2()
+r = p.getNonExistentLinks()
+print len(r)
+r1 = p.weightFilter(r)
+print len(r1)
