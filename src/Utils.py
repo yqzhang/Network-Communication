@@ -10,6 +10,7 @@ class Utils:
 	SourceIDMap = {'ucsb':0,'ucla':1,'ucsd':2,'ucdavis':3,'berkeley':4,'ucsc':5}
 	SourceNames = ['ucsb','ucla','ucsd','ucdavis','berkeley','ucsc']
 	ParentDir = ''
+	ReverseLookupDict = dict()
 
 	# You have to provide at least <IPtoRouterFilePath> and <PingDataPath>, if the
 	# ping data are already formatted, you can fill in the <FormatDataPath> so
@@ -43,12 +44,32 @@ class Utils:
 		else:
 			self.FormatedPingDataPath = FormatedPingDataPath
 
+	def ReadReverseLookupIntoMemory(self,rfPath = '../data/ReverseLookupData.txt'):
+		if len(self.ReverseLookupDict) == 0:
+			ReverseDataPath = rfPath
+			rF = open(ReverseDataPath,'r')
+			line = rF.readline()
+			while line != '':
+				s = line.split(':')
+				s1 = s[0].split(',')
+				rKey = (float(s1[0]),float(s1[1]),s1[2])
+				rData = (s[1])
+				self.ReverseLookupDict[rKey]=[rData]
+				line = rF.readline()
+			rF.close()
+		else:
+			print "Data already read"
+
 	# has to be done in order to execute FindPing()
 	def ReadFormatedPingDataIntoMemory(self):
+
+		self.ReadReverseLookupIntoMemory()
+
 		formatedFiles = os.listdir(self.FormatedPingDataPath)
 		self.FormatedPingDataDict = dict()
 		self.PindLastHopDict = dict()
 		
+		# a buggy place
 		for i in formatedFiles:
 			for j in self.SourceNames:
 				if j in i:
@@ -166,22 +187,38 @@ class Utils:
 				if j.startswith(i):
 					print(i,j)
 					self.__ProcessPingData__(PingDataPath+j,FormatDataPath+i)
+		# write reverse look up data into file
+		ReverseDataPath = '../data/ReverseLookupData.txt'
+		reverseF = open(ReverseDataPath,'w')
+		for i in self.ReverseLookupDict.items():
+			reverseF.write(str(i[0][0])+","+str(i[0][1])+","+i[0][2]+":")
+			reverseF.write(str(i[1])+"\n")
+		reverseF.close()
+
 
 	# Data Format:
 	# <start time>,<end time>,<destination>,<fail or success>:[<hops>,..]
 	def __ProcessPingData__(self,dataFilePath,outputFilePath):
 		dataF = open(dataFilePath,'r')
 		outputF = open(outputFilePath,'a')
+		sourceName = dataFilePath.split('/')[-1]
+		lineCounter = 0
 		line = dataF.readline()
+		lineCounter += 1
+		dataStarts = 0
 		while line != '':
 			if line.startswith('START'):
+				# mark the begin position of the data
+				dataStarts = lineCounter
 				line = dataF.readline()
 				line = dataF.readline()
+				lineCounter += 2
 				try:
 					# the time cut the digits after point
 					startTime = line[:19]
 					startTime = time.mktime(time.strptime(startTime, '%Y-%m-%d %H:%M:%S'))
 					line = dataF.readline()
+					lineCounter += 1
 					endTime = line[1:20]
 					endTime = time.mktime(time.strptime(endTime, '%Y-%m-%d %H:%M:%S'))
 				except ValueError:
@@ -198,10 +235,12 @@ class Utils:
 					for i in range(100):
 						print(line)
 						line = dataF.readline()
+						lineCounter += 1
 					return 0
 
 				# extract destination
 				line = dataF.readline()
+				lineCounter += 1
 				tmps = line.split(' ')
 				tmpd= tmps[3]
 				destination = tmps[4][1:-2]
@@ -211,10 +250,20 @@ class Utils:
 					round brackets are not matched, in file:'''+dataFilePath)
 					print(line)
 
+				# add to reverse look up dictionary
+				reverseKey = (startTime,endTime,destination)
+				reverseData = (sourceName,dataStarts)
+				if reverseKey in self.ReverseLookupDict:
+					#print "Warning: duplicate reverse key detected"
+					self.ReverseLookupDict[reverseKey].append(reverseData)
+				else:
+					self.ReverseLookupDict[reverseKey] = [reverseData]
+
 				# arrival flag
 				success = False
 				hopList = []
 				line = dataF.readline()
+				lineCounter += 1
 				while not line.startswith('END'):
 					line = line[5:]
 					# this is when empty line or 
@@ -233,6 +282,7 @@ class Utils:
 						else:
 							hopList.append("* *")
 					line = dataF.readline()
+					lineCounter += 1
 				if self.LookUpIP(destination):
 					if len(hopList) >= 1:
 						if self.LookUpIP(hopList[-1]):
@@ -259,8 +309,12 @@ class Utils:
 					print "Destination",destination,"not in CENIC, ignore"
 			else:
 				line = dataF.readline()
+				lineCounter += 1
 		dataF.close()
 		outputF.close()
+
+	def ReverseLookup(self,startTime,endTime,Dest):
+		return self.ReverseLookupDict[(startTime,endTime,Dest)]
 
 	
 	# use either the names or id for SourceID, an IP string for DestinationIP
@@ -371,3 +425,4 @@ class Utils:
 		else:
 			return False
 
+#TODO: add reverse lookup from formatpings to original data
