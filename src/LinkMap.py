@@ -1,8 +1,11 @@
-import heapq
+#!/usr/bin/env python
+# Author: Wangfan Fu
+# Email: wafu@ucsd.edu
+
 import copy
 
 class LinkMap:
-    link_list = {}
+
     def __init__(self, link_path = "../data/maps/links_new_format.txt", weight_path = "../data/maps/link_weights.txt"):
         self.link_list = {}
         num_lines = 0
@@ -31,10 +34,7 @@ class LinkMap:
         val = (time_create, time_destroy)
         if router1 in self.link_list:
             if router2 in self.link_list[router1]:
-                if 'time' in self.link_list[router1][router2]:
-                    self.link_list[router1][router2]['time'].append(val)
-                else:
-                    self.link_list[router1][router2]['time'] = [val]
+                self.link_list[router1][router2]['time'].append(val)
             else:
                 self.link_list[router1][router2] = {'weight': 0, 'time': [val]}
         else:
@@ -52,12 +52,12 @@ class LinkMap:
             self.link_list[router1] = {router2: {'weight': weight, 'time': []}}
 
     def hasLink1(self, router1, router2, timestamp):
-        if router1 in self.link_list and router2 in self.link_list[router1] and 'time' in self.link_list[router1][router2]:
+        if router1 in self.link_list and router2 in self.link_list[router1]:
             timerange_list = self.link_list[router1][router2]['time']
             for timerange in timerange_list:
                 if timestamp > timerange[0] and timestamp < timerange[1]:
                     return True
-        if router2 in self.link_list and router1 in self.link_list[router2] and 'time' in self.link_list[router2][router1]:
+        if router2 in self.link_list and router1 in self.link_list[router2]:
             timerange_list = self.link_list[router2][router1]['time']
             for timerange in timerange_list:
                 if timestamp > timerange[0] and timestamp < timerange[1]:
@@ -65,13 +65,13 @@ class LinkMap:
         return False
 
     def hasLink2(self, router1, router2, time_start, time_end):
-        if router1 in self.link_list and router2 in self.link_list[router1] and 'time' in self.link_list[router1][router2]:
-            timerange_list = self.link_list[router1][router2]
+        if router1 in self.link_list and router2 in self.link_list[router1]:
+            timerange_list = self.link_list[router1][router2]['time']
             for timerange in timerange_list:
                 if time_start > timerange[0] and time_end < timerange[1]:
                     return True
-        if router2 in self.link_list and router1 in self.link_list[router2] and 'time' in self.link_list[router2][router1]:
-            timerange_list = self.link_list[router2][router1]
+        if router2 in self.link_list and router1 in self.link_list[router2]:
+            timerange_list = self.link_list[router2][router1]['time']
             for timerange in timerange_list:
                 if time_start > timerange[0] and time_end < timerange[1]:
                     return True
