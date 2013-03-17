@@ -5,5 +5,5 @@ set grid
 set style data lines
 set format y '%g %%'
 set xlabel 'Recovery time in seconds'
-plot 'failure_time.dat' using 1:($2*100) title 'CDF'
+plot 'failure_time.dat' using 1:2 title 'CDF'
 
