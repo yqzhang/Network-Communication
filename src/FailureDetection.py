@@ -338,14 +338,14 @@ class FailureDetection:
 					count += 1
 					total = access = 0
 					for ping in src_ping[i]:
-						if ping[0] >= failure_start and ping[0] < failure_end:
+						if ping[0] >= failure_start - 30.0 and ping[0] < failure_end + 100.0:
 							total += 1
 							if ping[3] == True:
 								access += 1
 					if access == 0:
 						prob[0] += 1
 					else:
-						prob[int(access / total * 10000)] += 1
+						prob[int(float(access) / float(total * 10000))] += 1
 				if dst_ping != None and dst_ping[i] != None and self.ifChanged(dst_ping[i]) == True:
 					count += 1
 					total = access = 0
@@ -357,9 +357,9 @@ class FailureDetection:
 					if access == 0:
 						prob[0] += 1
 					else:
-						print("access: %d, total: %d" %(access, total))
 						prob[int(float(access) / float(total) * 10000)] += 1
 		accum = 0
+		print(count)
 		for i in range(10001):
 			accum += prob[i]
 			output_buffer += str(i) + "\t" + str(float(accum) / count) + "\n"
