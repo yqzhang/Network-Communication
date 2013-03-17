@@ -36,9 +36,9 @@ class LinkMap:
             if router2 in self.link_list[router1]:
                 self.link_list[router1][router2]['time'].append(val)
             else:
-                self.link_list[router1][router2] = {'weight': 0, 'time': [val]}
+                self.link_list[router1][router2] = {'weight': float('inf'), 'time': [val]}
         else:
-            self.link_list[router1] = {router2: {'weight': 0, 'time': [val]}}
+            self.link_list[router1] = {router2: {'weight': float('inf'), 'time': [val]}}
 
     def addWeight(self, router1, router2, weight):
         if "" == router1 or "" == router2:
@@ -82,7 +82,7 @@ class LinkMap:
         if router in self.link_list:
             for item in self.link_list[router]:
                 if not item in temp_link_list:
-                    temp_link_list[item] = {'time': [], 'weight': 0}
+                    temp_link_list[item] = {'time': [], 'weight': float('inf')}
                 if 'weight' in self.link_list[router][item]:
                     temp_link_list[item]['weight'] = self.link_list[router][item]['weight']
                 if 'time' in self.link_list[router][item]:
@@ -99,15 +99,15 @@ class LinkMap:
         if router1 in self.link_list and router2 in self.link_list[router1] and 'weight' in self.link_list[router1][router2]:
             return self.link_list[router1][router2]['weight']
         else:
-            return 0
+            return float('inf')
 
     def getShortestPath(self, source, dest):
-        shortest_path = {source: float('-inf')}
+        shortest_path = {source: 0}
         rest_nodes = {}
         reachable = {}
         path = {source: [source]}
         for router in self.link_list:
-            rest_nodes[router] = 0
+            rest_nodes[router] = float('inf')
         del rest_nodes[source]
         for router in self.link_list[source]:
             reachable[router] = self.link_list[source][router]['weight']
@@ -147,4 +147,4 @@ p = LinkMap()
 ##            print 'timerange = 0', r1, r2
 ##        elif p.link_list[r1][r2]['weight'] == 0:
 ##            print 'weight = 0', r1, r2
-print p.getShortestPath('lax-core2', 'cj-usd-ASR9001')
+print p.getShortestPath('ful-cc-1', 'tus-agg1')
