@@ -31,19 +31,20 @@ def nonExistentLinkAnalysis():
 			time = (float(i[0])+float(i[1]))/2
 			linkroute1 = test.LookUp(link[0],'',time)
 			linkroute2 = test.LookUp(link[1],'',time)
-			if link[0] == '137.164.46.7' and link[1] == '137.164.35.47':
-				print "Found!!!:"
-				print linkroute1,linkroute2
-			if linkroute1+":"+linkroute2 not in routeCount:
-				logFile.write(linkroute1+"\t"+linkroute2+"\n")
-				s1 = linkroute1.split(',')
-				s2 = linkroute2.split(',')
-				linkInfo = linkmapold.getValidTime(s1[0],s1[1],s2[0],s2[1])
-				#logFile.write(str(linkInfo)+"\n")
-				logFile.write(link[0]+"\t"+link[1]+"\n")
-				logFile.write(str(test.ReverseLookup(float(i[0]),float(i[1]),i[2]))+"\n")
-				logFile.write("====================================================================\n")
-				routeCount.add(linkroute1+":"+linkroute2)
+			#if link[0] == '137.164.46.7' and link[1] == '137.164.35.47':
+				#print "Found!!!:"
+				#print linkroute1,linkroute2
+			#if linkroute1+":"+linkroute2 not in routeCount:
+			logFile.write(linkroute1+"\t"+linkroute2+"\n")
+			s1 = linkroute1.split(',')
+			s2 = linkroute2.split(',')
+			linkInfo = linkmapold.getValidTime(s1[0],s1[1],s2[0],s2[1])
+			#logFile.write(str(linkInfo)+"\n")
+			logFile.write("Time:"+str(i[0])+"\t"+str(i[1])+"\n")
+			logFile.write(link[0]+"\t"+link[1]+"\n")
+			logFile.write(str(test.ReverseLookup(float(i[0]),float(i[1]),i[2]))+"\n")
+			logFile.write("====================================================================\n")
+			routeCount.add(linkroute1+":"+linkroute2)
 			countLink.add(link)
 
 			for j in range(len(link)):
