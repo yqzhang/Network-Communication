@@ -22,19 +22,6 @@ class PingFailureVerifier:
             if hops[i] == '* *':
                 continue
             if hops[i] in path:
-##                length = i - path[hops[i]]
-##                ip1 = hops[len(hops)-2]
-##                ip2 = hops[len(hops)-1]
-##                if ip1 == '* *' or ip2 == '* *':
-##                    print record, ip1, ip2
-##                    continue
-##                router1 = self.util.LookUp(ip1, '', record[0])
-##                router2 = self.util.LookUp(ip2, '', record[0])
-##                if ip1.split('.')[0] == ip2.split('.')[0] and ip1.split('.')[1] == ip2.split('.')[1] and ip1.split('.')[2] == ip2.split('.')[2] and abs(int(ip1.split('.')[3]) - int(ip2.split('.')[3])) == 1:
-##                    continue
-##                if router1.split('-')[0] == router2.split('-')[0]:
-##                    continue
-##                print record, ip1, ip2, router1, router2
                 return i - path[hops[i]]
             else:
                 path[hops[i]] = i
@@ -245,14 +232,18 @@ class PingFailureVerifier:
 
     def weightFilter(self, records):
         new_records = []
+        count = 0
         for rec in records:
             links = rec.pop()
             result = []
             for item in links:
                 router1 = self.util.LookUp(item[0], '', rec[0]).strip().split(',')[0]
                 router2 = self.util.LookUp(item[1], '', rec[0]).strip().split(',')[0]
-##              print router1, router2, self.link_map.getWeight(router1, router2)
-                if self.link_map.getWeight(router1, router2) == 0:
+                if self.link_map.getWeight(router1, router2) < 1000000:
+                    count += 1
+                    print count, router1, router2, self.link_map.getWeight(router1, router2)
+                    continue
+                else:
                     result.append(item)
             if len(result) > 0:
                 rec.append(result)
@@ -315,7 +306,6 @@ class PingFailureVerifier:
         with open("../data/LoopVerification5.out", "w") as loop:
             with open("../data/LinkVerification5.out", "w") as link:
                 for record in self.util.FindPing('',''):
-##                    print record
                     ip1 = record[2]
                     hops = record[4]
                     ip2 = hops[len(hops) - 1].strip()
