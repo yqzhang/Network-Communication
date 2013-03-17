@@ -305,7 +305,7 @@ class FailureDetection:
 			count += 1
 			failure_start = float(fail[4])
 			failure_end = float(fail[5])
-			output_buffer += str(count) + "\t" + str((failure_end - failure_start)/3600) + "\n"
+			output_buffer += str(count) + "\t" + str(failure_end - failure_start) + "\n"
 		plot.write(output_buffer)
 
 fd = FailureDetection()
