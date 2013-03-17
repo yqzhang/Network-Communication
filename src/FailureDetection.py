@@ -295,7 +295,7 @@ class FailureDetection:
 					output_buffer += "\n"
 		plot.write(output_buffer)
 
-	def timePlot(self):
+	def failureRecovery(self):
 		# Output to failure_plot.data
 		plot = open("../plot/failure_time.dat", "w")
 		output_buffer = ""
@@ -315,5 +315,55 @@ class FailureDetection:
 			output_buffer += str(i) + "\t" + str(float(accum) / count) + "\n"
 		plot.write(output_buffer)
 
+	def accessibilityPlot(self):
+		plot = open("../plot/accessibility.dat", "w")
+		output_buffer = ""
+		prob = [0] * 10001
+		count = 0
+		for fail in self.failureList:
+			router1 = fail[0]
+			port1 = fail[1]
+			router2 = fail[2]
+			port2 = fail[3]
+			failure_start = float(fail[4])
+			failure_end = float(fail[5])
+			src_ip = list()
+			dst_ip = list()
+			# Format: router1, port1, router2, port2, failure_start, failure_end
+			src_ping = self.lookUpByRouter(router1, port1, failure_start, failure_end, False, src_ip)
+			dst_ping = self.lookUpByRouter(router2, port2, failure_start, failure_end, False, dst_ip)
+
+			for i in range(6):
+				if src_ping != None and src_ping[i] != None and self.ifChanged(src_ping[i]) == True:
+					count += 1
+					total = access = 0
+					for ping in src_ping[i]:
+						if ping[0] >= failure_start and ping[0] < failure_end:
+							total += 1
+							if ping[3] == True:
+								access += 1
+					if access == 0:
+						prob[0] += 1
+					else:
+						prob[int(access / total * 10000)] += 1
+				if dst_ping != None and dst_ping[i] != None and self.ifChanged(dst_ping[i]) == True:
+					count += 1
+					total = access = 0
+					for ping in dst_ping[i]:
+						if ping[0] >= failure_start and ping[0] < failure_end:
+							total += 1
+							if ping[3] == True:
+								access += 1
+					if access == 0:
+						prob[0] += 1
+					else:
+						print("access: %d, total: %d" %(access, total))
+						prob[int(float(access) / float(total) * 10000)] += 1
+		accum = 0
+		for i in range(10001):
+			accum += prob[i]
+			output_buffer += str(i) + "\t" + str(float(accum) / count) + "\n"
+		plot.write(output_buffer)
+
 fd = FailureDetection()
-fd.timePlot()
+fd.accessibilityPlot()
