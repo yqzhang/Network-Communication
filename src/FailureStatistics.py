@@ -36,17 +36,26 @@ class FailureStatistics:
 			self.failureMap[fail_key].append(temp)
 
 		plot = open("../plot/failure_plot.dat", "w")
+		dis = open("../plot/failure_distribution.dat", "w")
+		prob = [0] * 9512
 		output_buffer = ""
 
 		count = 0
 		for key, value in self.failureMap.items():
 			count += 1
+			prob[len(value)] += 1
 			for fail in value:
 				output_buffer += str(count) + "\t" + str(fail["start"]) + "\n"
 				output_buffer += str(count) + "\t" + str(fail["end"]) + "\n"
 				output_buffer += "\n"
-
 		plot.write(output_buffer)
+
+		accum = 0
+		output_buffer = ""
+		for i in range(9512):
+			accum += prob[i]
+			output_buffer += str(i) + "\t" + str(float(accum) / float(count)) + "\n"
+		dis.write(output_buffer)
 
 fs = FailureStatistics()
 fs.failurePlot()
