@@ -191,15 +191,16 @@ class PingFailureVerifier:
     
     def getLoops(self):
         result = {}
-        with open("../data/LoopVerification5.out", "w") as loop:
-            with open("../data/LinkVerification5.out", "w") as link:
-                for record in self.util.FindPing('',''):                 
-                    has_loop = self.loopDetect(record)                    
-                    if has_loop > 0:
-                        if has_loop in result:
-                            result[has_loop].append(record)
-                        else:
-                            result[has_loop] = [record]
+        count = 0
+        for record in self.util.FindPing('',''):
+            count += 1
+            has_loop = self.loopDetect(record)
+            if has_loop > 0:
+                if has_loop in result:
+                    result[has_loop].append(record)
+                else:
+                    result[has_loop] = [record]
+        print "records, ", count
         return result
 
     def countLoops(self):
@@ -249,7 +250,15 @@ class PingFailureVerifier:
                 rec.append(result)
                 new_records.append(rec)
         return new_records
-    
+
+    def ipToRouter(self, ip, timestamp):
+        if not '* *' == ip:
+            return self.util.LookUp(ip, '', timestamp)
+        else:
+            return None
+        
+    def getPath(self, record):
+        return [ipToRouter(hop, float(record[0])) for hop in record[4]]
     
     def test(self):
         loop_in_isis = 0
@@ -334,9 +343,9 @@ class PingFailureVerifier:
                                 loop_in_isis += 1
                                 loop.write('True\r\n')                                
                             loop.write('    Loop ping: ' + ','.join(record_str) + '\r\n')
-                            loop.write('    Routers: ' + ','.join(self.ipToRouter(record)) + '\r\n')
+                            loop.write('    Routers: ' + ','.join(self.ipToRouter1(record)) + '\r\n')
                             loop.write('    Normal Ping: ' + ','.join([str(p) for p in ping]) + '\r\n')
-                            loop.write('    Routers: ' + ','.join(self.ipToRouter(ping)) + '\r\n')
+                            loop.write('    Routers: ' + ','.join(self.ipToRouter1(ping)) + '\r\n')
 ##                            loop.write('    ' + ','.join([ip1, ip2]) + '\r\n')
                             if len(result) > 0:
                                 loop.write('    ISIS failure coincident:\r\n')
@@ -350,14 +359,14 @@ class PingFailureVerifier:
                             print "no similar ping records"
                             loop.write('False\r\n')
                             loop.write('    ' + ','.join(record_str) + '\r\n')
-                            loop.write('    ' + ','.join(self.ipToRouter(record)) + '\r\n')
+                            loop.write('    ' + ','.join(self.ipToRouter1(record)) + '\r\n')
 ##                            loop.write('    ' + ','.join([ip1, ip2]) + '\r\n')
                             loop.write('    ' + "No isis failure record found" + '\r\n\r\n')                            
         print loop_in_isis, loop_failure
         for item in loop_statics:
             print item, loop_statics[item]
 
-    def ipToRouter(self, record):
+    def ipToRouter1(self, record):
         result = record[0:3]
 ##        for hop in record[4]:
 ##            if not '* *' in hop:
@@ -367,6 +376,6 @@ class PingFailureVerifier:
 
 #p = PingFailureVerifier()
 #r = p.getNonExistentLinks()
-#print len(r)
 #r1 = p.weightFilter(r)
 #print len(r1)
+#p.getLoops()
