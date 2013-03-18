@@ -101,6 +101,25 @@ class LinkMap:
         else:
             return float('inf')
 
+    def calWeight(self, path):
+        total_weight = 0
+        for i in range(len(path) - 1):
+            total_weight += self.getWeight(path[i], path[i+1])
+        return total_weight
+            
+
+    def disableLink(self, router1, router2):
+        if router1 in self.link_list and router2 in self.link_list[router1] and 'weight' in self.link_list[router1][router2]:
+            weight = self.link_list[router1][router2]['weight']
+            self.link_list[router1][router2]['weight'] = float('inf')
+            return weight
+        else:
+            return float('inf')
+
+    def enableLink(self, router1, router2, weight):
+        if router1 in self.link_list and router2 in self.link_list[router1] and 'weight' in self.link_list[router1][router2]:
+            self.link_list[router1][router2]['weight'] = weight
+
     def getShortestPath(self, source, dest):
         shortest_path = {source: 0}
         rest_nodes = {}
@@ -135,9 +154,9 @@ class LinkMap:
                     path[router] = copy.deepcopy(path[node])
                     path[router].append(router)
         if dest in shortest_path:
-            return path[dest], shortest_path[dest]
+            return True, path[dest], shortest_path[dest]
         else:
-            return None
+            return False, path, shortest_path
             
 
 p = LinkMap()
