@@ -1,4 +1,5 @@
 from Utils import Utils
+import LinkMap
 
 # You have to provide at least <IPtoRouterFilePath> and <PingDataPath>, if the
 # ping data are already formatted, you can fill in the <FormatDataPath> so
@@ -23,9 +24,35 @@ test = Utils()
 test.ReadFormatedPingDataIntoMemory()
 
 
-print test.LookUp('137.164.22.43','','')
-print test.LookUp('137.164.34.137','','')
-print test.ReverseLookup(1355453392.0, 1355453433.0, '137.164.39.158')
+print test.LookUp('137.164.46.77','',1353388859)
+print test.LookUp('137.164.46.245','',1353388859)
+print test.LookUp('137.164.47.128','',1353388859)
+print test.LookUp('137.164.46.80','',1353388859)
+print test.LookUp('137.164.22.45','',1353388859)
+print test.LookUp('137.164.23.53','',1353388859)
+print test.LookUp('137.164.39.157','',1353388859)
+a = test.LookUp('137.164.1.225','',1354291245)
+b = test.LookUp('137.164.34.137','',1354291245)
+c = test.LookUp('137.164.23.53','',1354291245)
+print c
+d = test.LookUp('137.164.47.129','',1354291245)
+e = test.LookUp('137.164.39.157','',1354291245)
+l = LinkMap.LinkMap()
+t = ['137.164.23.53', '137.164.47.14', '137.164.46.245', '137.164.46.77', '137.164.46.80', '137.164.1.225', '137.164.34.137']
+t2 = ['137.164.23.53', '137.164.47.14', '137.164.46.245', '137.164.47.128', '137.164.22.45', '137.164.46.31', '137.164.32.173', '137.164.34.34']
+print "==="
+for x in t2:
+	print test.LookUp(x,'',1354291245)
+print "==="
+print e
+print test.LookUp('137.164.34.34','',1354291245)
+print l.hasLink2(a.split(',')[0],b.split(',')[0],1354291217,1354291273)
+print l.getShortestPath(c.split(',')[0],d.split(',')[0])
+print l.getShortestPath(c.split(',')[0],b.split(',')[0])
+print l.getShortestPath(c.split(',')[0],e.split(',')[0])
+
+#print test.LookUp('137.164.34.137','','')
+#print test.ReverseLookup(1355453392.0, 1355453433.0, '137.164.39.158')
 
 # Attention!!! the test.FindPing function is a generato!
 # find ip data from ucsd to ip 137.164.16.21
