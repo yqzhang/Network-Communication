@@ -159,11 +159,11 @@ class LinkMap:
             return False, path, shortest_path
             
 
-p = LinkMap()
+#p = LinkMap()
 ##for r1 in p.link_list:
 ##    for r2 in p.link_list[r1]:
 ##        if len(p.link_list[r1][r2]['time']) == 0:
 ##            print 'timerange = 0', r1, r2
 ##        elif p.link_list[r1][r2]['weight'] == 0:
 ##            print 'weight = 0', r1, r2
-print p.getShortestPath('ful-cc-1', 'tus-agg1')
+#print p.getShortestPath('ful-cc-1', 'tus-agg1')

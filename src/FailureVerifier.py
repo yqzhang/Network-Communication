@@ -374,8 +374,8 @@ class PingFailureVerifier:
         result.append([self.util.LookUp(hop.strip(), '', record[0]).strip() for hop in record[4] if (not '* *' in hop) and (not self.util.LookUp(hop.strip(), '', record[0]) == None) ])
         return [str(r) for r in result]
 
-p = PingFailureVerifier()
-r = p.getNonExistentLinks()
-r1 = p.weightFilter(r)
-print len(r1)
-p.getLoops()
+#p = PingFailureVerifier()
+#r = p.getNonExistentLinks()
+#r1 = p.weightFilter(r)
+#print len(r1)
+#p.getLoops()

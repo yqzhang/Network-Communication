@@ -32,15 +32,17 @@ def nonExistentLinkAnalysis(missingLinks):
 		for link in links:
 			time = (float(i[0])+float(i[1]))/2
 			linkroute1 = test.LookUp(link[0],'',time)
+			linkroute1 = linkroute1.split(',')[0] 
 			linkroute2 = test.LookUp(link[1],'',time)
+			linkroute2 = linkroute2.split(',')[0] 
 			#if link[0] == '137.164.46.7' and link[1] == '137.164.35.47':
 				#print "Found!!!:"
 				#print linkroute1,linkroute2
 			#if linkroute1+":"+linkroute2 not in routeCount:
 			logFile.write(linkroute1+"\t"+linkroute2+"\n")
-			s1 = linkroute1.split(',')
-			s2 = linkroute2.split(',')
-			linkInfo = linkmapold.getValidTime(s1[0],s1[1],s2[0],s2[1])
+			#s1 = linkroute1.split(',')
+			#s2 = linkroute2.split(',')
+			#linkInfo = linkmapold.getValidTime(s1[0],s1[1],s2[0],s2[1])
 			#logFile.write(str(linkInfo)+"\n")
 			#logFile.write("Time:"+str(i[0])+"\t"+str(i[1])+"\n")
 			logFile.write(str(i)+"\n")
@@ -50,7 +52,8 @@ def nonExistentLinkAnalysis(missingLinks):
 			routeCount.add(linkroute1+":"+linkroute2)
 			countLink.add(link)
 
-	print routeCount
+	print "RouteCount:",routeCount
+	print len(routeCount)
 	#rfileile.close()
 	logFile.close()
 
@@ -74,6 +77,14 @@ def MissingLinkVarification():
 
 	# missing links, <original_record,missedlinks>
 	MissingLinks = p.weightFilter(p.getNonExistentLinks())
+	tmp = set()
+	for i in MissingLinks:
+		for j in i[5]:
+			tmp.add((j[0],j[1]))
+	print "=====================Original========================"
+	print tmp
+	print len(MissingLinks)
+	print len(tmp)
 
 	# orignial tr record
 	OriginalMLs = [i[:-1] for i in MissingLinks]
@@ -93,7 +104,7 @@ def MissingLinkVarification():
 			for j in test.FindPing(src,i[2]):
 				if j in OriginalMLs:
 					count+=1
-					print count
+					#print count
 					continue
 				# a links can be explained if the missing link
 				# appears at the same number of hops on other 
@@ -129,29 +140,30 @@ def MissingLinkVarification():
 	for i in newMissingLinks:
 		for j in i[5]:
 			tmp.add((j[0],j[1]))
+	print "=====================Eliminate Explained========================"
 	print tmp
+	print len(newMissingLinks)
 	print len(tmp)
 	pingPath = "../data/pings/"
-
 	
 	# eliminate thoes links with two different respond
 	# to one hop of tr record which is not realized
 	# when formatting the ping data
 	eliminate = []
+	add = []
 	print "There are :",len(newMissingLinks),"new missing links"
 	for i in newMissingLinks:
 		r = test.ReverseLookup(float(i[0]),float(i[1]),i[2])
 		s = r[0].split("'")
 		fileName = s[1]
 		lineNumber = int(s[2][2:-3])
-		print fileName,lineNumber
+		#print fileName,lineNumber
 		rfile = open(pingPath+fileName,'r')
 		j = 0
 		line = rfile.readline()
 		j += 1
 		while line != '':
 			if j == lineNumber and line.startswith('START'):
-				print j
 				line = rfile.readline()
 				j += 1
 				line = rfile.readline()
@@ -212,9 +224,6 @@ def MissingLinkVarification():
 						# with a missing response
 						if len(s) == 8 or len(s) == 6:
 							tmpIP = s[1][1:-1]
-							# WARNING: maybe I should use regex to check the format
-							# of the IP address, but here I suppose the people who
-							# use this will give the correctly formatted files.
 							if test.LookUpIP(tmpIP):
 								hopList.append(tmpIP)
 							else:
@@ -232,12 +241,26 @@ def MissingLinkVarification():
 					line = rfile.readline()
 					j += 1
 				if flag10:
-					record = [startTime,endTime,destination,None,hopList]
+					record = [startTime,endTime,destination,False,hopList]
 					nonExLink = p.nonExistentLinkDetect(record)
 					if len(nonExLink) > 0:
 						print "new non existent:",nonExLink
+						print record
+						if len(hopList) >= 1:
+							if test.LookUpIP(hopList[-1]):
+								destRouterStart = test.LookUp(destination,'',startTime)
+								destRouterEnd = test.LookUp(hopList[-1],'',endTime)
+								if destRouterEnd == None or destRouterStart == None:
+									pass
+								elif destRouterEnd.split(',')[0] == destRouterStart.split(',')[0]:
+									record[3]= True
+								else:
+									pass
+						record.append(nonExLink)
+						eliminate.append(i)
+						add.append(record)
 					else:
-						print "eliminated:",i
+						#print "eliminated:",i
 						eliminate.append(i)
 			else:
 				line = rfile.readline()
@@ -245,13 +268,23 @@ def MissingLinkVarification():
 		rfile.close()
 	for t in eliminate:
 		newMissingLinks.remove(t)
+	for t in add:
+		newMissingLinks.append(t)
+	tmp = set()
+	for i in newMissingLinks:
+		for j in i[5]:
+			tmp.add((j[0],j[1]))
+	print "=====================Eliminate Different respond========================"
+	print tmp
 	print len(newMissingLinks)
+	print len(tmp)
+
+	nonExistentLinkAnalysis(newMissingLinks)
 
 	# out put all the tr history for all the missing links,
 	# for manual verification 
 	srcList = ['ucsb','ucla','ucsd','ucdavis','berkeley','ucsc']
 	dfile = open("./MissingLinkAnalysis/deeperAnalysisy.txt",'w')
-	#nonExistentLinkAnalysis(newMissingLinks)
 	done = []
 	for t in newMissingLinks:
 		r = test.ReverseLookup(float(t[0]),float(t[1]),t[2])
@@ -259,7 +292,7 @@ def MissingLinkVarification():
 		for k in srcList:
 			if k in r[0]:
 				src = k
-		print src
+		#print src
 		work = (src,t[2])
 		if work not in done:
 			toWrite = []
@@ -271,7 +304,7 @@ def MissingLinkVarification():
 			dfile.write("======================="+str(len(sortToWrite))+"=======================\n")
 			dfile.write("source:"+src+" dest:"+t[2]+"\n")
 			dfile.write(str(t)+"\n")
-			print len(sortToWrite)
+			#print len(sortToWrite)
 			for l in sortToWrite:
 				dfile.write(str(l)+"\n")
 			done.append(work)
