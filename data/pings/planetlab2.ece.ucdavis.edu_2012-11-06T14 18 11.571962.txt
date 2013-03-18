@@ -1,0 +1,26 @@
+START
+Wed Dec 19 23:13:50 UTC 2012
+2012-12-19 23:13:49.948082
+ 2012-12-19 23:13:50.029720
+ traceroute to 137.110.222.155 (137.110.222.155), 15 hops max, 60 byte packets
+ 
+  1  be-g-v63.cse.ucsc.edu (128.114.63.254)  0.288 ms  0.361 ms
+ 
+  2  isb-g-10g1-8.ucsc.edu (128.114.101.190)  0.937 ms  0.971 ms
+ 
+  3  border-comm-g-te3-1.ucsc.edu (128.114.0.66)  0.309 ms  0.396 ms
+ 
+  4  hpr-svl-hpr2--ucsc.cenic.net (137.164.26.93)  1.466 ms  1.526 ms
+ 
+  5  lax-hpr2--svl-hpr2-10g.cenic.net (137.164.25.37)  9.479 ms  9.516 ms
+ 
+  6  hpr-ucsd-10ge-2--lax-hpr.cenic.net (137.164.26.30)  11.844 ms  11.845 ms
+ 
+  7  nodem-core--mx0-30ge.ucsd.edu (132.239.254.163)  12.001 ms  12.085 ms
+ 
+  8  ebu3b-6509-nodem-core-interconnect-vl901-bcast-255-131.ucsd.edu (132.239.255.131)  12.032 ms  12.029 ms
+ 
+  9  e.sysnet.ucsd.edu (137.110.222.155)  12.044 ms  12.044 ms
+ 
+
+END
