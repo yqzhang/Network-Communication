@@ -140,11 +140,16 @@ class LinkMap:
             return None
             
 
-p = LinkMap()
+#p = LinkMap()
 ##for r1 in p.link_list:
 ##    for r2 in p.link_list[r1]:
 ##        if len(p.link_list[r1][r2]['time']) == 0:
 ##            print 'timerange = 0', r1, r2
 ##        elif p.link_list[r1][r2]['weight'] == 0:
 ##            print 'weight = 0', r1, r2
-print p.getShortestPath('ful-cc-1', 'tus-agg1')
+#print p.getShortestPath('lax-core2', 'cj-usd-ASR9001')
+#print p.getShortestPath('tri-core1', 'sac-agg2')
+#print p.getShortestPath('tri-core1', 'tri-agg1')
+#print p.getShortestPath('tri-core1', 'sac-dc1')
+#print p.getShortestPath('tri-core1', 'cor-agg1')
+#print p.getShortestPath('sdg-agg1', 'loy-hs')
