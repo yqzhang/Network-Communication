@@ -252,10 +252,13 @@ class PingFailureVerifier:
         return new_records
 
     def ipToRouter(self, ip, timestamp):
-        if not '* *' == ip:
-            return self.util.LookUp(ip.strip(), '', timestamp)
+        if ip == '* *':
+            return None
+        rp = self.util.LookUp(ip.strip(), '', timestamp)
+        if rp == None:
+            return None
         else:
-            return ""
+            return rp.split(',')[0]
         
     def getPath(self, record):
         return [self.ipToRouter(hop.strip(), float(record[0])) for hop in record[4]]
@@ -368,13 +371,13 @@ class PingFailureVerifier:
 
     def ipToRouter1(self, record):
         result = record[0:3]
-##        for hop in record[4]:
-##            if not '* *' in hop:
-##                print hop, self.util.LookUp(hop.strip(), '', record[0]).strip()
         result.append([self.util.LookUp(hop.strip(), '', record[0]).strip() for hop in record[4] if (not '* *' in hop) and (not self.util.LookUp(hop.strip(), '', record[0]) == None) ])
         return [str(r) for r in result]
 
-#p = PingFailureVerifier()
+p = PingFailureVerifier()
+for record in p.util.FindPing('',''):
+    path = p.getPath(record)
+    w = p.link_map.calWeight(path)
 #r = p.getNonExistentLinks()
 #r1 = p.weightFilter(r)
 #print len(r1)

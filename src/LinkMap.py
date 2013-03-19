@@ -95,22 +95,26 @@ class LinkMap:
         if router in self.link_list:
             return self.link_list[router]
 
-	def getWeight(self, router1, router2):
-		if router1 in self.link_list and router2 in self.link_list[router1] and 'weight' in self.link_list[router1][router2]:
-			return self.link_list[router1][router2]['weight']
-		else:
-			return float('inf')
+    def getWeight(self, router1, router2):
+        if router1 == None or router2 == None:
+            return float('inf')
+        router1 = router1.strip()
+        router2 = router2.strip()
+        if router1 in self.link_list and router2 in self.link_list[router1] and 'weight' in self.link_list[router1][router2]:
+            return self.link_list[router1][router2]['weight']
+        else:
+            return float('inf')
 
-	def calWeight(self, path):
-		total_weight = 0
-		start = False
-		for i in range(len(path) - 1):
-			if (not start) and (not path[i] == '* *') and (not path[i+1] == '* *'):
-				start = True
-			if start:
-				total_weight += self.getWeight(path[i].strip(), path[i+1].strip())
-		return total_weight
-
+    def calWeight(self, path):
+        total_weight = 0
+        start = False
+        for i in range(len(path) - 1):
+            if (not start) and (not path[i] == None) and (not path[i+1] == None):
+                start = True
+            if start:
+                total_weight += self.getWeight(path[i], path[i+1])
+        return total_weight
+            
 
     def disableLink(self, router1, router2):
         if router1 in self.link_list and router2 in self.link_list[router1] and 'weight' in self.link_list[router1][router2]:
