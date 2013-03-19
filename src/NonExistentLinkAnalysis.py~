@@ -6,7 +6,6 @@ import LinkMapOld
 import time
 import traceback
 from Utils import Utils
-from operator import itemgetter,attrgetter
 
 def nonExistentLinkAnalysis(missingLinks):
 	''' Do something to analyze the non-existent links.  
@@ -98,7 +97,7 @@ def MissingLinkVarification():
 			else:
 				tmp[(linkroute1,linkroute2)] = 1
 	print "=====================Original========================"
-	print sorted(tmp.items(), key=itemgetter(1, 0))
+	print tmp.items()
 	print len(MissingLinks)
 	print len(tmp)
 
