@@ -252,7 +252,6 @@ class PingFailureVerifier:
         return new_records
 
     def ipToRouter(self, ip, timestamp):
-<<<<<<< HEAD
         if ip == '* *':
             return None
         rp = self.util.LookUp(ip.strip(), '', timestamp)
@@ -260,12 +259,11 @@ class PingFailureVerifier:
             return None
         else:
             return rp.split(',')[0]
-=======
         if not '* *' == ip:
             return self.util.LookUp(ip.strip(), '', timestamp)
         else:
             return "* *"
->>>>>>> dd508ab7dda0be69447ff3ac5e637bd1e0dc7cc2
+
         
     def getPath(self, record):
         return [self.ipToRouter(hop.strip(), float(record[0])) for hop in record[4]]

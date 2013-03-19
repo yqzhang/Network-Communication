@@ -113,17 +113,14 @@ class LinkMap:
         total_weight = 0
         start = False
         for i in range(len(path) - 1):
-<<<<<<< HEAD
             if (not start) and (not path[i] == None) and (not path[i+1] == None):
                 start = True
             if start:
                 total_weight += self.getWeight(path[i], path[i+1])
-=======
             if (not start) and (not path[i] == '* *') and (not path[i+1] == '* *'):
                 start = True
             if start:
                 total_weight += self.getWeight(path[i].strip(), path[i+1].strip())
->>>>>>> dd508ab7dda0be69447ff3ac5e637bd1e0dc7cc2
         return total_weight
             
 
