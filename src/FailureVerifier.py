@@ -253,12 +253,12 @@ class PingFailureVerifier:
 
     def ipToRouter(self, ip, timestamp):
         if not '* *' == ip:
-            return self.util.LookUp(ip, '', timestamp)
+            return self.util.LookUp(ip.strip(), '', timestamp)
         else:
             return None
         
     def getPath(self, record):
-        return [ipToRouter(hop, float(record[0])) for hop in record[4]]
+        return [ipToRouter(hop.strip(), float(record[0])) for hop in record[4]]
     
     def test(self):
         loop_in_isis = 0
