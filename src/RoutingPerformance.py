@@ -6,6 +6,8 @@ from Utils import Utils
 from IPtoRouter import IPRouter
 from FailureVerifier import PingFailureVerifier
 from LinkMap import LinkMap
+from ISISFailure import Failure
+from ISISFailure import ISISFailure
 
 class RoutingPerformance:
 	# Source ID Map for ping data
@@ -14,9 +16,11 @@ class RoutingPerformance:
 	#iprouter = IPRouter()
 	verifier = PingFailureVerifier()
 	linkMap = LinkMap()
+	failureList = list()
 
 	def __init__(self):
 		self.util.ReadFormatedPingDataIntoMemory()
+		self.failureList = self.failureList = ISISFailure().traverse()
 
 	def ifDetectable(self, path):
 		for i in range(len(path)):
@@ -50,11 +54,11 @@ class RoutingPerformance:
 				print("Loop:" + str(ite))
 			# Get rid of \r
 			path = self.verifier.getPath(ping)
-			#print(path)
+			#print(ping)
 			if self.ifDetectable(path):
 				count += 1
 				actualWeight = self.linkMap.calWeight(path)
-				optimalWeight = self.linkMap.getShortestPath(self.getFirstHop(path), self.getLastHop(path))[1]
+				optimalWeight = self.linkMap.getRealtimeShortestPath(self.getFirstHop(path), self.getLastHop(path), ping[0], self.failureList)[1]
 				if actualWeight == optimalWeight:
 					equal += 1
 				#print("Actual:" + str(actualWeight) + " Optimal:" + str(optimalWeight))

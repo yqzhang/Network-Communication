@@ -14,6 +14,8 @@ class LinkMap:
                 num_lines += 1
                 if num_lines > 1:
                     arr = line.split(',')
+                    if arr[0].strip() == arr[1].strip():
+                        continue
                     self.addWeight(arr[0], arr[1], int(arr[2]))
                     self.addWeight(arr[1], arr[0], int(arr[2]))
                 
@@ -117,16 +119,30 @@ class LinkMap:
             
 
     def disableLink(self, router1, router2):
+        weight = float('inf')
         if router1 in self.link_list and router2 in self.link_list[router1] and 'weight' in self.link_list[router1][router2]:
             weight = self.link_list[router1][router2]['weight']
             self.link_list[router1][router2]['weight'] = float('inf')
-            return weight
-        else:
-            return float('inf')
+        if router2 in self.link_list and router1 in self.link_list[router2] and 'weight' in self.link_list[router2][router1]:
+            weight = self.link_list[router2][router1]['weight']
+            self.link_list[router2][router1]['weight'] = float('inf')
+        return weight
 
     def enableLink(self, router1, router2, weight):
         if router1 in self.link_list and router2 in self.link_list[router1] and 'weight' in self.link_list[router1][router2]:
             self.link_list[router1][router2]['weight'] = weight
+        if router2 in self.link_list and router1 in self.link_list[router2] and 'weight' in self.link_list[router2][router1]:
+            self.link_list[router2][router1]['weight'] = weight
+
+    def disableLinkList(self, links):
+        weights = []
+        for l in links:
+            weight.append(self.disableLink(l[0], l[1]))
+        return weights
+
+    def enableLinkList(self, links, weights):
+        for i in range(len(links)):
+            self.enableLink(links[i][0], links[i][1], weights[i])
 
     def getShortestPath(self, source, dest):
         shortest_path = {source: 0}
@@ -168,6 +184,56 @@ class LinkMap:
         else:
             return False, path, shortest_path
             
+	def getRealtimeShortestPath(self, source, dest, time, failureList):
+		linkList = list()
+		weightList = list()
+		for fail in failureList:
+			if fail[4] < time and fail[5] > time:
+				temp = [fail[0], fail[2]]
+				linkList.append(temp)
+		weightList = self.disableLinkList(linkList)
+		# normal shortest path
+		shortest_path = {source: 0}
+        rest_nodes = {}
+        reachable = {}
+        path = {source: [source]}
+        for router in self.link_list:
+            rest_nodes[router] = float('inf')
+        if source in rest_nodes:
+            del rest_nodes[source]
+        for router in self.link_list[source]:
+            reachable[router] = self.link_list[source][router]['weight']
+            path[router] = [source, router]
+            if router in rest_nodes:
+                del rest_nodes[router]
+        
+        while len(reachable) > 0:
+            node = min(reachable, key = lambda x : reachable[x])
+            length = reachable[node]
+            del reachable[node]
+            if node == dest:
+                return path[dest], length
+            shortest_path[node] = length
+            for router in self.link_list[node]:
+                if router in shortest_path:
+                    continue
+                elif router in reachable:
+                    if length + self.link_list[node][router]['weight'] < reachable[router]:
+                        reachable[router] = length + self.link_list[node][router]['weight']
+                        path[router] = copy.deepcopy(path[node])
+                        path[router].append(router)
+                else:
+                    del rest_nodes[router]
+                    reachable[router] = length + self.link_list[node][router]['weight']
+                    path[router] = copy.deepcopy(path[node])
+                    path[router].append(router)
+		# end of normal shortest path
+		self.enableLinkList(linkList, weightList)
+		# return result
+        if dest in shortest_path:
+            return True, path[dest], shortest_path[dest]
+        else:
+            return False, path, shortest_path
 
 #p = LinkMap()
 ##for r1 in p.link_list:
