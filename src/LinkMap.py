@@ -137,7 +137,7 @@ class LinkMap:
     def disableLinkList(self, links):
         weights = []
         for l in links:
-            weight.append(self.disableLink(l[0], l[1]))
+            weights.append(self.disableLink(l[0], l[1]))
         return weights
 
     def enableLinkList(self, links, weights):
@@ -184,16 +184,16 @@ class LinkMap:
         else:
             return False, path, shortest_path
             
-	def getRealtimeShortestPath(self, source, dest, time, failureList):
-		linkList = list()
-		weightList = list()
-		for fail in failureList:
-			if fail[4] < time and fail[5] > time:
-				temp = [fail[0], fail[2]]
-				linkList.append(temp)
-		weightList = self.disableLinkList(linkList)
-		# normal shortest path
-		shortest_path = {source: 0}
+    def getRealtimeShortestPath(self, source, dest, time, failureList):
+        linkList = list()
+        weightList = list()
+        for fail in failureList:
+            if fail[4] < time and fail[5] > time:
+                temp = [fail[0], fail[2]]
+                linkList.append(temp)
+        weightList = self.disableLinkList(linkList)
+        # normal shortest path
+        shortest_path = {source: 0}
         rest_nodes = {}
         reachable = {}
         path = {source: [source]}
@@ -227,9 +227,9 @@ class LinkMap:
                     reachable[router] = length + self.link_list[node][router]['weight']
                     path[router] = copy.deepcopy(path[node])
                     path[router].append(router)
-		# end of normal shortest path
-		self.enableLinkList(linkList, weightList)
-		# return result
+        # end of normal shortest path
+        self.enableLinkList(linkList, weightList)
+        # return result
         if dest in shortest_path:
             return True, path[dest], shortest_path[dest]
         else:
