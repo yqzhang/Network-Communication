@@ -1,7 +1,7 @@
-This is XeTeX, Version 3.1415926-2.3-0.9997.5 (MiKTeX 2.9) (preloaded format=xelatex 2012.11.12)  19 MAR 2013 01:57
+This is XeTeX, Version 3.1415926-2.3-0.9997.5 (MiKTeX 2.9) (preloaded format=xelatex 2012.11.12)  19 MAR 2013 03:19
 entering extended mode
 **project.tex
-("C:\Users\QDX\Desktop\Communication Network\paper\project.tex"
+(C:\Users\QDX\Documents\GitHub\Network-Communication\paper\project.tex
 LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for loaded.
 (C:\CTEX\MiKTeX\tex\latex\ieeetran\IEEEtran.cls
@@ -232,7 +232,7 @@ Package: subfigure 2002/07/30 v2.1.4 subfigure package
 \subfig@top=\skip55
 \subfig@bottom=\skip56
 )
-("C:\Users\QDX\Desktop\Communication Network\paper\project.aux")
+(C:\Users\QDX\Documents\GitHub\Network-Communication\paper\project.aux)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 352.
 LaTeX Font Info:    ... okay on input line 352.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 352.
@@ -266,43 +266,41 @@ Underfull \hbox (badness 10000) in paragraph at lines 519--521
 
 File: plot/failure_time.eps Graphic file (type eps)
 <plot/failure_time.eps>
+File: plot/PieChart.eps Graphic file (type eps)
+ <plot/PieChart.eps>
 File: plot/RouteShift.eps Graphic file (type eps)
  <plot/RouteShift.eps>
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 567.
+(Font)              <7> on input line 574.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 567.
+(Font)              <5> on input line 574.
 File: plot/ComplexRouteShift.eps Graphic file (type eps)
- <plot/ComplexRouteShift.eps>
-File: plot/Shortcut.eps Graphic file (type eps)
 
-<plot/Shortcut.eps>
+<plot/ComplexRouteShift.eps>
+File: plot/Shortcut.eps Graphic file (type eps)
+ <plot/Shortcut.eps>
 File: plot/TrappedInLoop.eps Graphic file (type eps)
  <plot/TrappedInLoop.eps>
-Underfull \hbox (badness 1448) in paragraph at lines 547--620
+Underfull \hbox (badness 1448) in paragraph at lines 547--627
 []\OT1/ptm/m/n/10 Among the 70831 trace-route record-s, there were 80
  []
 
 
-Underfull \hbox (badness 2856) in paragraph at lines 547--620
-\OT1/ptm/m/n/10 From figure:5[], we can-not tel-l what ex-act-ly hap-pened.
+Underfull \hbox (badness 2856) in paragraph at lines 547--627
+\OT1/ptm/m/n/10 From figure:6[], we can-not tel-l what ex-act-ly hap-pened.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 547--620
+Underfull \hbox (badness 10000) in paragraph at lines 547--627
 
  []
 
-[2]
+[2] [3]
 File: plot/accessibility.eps Graphic file (type eps)
  <plot/accessibility.eps>
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[3]
 File: plot/failure_distribution.eps Graphic file (type eps)
  <plot/failure_distribution.eps>
-("C:\Users\QDX\Desktop\Communication Network\paper\project.bbl")
+(C:\Users\QDX\Documents\GitHub\Network-Communication\paper\project.bbl)
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -314,12 +312,12 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[4] ("C:\Users\QDX\Desktop\Communication Network\paper\project.aux") ) 
+[4] (C:\Users\QDX\Documents\GitHub\Network-Communication\paper\project.aux) ) 
 Here is how much of TeX's memory you used:
- 2372 strings out of 430478
- 32528 string characters out of 3191501
+ 2375 strings out of 430478
+ 32607 string characters out of 3191501
  94838 words of memory out of 3000000
- 5515 multiletter control sequences out of 15000+200000
+ 5517 multiletter control sequences out of 15000+200000
  25356 words of font info for 55 fonts, out of 3000000 for 9000
  17 hyphenation exceptions out of 8191
  27i,8n,24p,1053b,293s stack positions out of 5000i,500n,10000p,200000b,50000s
