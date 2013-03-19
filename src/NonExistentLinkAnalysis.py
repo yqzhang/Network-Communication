@@ -137,7 +137,9 @@ def MissingLinkVarification():
 						CanExplain[k] = True
 						log.write("Explain:"+str(CanExplain)+'\n')
 						log.write("Missing:"+str(i)+'\n')
-						log.write("Found:"+str(j)+'\n\n')
+						log.write("Weight:"+str(linkmap.calWeight(p.getPath(i[:-1])))+"\n")
+						log.write("Found:"+str(j)+'\n')
+						log.write("Weight:"+str(linkmap.calWeight(p.getPath(j)))+"\n\n")
 				if False not in CanExplain:
 					break
 			if False not in CanExplain:
@@ -298,7 +300,7 @@ def MissingLinkVarification():
 	print len(newMissingLinks)
 	print len(tmp)
 
-	nonExistentLinkAnalysis(newMissingLinks)
+	#nonExistentLinkAnalysis(newMissingLinks)
 
 	# out put all the tr history for all the missing links,
 	# for manual verification 

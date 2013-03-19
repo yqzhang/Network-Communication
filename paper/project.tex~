@@ -551,7 +551,14 @@ in them.
 %Because, duplicate appearance in these 80 records indicate such missing links 
 We classify these records into 5 categories, with respect to the complexity of
 their cause. They are: normal route shift, complex route shift, shortcut,
-trapped in loop, cannot verify. \\
+trapped in loop, cannot verify. They are distributed as in
+figure:\ref{fig:PieChart}\\
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.8]{plot/PieChart.eps}
+\caption{Piechart of different types of missed links}
+\label{fig:PieChart}
+\end{figure}\\
 \textbf{Normal Route Shift}\\
 Consider a trace-route with max hops 5. In most situation, a certain route won't
 change during the process of trace-route. However, it is possible for router to
@@ -611,11 +618,12 @@ loopy route. An example is shown in figure:\ref{fig:TrappedInLoop}.\\
 \caption{Route Trapped in Loop example}
 \label{fig:TrappedInLoop}
 \end{figure}\\
-There were 15 records fall into this category.
+There were 15 records fall into this category.\\
 \textbf{Cannot verify}\\
 The rest 8 records fall into this category. For these records, there exist some
 node that is never seen in other trace-route records with the same source and
-destination. Thus, there is no way we can tell what happened with such records. 
+destination. Thus, there is no way we can tell what happened with such
+records.\\ 
 
 
 
