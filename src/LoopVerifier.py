@@ -12,7 +12,7 @@ class LoopVerifier:
         self.failure_verifier = FailureVerifier.PingFailureVerifier()
         self.loop_records = self.failure_verifier.getLoops()
 
-    def lookUpISIS_2(self, record):
+    def lookUpISIS(self, record):
         result = []
         for isis_record in self.isis_failure.traverse():
             if float(isis_record[4]) > record[1] + 1800:
@@ -29,12 +29,43 @@ class LoopVerifier:
                 for rec in self.loop_records[item]:
                     print item, rec
 
+    def findsuccessLoop(self):
+        count = 0
+        for item in self.loop_records:
+            for rec in self.loop_records[item]:
+                if bool(rec[3]):
+                    print rec
+                    count += 1
+        print count
 
-    def test_2(self):
+    def loopRounds(self, record):
+        hops = {}
+        for hop in record[4]:
+            if not hop == '* *':
+                if hop in hops:
+                    hops[hop] += 1
+                else:
+                    hops[hop] = 1
+        return hops[max(hops, key = lambda x : hops[x])]
+            
+                    
+    def roundStatistics(self):
+        rounds = {}
+        for item in self.loop_records:
+            for rec in self.loop_records[item]:
+                r = self.loopRounds(rec)
+                if r in rounds:
+                    rounds[r].append(rec)
+                else:
+                    rounds[r] = [rec]
+        return rounds
+
+
+    def test(self):
         loop_in_isis = 0
         loop_failure = 0
         loop_statics = {}
-        with open("../data/LoopVerification5.out", "w") as loop:
+        with open("./LoopAnalysis/LoopRecords.out", "w") as loop:
             for record in self.loop_records:
                 hops = record[4]
                 for item in record[4]:
@@ -57,7 +88,11 @@ class LoopVerifier:
                 ping = self.findCorrectPing(record)
 
 p = LoopVerifier()
-p.lengthStatistics()
+#p.lengthStatistics()
+rs = p.roundStatistics()
+for item in rs:
+    print item, len(rs[item])
+#p.findsuccessLoop()
                 
                 
                 

@@ -104,7 +104,7 @@ class LinkMap:
     def calWeight(self, path):
         total_weight = 0
         for i in range(len(path) - 1):
-            total_weight += self.getWeight(path[i], path[i+1])
+            total_weight += self.getWeight(path[i].strip(), path[i+1].strip())
         return total_weight
             
 
