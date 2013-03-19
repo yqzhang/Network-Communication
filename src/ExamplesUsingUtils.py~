@@ -23,7 +23,7 @@ test = Utils()
 # this next line must be done in order to execute the line after it.
 test.ReadFormatedPingDataIntoMemory()
 count = 0
-for i in test.FindPing('',''):
+for i in test.FindPing():
 	print i
 	count += 1
 	if count > 10:

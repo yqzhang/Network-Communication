@@ -1,0 +1,39 @@
+\begin{thebibliography}{1}
+
+\bibitem{cunha2011predicting}
+{\'I}talo Cunha, Renata Teixeira, Darryl Veitch, and Christophe Diot.
+\newblock Predicting and tracking internet path changes.
+\newblock {\em SIGCOMM-Computer Communication Review}, 41(4):122, 2011.
+
+\bibitem{labovitz1999experimental}
+Craig Labovitz, Abha Ahuja, and Farnam Jahanian.
+\newblock Experimental study of internet stability and backbone failures.
+\newblock In {\em Fault-Tolerant Computing, 1999. Digest of Papers.
+  Twenty-Ninth Annual International Symposium on}, pages 278--285. IEEE, 1999.
+
+\bibitem{markopoulou2008characterization}
+Athina Markopoulou, Gianluca Iannaccone, Supratik Bhattacharyya, Chen-Nee
+  Chuah, Yashar Ganjali, and Christophe Diot.
+\newblock Characterization of failures in an operational ip backbone network.
+\newblock {\em IEEE/ACM Transactions on Networking (TON)}, 16(4):749--762,
+  2008.
+
+\bibitem{padmanabhan2006study}
+Venkata~N Padmanabhan, Sriram Ramabhadran, Sharad Agarwal, and Jitendra Padhye.
+\newblock A study of end-to-end web access failures.
+\newblock In {\em Proceedings of the 2006 ACM CoNEXT conference}, page~15. ACM,
+  2006.
+
+\bibitem{paxson1997end}
+Vern Paxson.
+\newblock End-to-end routing behavior in the internet.
+\newblock {\em Networking, IEEE/ACM Transactions on}, 5(5):601--615, 1997.
+
+\bibitem{turner2010california}
+Daniel Turner, Kirill Levchenko, Alex~C Snoeren, and Stefan Savage.
+\newblock California fault lines: understanding the causes and impact of
+  network failures.
+\newblock {\em ACM SIGCOMM Computer Communication Review}, 40(4):315--326,
+  2010.
+
+\end{thebibliography}
