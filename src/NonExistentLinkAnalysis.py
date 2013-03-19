@@ -5,6 +5,7 @@ import LinkMap
 import LinkMapOld
 import time
 import traceback
+import os
 from Utils import Utils
 from operator import itemgetter,attrgetter
 
@@ -101,6 +102,33 @@ def MissingLinkVarification():
 	print sorted(tmp.items(), key=itemgetter(1, 0))
 	print len(MissingLinks)
 	print len(tmp)
+	isis =	open("../data/isis_failures/isis_fails_2012-11-01--2013_02_07.txt",'r')
+	line = isis.readline()
+	checkList = MissingLinks[:]
+	while line != '':
+		s = line.split(',')
+		r1 = s[0]
+		r2 = s[2]
+		t1 = float(s[4])
+		t2 = float(s[5])
+		for i in MissingLinks:
+			toTest = [t1,t2,i[0],i[1]]
+			toTest = sorted(toTest)
+			if toTest == [t1,t2,i[0],i[1]] or toTest == [i[0],i[1],t1,t2]:
+				continue
+			else:
+				rPath = p.getPath(i[:-1])
+				if r1 in rPath or r2 in rPath:
+					if i in checkList:
+						checkList.remove(i)
+		line = isis.readline()
+	isis.close()
+	print checkList
+	print len(MissingLinks)
+	print len(checkList)
+
+	os.system('pause')
+
 
 	# orignial tr record
 	OriginalMLs = [i[:-1] for i in MissingLinks]
