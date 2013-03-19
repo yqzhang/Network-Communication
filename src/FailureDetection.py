@@ -271,37 +271,50 @@ class FailureDetection:
 					ifRouted = True
 					ifSrc = True
 					output_buffer += "\t\t<to=source>\n"
+					withFailLink = 0
+					withoutFailLink = 0
 					for ping in src_ping[i]:
+						routerPath = self.failureVerifier.getPath(ping)
 						if ping[0] < failure_start:
-							output_buffer += "\t\t\t<before>" + str(ping[2]) +\
-							", "+ str(self.linkmap.calWeight(self.failureVerifier.getPath(ping))) + ", "+ str(ping[3]) + ", " + str(ping[4]) + "</before>\n"
+							output_buffer += "\t\t\t<before>" + str(ping[2]) +", "+ str(self.linkmap.calWeight(routerPath)) + ", "+ str(ping[3]) + ", " + str(routerPath ) + "</before>\n"
 						elif ping[0] < failure_end:
-							output_buffer += "\t\t\t<during>" + str(ping[2]) + \
-							", " + str(self.linkmap.calWeight(self.failureVerifier.getPath(ping))) + ", " + str(ping[3]) + ", " + str(ping[4]) + "</during>\n"
+							output_buffer += "\t\t\t<during>" + str(ping[2]) + ", " + str(self.linkmap.calWeight(routerPath)) + ", " + str(ping[3]) + ", " + str(routerPath) + "</during>\n"
+							for k in range(len(routerPath)-1):
+								if (routerPath[k],routerPath[k+1]) == (router1,router2)	or (routerPath[k],routerPath[k+1]) == (router2,router1):
+									withFailLink += 1
+								else:
+									withoutFailLink += 1
 						else:
-							output_buffer += "\t\t\t<after>" + str(ping[2]) + \
-							", " + str(self.linkmap.calWeight(self.failureVerifier.getPath(ping))) + ", " + str(ping[3]) + ", " + str(ping[4]) + "</after>\n"
+							output_buffer += "\t\t\t<after>" + str(ping[2]) + ", " + str(self.linkmap.calWeight(routerPath)) + ", " + str(ping[3]) + ", " + str(routerPath) + "</after>\n"
 						if ping[3] == False:
 							ifReachable = False
 					output_buffer += "\t\t</to>\n"
+					output_buffer += "<Analyze>total:"+str(len(src_ping))+", withlink:"+str(withFailLink)+", withoutFailLink:"+str(withoutFailLink)+"</Analyze>\n"
 
 				if dst_ping != None and dst_ping[i] != None and self.ifChanged(dst_ping[i]) == True:
 					ifRouted = True
 					ifDes = True
 					output_buffer += "\t\t<to=destination>\n"
+					withFailLink = 0
+					withoutFailLink = 0
 					for ping in dst_ping[i]:
+						routerPath = self.failureVerifier.getPath(ping)
 						if ping[0] < failure_start:
-							output_buffer += "\t\t\t<before>" + str(ping[2]) +\
-							", "+ str(self.linkmap.calWeight(self.failureVerifier.getPath(ping))) + ", "+ str(ping[3]) + ", " + str(ping[4]) + "</before>\n"
+							output_buffer += "\t\t\t<before>" + str(ping[2]) + ", "+ str(self.linkmap.calWeight(routerPath)) + ", "+ str(ping[3]) + ", " + str(routerPath) + "</before>\n"
 						elif ping[0] < failure_end:
-							output_buffer += "\t\t\t<during>" + str(ping[2]) + \
-							", " + str(self.linkmap.calWeight(self.failureVerifier.getPath(ping))) + ", " + str(ping[3]) + ", " + str(ping[4]) + "</during>\n"
+							output_buffer += "\t\t\t<during>" + str(ping[2]) + ", " + str(self.linkmap.calWeight(routerPath)) + ", " + str(ping[3]) + ", " + str(routerPath) + "</during>\n"
+							for k in range(len(routerPath)-1):
+								if (routerPath[k],routerPath[k+1]) == (router1,router2)	or (routerPath[k],routerPath[k+1]) == (router2,router1):
+									withFailLink += 1
+								else:
+									withoutFailLink += 1
 						else:
-							output_buffer += "\t\t\t<after>" + str(ping[2]) + \
-							", " + str(self.linkmap.calWeight(self.failureVerifier.getPath(ping))) + ", " + str(ping[3]) + ", " + str(ping[4]) + "</after>\n"
+							output_buffer += "\t\t\t<after>" + str(ping[2]) + ", " + str(self.linkmap.calWeight(routerPath)) + ", " + str(ping[3]) + ", " + str(routerPath) + "</after>\n"
 						if ping[3] == False:
 							ifReachable = False
 					output_buffer += "\t\t</to>\n"
+					output_buffer +=\
+					"<Analyze>total:"+str(len(dst_ping))+",	withlink:"+str(withFailLink)+",	withoutFailLink:"+str(withoutFailLink)+"</Analyze>\n"
 				output_buffer += "\t</source>\n"
 			output_buffer += "</Failure>\n"
 			if ifReachable == False:
