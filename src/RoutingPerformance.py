@@ -11,7 +11,7 @@ class RoutingPerformance:
 	# Source ID Map for ping data
 	SourceIDMap = {'ucsb':0,'ucla':1,'ucsd':2,'ucdavis':3,'berkeley':4,'ucsc':5}
 	util = Utils()
-	iprouter = IPRouter()
+	#iprouter = IPRouter()
 	verifier = PingFailureVerifier()
 	linkMap = LinkMap()
 
@@ -31,7 +31,7 @@ class RoutingPerformance:
 
 	def getFirstHop(self, path):
 		for hop in path:
-			if hop != "":
+			if hop != None and hop != "":
 				return hop
 
 	def getLastHop(self, path):
@@ -39,22 +39,30 @@ class RoutingPerformance:
 
 	def parsePerformance(self):
 		perf = open("../plot/routing_performance.dat", "w")
-		output_buffer = ""
+		output_buffer = "Route\tActual_Path_Weight\tOptimal_Path_Weight\n"
 
+		ite = 0
 		count = 0
+		equal = 0
 		for ping in self.util.FindPing('', ''):
+			ite += 1
+			if ite % 1000 == 0:
+				print("Loop:" + str(ite))
 			# Get rid of \r
 			path = self.verifier.getPath(ping)
-			print(path)
+			#print(path)
 			if self.ifDetectable(path):
 				count += 1
 				actualWeight = self.linkMap.calWeight(path)
-				optimalWeight = self.linkMap.getShortestPath(self.getFirstHop(path), self.getLastHop(path))
-				print("Actual:" + str(actualWeight) + " Optimal:" + str(optimalWeight))
+				optimalWeight = self.linkMap.getShortestPath(self.getFirstHop(path), self.getLastHop(path))[1]
+				if actualWeight == optimalWeight:
+					equal += 1
+				#print("Actual:" + str(actualWeight) + " Optimal:" + str(optimalWeight))
 				output_buffer += str(count) + "\t" + str(actualWeight) + "\t" + str(optimalWeight) + "\n"
 			else:
 				continue
 		print("Total detectable route count: " + str(count))
+		print("Equal path weights count: " + str(equal))
 		perf.write(output_buffer)
 					
 

@@ -135,11 +135,13 @@ class LinkMap:
         path = {source: [source]}
         for router in self.link_list:
             rest_nodes[router] = float('inf')
-        del rest_nodes[source]
+        if source in rest_nodes:
+            del rest_nodes[source]
         for router in self.link_list[source]:
             reachable[router] = self.link_list[source][router]['weight']
             path[router] = [source, router]
-            del rest_nodes[router]
+            if router in rest_nodes:
+                del rest_nodes[router]
         
         while len(reachable) > 0:
             node = min(reachable, key = lambda x : reachable[x])
@@ -174,4 +176,4 @@ class LinkMap:
 ##            print 'timerange = 0', r1, r2
 ##        elif p.link_list[r1][r2]['weight'] == 0:
 ##            print 'weight = 0', r1, r2
-#print p.getShortestPath('ful-cc-1', 'tus-agg1')
+#print p.getShortestPath('riv-agg1', 'pep-gw-1')
