@@ -22,7 +22,8 @@ class RoutingPerformance:
 		for ping in self.util.FindPing('', ''):
 			# Get rid of \r
 			path = self.verifier.getPath(ping)
-			actual
+			actualWeight = self.linkMap.calWeight(path)
+			print(actualWeight)
 					
 
 rp = RoutingPerformance()
