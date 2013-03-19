@@ -258,7 +258,7 @@ class PingFailureVerifier:
             return None
         
     def getPath(self, record):
-        return [ipToRouter(hop.strip(), float(record[0])) for hop in record[4]]
+        return [self.ipToRouter(hop.strip(), float(record[0])) for hop in record[4]]
     
     def test(self):
         loop_in_isis = 0

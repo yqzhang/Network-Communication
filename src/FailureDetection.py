@@ -365,4 +365,5 @@ class FailureDetection:
 			output_buffer += str(i) + "\t" + str(float(accum) / count) + "\n"
 		plot.write(output_buffer)
 
+fd = FailureDetection()
 fd.accessibilityPlot()
