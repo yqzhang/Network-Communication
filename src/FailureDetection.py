@@ -2,6 +2,8 @@
 # Author: Yunqi Zhang
 # Email: yqzhang@ucsd.edu
 
+import LinkMap
+import FailureVerifier
 from ISISFailure import Failure
 from ISISFailure import ISISFailure
 from Utils import Utils
@@ -16,6 +18,8 @@ class FailureDetection:
 	failureList = list()
 	util = Utils()
 	iprouter = IPRouter()
+	linkmap = LinkMap.LinkMap()
+	failureVerifier = FailureVerifier.PingFailureVerifier()
 
 	# Source ID Map for ping data
 	SourceIDMap = {'ucsb':0,'ucla':1,'ucsd':2,'ucdavis':3,'berkeley':4,'ucsc':5}
@@ -213,6 +217,109 @@ class FailureDetection:
 		print("Question port: %d" %question_count)
 		print("Both end nodes have been pinged: %d" %both_count)
 
+	def analyzeFailureToRoute(self):
+		# Output file "route_change.xml"
+		# Output in xml format
+		file = open("route_change_with_weight.xml", "w")
+
+		# Statistics
+		failure_count = 0
+		map_count = 0
+		no_ip_count = 0
+		non_reachable_count = 0
+		question_count = 0
+		both_count = 0
+
+		# Traverse the failure list and look them up
+		for fail in self.failureList:
+			# Statistics
+			failure_count += 1
+			if fail[1] == "??" or fail[3] == "??":
+				question_count += 1
+
+			router1 = fail[0]
+			port1 = fail[1]
+			router2 = fail[2]
+			port2 = fail[3]
+			failure_start = float(fail[4])
+			failure_end = float(fail[5])
+
+			src_ip = list()
+			dst_ip = list()
+			# Format: router1, port1, router2, port2, failure_start, failure_end
+			src_ping = self.lookUpByRouter(router1, port1, failure_start, failure_end, False, src_ip)
+			dst_ping = self.lookUpByRouter(router2, port2, failure_start, failure_end, False, dst_ip)
+
+			output_buffer = "<Failure>\n\t<Source>" + router1 + ":" + port1 + "</source>\n"
+			output_buffer += "\t<destination>" + router2 + ":" + port2 + "</destination>\n"
+			output_buffer += "\t<src_ip>" + str(src_ip[0]) + "</src_ip>\n"
+			output_buffer += "\t<dst_ip>" + str(dst_ip[0]) + "</dst_ip>\n"
+			output_buffer += "\t<start>" + str(failure_start) + "</start>\n"
+			output_buffer += "\t<end>" + str(failure_end) + "</end>\n"
+
+			if src_ping == None and dst_ping == None:
+				no_ip_count += 1
+				continue
+
+			ifRouted = False
+			ifReachable = True
+			ifSrc = False
+			ifDes = False
+			for i in range(6):
+				output_buffer += "\t<source id=\"" + str(i) + "\">\n"
+				if src_ping != None and src_ping[i] != None and self.ifChanged(src_ping[i]) == True:
+					ifRouted = True
+					ifSrc = True
+					output_buffer += "\t\t<to=source>\n"
+					for ping in src_ping[i]:
+						if ping[0] < failure_start:
+							output_buffer += "\t\t\t<before>" + str(ping[2]) +\
+							", "+ str(self.linkmap.calWeight(self.failureVerifier.getPath(ping))) + ", "+ str(ping[3]) + ", " + str(ping[4]) + "</before>\n"
+						elif ping[0] < failure_end:
+							output_buffer += "\t\t\t<during>" + str(ping[2]) + \
+							", " + str(self.linkmap.calWeight(self.failureVerifier.getPath(ping))) + ", " + str(ping[3]) + ", " + str(ping[4]) + "</during>\n"
+						else:
+							output_buffer += "\t\t\t<after>" + str(ping[2]) + \
+							", " + str(self.linkmap.calWeight(self.failureVerifier.getPath(ping))) + ", " + str(ping[3]) + ", " + str(ping[4]) + "</after>\n"
+						if ping[3] == False:
+							ifReachable = False
+					output_buffer += "\t\t</to>\n"
+
+				if dst_ping != None and dst_ping[i] != None and self.ifChanged(dst_ping[i]) == True:
+					ifRouted = True
+					ifDes = True
+					output_buffer += "\t\t<to=destination>\n"
+					for ping in dst_ping[i]:
+						if ping[0] < failure_start:
+							output_buffer += "\t\t\t<before>" + str(ping[2]) +\
+							", "+ str(self.linkmap.calWeight(self.failureVerifier.getPath(ping))) + ", "+ str(ping[3]) + ", " + str(ping[4]) + "</before>\n"
+						elif ping[0] < failure_end:
+							output_buffer += "\t\t\t<during>" + str(ping[2]) + \
+							", " + str(self.linkmap.calWeight(self.failureVerifier.getPath(ping))) + ", " + str(ping[3]) + ", " + str(ping[4]) + "</during>\n"
+						else:
+							output_buffer += "\t\t\t<after>" + str(ping[2]) + \
+							", " + str(self.linkmap.calWeight(self.failureVerifier.getPath(ping))) + ", " + str(ping[3]) + ", " + str(ping[4]) + "</after>\n"
+						if ping[3] == False:
+							ifReachable = False
+					output_buffer += "\t\t</to>\n"
+				output_buffer += "\t</source>\n"
+			output_buffer += "</Failure>\n"
+			if ifReachable == False:
+				non_reachable_count += 1
+			if ifRouted == True:
+				map_count += 1
+				file.write(output_buffer)
+			if ifSrc == True and ifDes == True:
+				both_count += 1
+		# Statistics
+		print("------------------------------STATISTICS---------------------------------")
+		print("Total failure: %d" %failure_count)
+		print("Mapped failure count: %d" %map_count)
+		print("No IP address: %d" %no_ip_count)
+		print("Caused inreachable: %d" %non_reachable_count)
+		print("Question port: %d" %question_count)
+		print("Both end nodes have been pinged: %d" %both_count)
+
 	def failurePlot(self):
 		# Output to failure_plot.data
 		plot = open("failure_plot.data", "w")
@@ -366,4 +473,4 @@ class FailureDetection:
 		plot.write(output_buffer)
 
 fd = FailureDetection()
-fd.accessibilityPlot()
+fd.analyzeFailureToRoute()

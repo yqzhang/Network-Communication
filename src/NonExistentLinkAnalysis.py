@@ -6,9 +6,10 @@ import LinkMapOld
 import time
 import traceback
 from Utils import Utils
+from operator import itemgetter,attrgetter
 
 def nonExistentLinkAnalysis(missingLinks):
-	''' Do something to analysis the non-existent links.  
+	''' Do something to analyze the non-existent links.  
 	Print out missinglinks with their router+port, reversed
 	route info position'''
 	test = Utils()
@@ -23,7 +24,7 @@ def nonExistentLinkAnalysis(missingLinks):
 	countDest = set()
 	countLink = set()
 	countLinkNotLast = set()
-	routeCount = set()
+	routeCount = dict()
 	for i in missingLinks:
 	#for i in p.getNonExistentLinks():
 		route = i[4]
@@ -49,7 +50,12 @@ def nonExistentLinkAnalysis(missingLinks):
 			logFile.write(link[0]+"\t"+link[1]+"\n")
 			logFile.write(str(test.ReverseLookup(float(i[0]),float(i[1]),i[2]))+"\n")
 			logFile.write("====================================================================\n")
-			routeCount.add(linkroute1+":"+linkroute2)
+			if linkroute1+":"+linkroute2 in routeCount:
+				routeCount[linkroute1+":"+linkroute2] += 1
+			elif linkroute2+":"+linkroute1 in routeCount:
+				routeCount[linkroute2+":"+linkroute1] += 1
+			else:
+				routeCount[linkroute1+":"+linkroute2] = 1
 			countLink.add(link)
 
 	print "RouteCount:",routeCount
@@ -77,12 +83,22 @@ def MissingLinkVarification():
 
 	# missing links, <original_record,missedlinks>
 	MissingLinks = p.weightFilter(p.getNonExistentLinks())
-	tmp = set()
+	tmp = dict()
 	for i in MissingLinks:
+		midTime = (i[0]+i[1])/2
 		for j in i[5]:
-			tmp.add((j[0],j[1]))
+			linkroute1 = test.LookUp(j[0],'',midTime)
+			linkroute1 = linkroute1.split(',')[0] 
+			linkroute2 = test.LookUp(j[1],'',midTime)
+			linkroute2 = linkroute2.split(',')[0] 
+			if (linkroute1,linkroute2) in tmp:
+				tmp[(linkroute1,linkroute2)] += 1
+			elif (linkroute2,linkroute1) in tmp:
+				tmp[(linkroute2,linkroute1)] += 1
+			else:
+				tmp[(linkroute1,linkroute2)] = 1
 	print "=====================Original========================"
-	print tmp
+	print sorted(tmp.items(), key=itemgetter(1, 0))
 	print len(MissingLinks)
 	print len(tmp)
 
@@ -121,7 +137,9 @@ def MissingLinkVarification():
 						CanExplain[k] = True
 						log.write("Explain:"+str(CanExplain)+'\n')
 						log.write("Missing:"+str(i)+'\n')
-						log.write("Found:"+str(j)+'\n\n')
+						log.write("Weight:"+str(linkmap.calWeight(p.getPath(i[:-1])))+"\n")
+						log.write("Found:"+str(j)+'\n')
+						log.write("Weight:"+str(linkmap.calWeight(p.getPath(j)))+"\n\n")
 				if False not in CanExplain:
 					break
 			if False not in CanExplain:
@@ -270,16 +288,19 @@ def MissingLinkVarification():
 		newMissingLinks.remove(t)
 	for t in add:
 		newMissingLinks.append(t)
-	tmp = set()
+	tmp = dict()
 	for i in newMissingLinks:
 		for j in i[5]:
-			tmp.add((j[0],j[1]))
+			if (j[0],j[1]) in tmp:
+				tmp[(j[0],j[1])] +=1
+			else:
+				tmp[(j[0],j[1])] =1
 	print "=====================Eliminate Different respond========================"
-	print tmp
+	print tmp.items()
 	print len(newMissingLinks)
 	print len(tmp)
 
-	nonExistentLinkAnalysis(newMissingLinks)
+	#nonExistentLinkAnalysis(newMissingLinks)
 
 	# out put all the tr history for all the missing links,
 	# for manual verification 
