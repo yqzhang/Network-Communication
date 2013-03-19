@@ -259,6 +259,10 @@ class PingFailureVerifier:
             return None
         else:
             return rp.split(',')[0]
+        if not '* *' == ip:
+            return self.util.LookUp(ip.strip(), '', timestamp)
+        else:
+            return "* *"
         
     def getPath(self, record):
         return [self.ipToRouter(hop.strip(), float(record[0])) for hop in record[4]]

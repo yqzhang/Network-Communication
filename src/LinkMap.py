@@ -104,6 +104,8 @@ class LinkMap:
         router2 = router2.strip()
         if router1 in self.link_list and router2 in self.link_list[router1] and 'weight' in self.link_list[router1][router2]:
             return self.link_list[router1][router2]['weight']
+        elif router2 in self.link_list and router1 in self.link_list[router2] and 'weight' in self.link_list[router2][router1]:
+            return self.link_list[router2][router1]['weight']
         else:
             return float('inf')
 
@@ -115,6 +117,10 @@ class LinkMap:
                 start = True
             if start:
                 total_weight += self.getWeight(path[i], path[i+1])
+            if (not start) and (not path[i] == '* *') and (not path[i+1] == '* *'):
+                start = True
+            if start:
+                total_weight += self.getWeight(path[i].strip(), path[i+1].strip())
         return total_weight
             
 
@@ -124,15 +130,16 @@ class LinkMap:
             weight = self.link_list[router1][router2]['weight']
             self.link_list[router1][router2]['weight'] = float('inf')
         if router2 in self.link_list and router1 in self.link_list[router2] and 'weight' in self.link_list[router2][router1]:
-            weight = self.link_list[router2][router1]['weight']
             self.link_list[router2][router1]['weight'] = float('inf')
         return weight
 
     def enableLink(self, router1, router2, weight):
         if router1 in self.link_list and router2 in self.link_list[router1] and 'weight' in self.link_list[router1][router2]:
-            self.link_list[router1][router2]['weight'] = weight
+            if self.link_list[router1][router2]['weight'] > weight:
+                self.link_list[router1][router2]['weight'] = weight
         if router2 in self.link_list and router1 in self.link_list[router2] and 'weight' in self.link_list[router2][router1]:
-            self.link_list[router2][router1]['weight'] = weight
+            if self.link_list[router2][router1]['weight'] > weight:
+                self.link_list[router2][router1]['weight'] = weight
 
     def disableLinkList(self, links):
         weights = []
@@ -163,9 +170,9 @@ class LinkMap:
             node = min(reachable, key = lambda x : reachable[x])
             length = reachable[node]
             del reachable[node]
+            shortest_path[node] = length
             if node == dest:
                 return path[dest], length
-            shortest_path[node] = length
             for router in self.link_list[node]:
                 if router in shortest_path:
                     continue
@@ -185,13 +192,13 @@ class LinkMap:
             return False, path, shortest_path
             
     def getRealtimeShortestPath(self, source, dest, time, failureList):
-        linkList = list()
-        weightList = list()
+        linkList = []
         for fail in failureList:
             if fail[4] < time and fail[5] > time:
                 temp = [fail[0], fail[2]]
                 linkList.append(temp)
         weightList = self.disableLinkList(linkList)
+        
         # normal shortest path
         shortest_path = {source: 0}
         rest_nodes = {}
@@ -211,9 +218,9 @@ class LinkMap:
             node = min(reachable, key = lambda x : reachable[x])
             length = reachable[node]
             del reachable[node]
-            if node == dest:
-                return path[dest], length
             shortest_path[node] = length
+            if node == dest:
+                break
             for router in self.link_list[node]:
                 if router in shortest_path:
                     continue
@@ -229,11 +236,12 @@ class LinkMap:
                     path[router].append(router)
         # end of normal shortest path
         self.enableLinkList(linkList, weightList)
+
         # return result
         if dest in shortest_path:
-            return True, path[dest], shortest_path[dest]
+            return path[dest], shortest_path[dest]
         else:
-            return False, path, shortest_path
+            return None, float('inf')
 
 #p = LinkMap()
 ##for r1 in p.link_list:
