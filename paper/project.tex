@@ -421,7 +421,10 @@
 \pagestyle{plain}
 
 \begin{abstract}
-%\boldmath
+
+The network services today are having an significant increase of the requirement on the availability, while at the same time the growing size and complexity of the networks we are building makes it even more challenging to provide such property. We believe a better understanding of the failures should be quite helpful to reduce them. However, the high expense and performance overhead of the traditional approaches eliminates the feasibility to perform such study across the network.
+
+We propose a much cheaper approach to perform such failure analysis by carefully extracting the information from syslog which is commonly provided by most production networks today. And we present a methodology to analyze and categorize the unexpected network behaviors including routing loops and non-existent links. In addition, we evaluate the performance of the routing protocols with the extracted data. To validate our mechanism, we carry out a series of analysis in a fairly large network.
 
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
@@ -529,7 +532,7 @@ The traceroute data were simply the original output of the traceroute applicatio
 
 \begin{enumerate}
 
-\item{Hops with local area network} Typically, the first few hops of the traceroute were within the local area network, hich we were not actually interested in. Consequently, we could verify whtether the hop was within LAN or in CENIC by looking up if there was an IP address assigned to it.
+\item{Hops with local area network} Typically, the first few hops of the traceroute were within the local area network, which we were not actually interested in. Consequently, we could verify whether the hop was within LAN or in CENIC by looking up if there was an IP address assigned to it.
 
 \item{Unrecognizable hops} Not all the routers in CENIC support the UDP traceroute application, so some of them would just reponse as ** when they were traced. We were not able to get rid of it, thus we had to be careful with it in the following analysis.
 
@@ -639,21 +642,21 @@ In the 70831 traceroute records, we detected 366 records by IP approach and 395 
 yesi
 For IP approach, we categorized these 366 records by the length of loop and found that more than 95\% (350 out of 366) of loops were jumping between only 2 routers. The longest loop had a length of As of the long loop records, at least 11 of 16 would also fall into a two-router trap finally. We also found that there were onl 11 rcordes fthat naally arrived at the destination. aAll of the 11 records shared loop length of 2. 9 of 11 records only experienced 1 round of loop. Another interesting phenomenon was that 344 of 366 records were trapped into a loop that consisted of 2 adjacent IP addresses.
 
-%\begin{figure}[h!]
-%\centering
-%\includegraphics[scale=0.4]{plot/loop_length1.eps}
-%\caption{Loop Length Statistics}
-%\label{fig:asdf}
-%\end{figure}
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.4]{plot/loop_length1.eps}
+\caption{Loop Length Statistics}
+\label{fig:asdf}
+\end{figure}
 
 For Router approach, we categorized these 395 records by the length of loop and found that more than 90\% (359 out of 395) of loops are jumping between only 2 routers. As of the long loop records, at least 24 of 36 would also fall into a two-router trap finally. We also found that there were 29 records that finally arrived at the destination. 26 of the 29 records shared loop length of 2 while 2 records had length of 4 and the last one 6. 26 of 29 records only experienced 1 round of loop.
 
-%\begin{figure}[h!]
-%\centering
-%\includegraphics[scale=0.4]{plot/loop_length2.eps}
-%\caption{Loop Length Statistics}
-%\label{fig:asdf}
-%\end{figure}
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.4]{plot/loop_length2.eps}
+\caption{Loop Length Statistics}
+\label{fig:asdf}
+\end{figure}
 
 We then tried to figure out a mapped from loop records onto IS-IS failures to reveal what caused such undesired routing behavior. We categorized the loop records by the potential pattern of failures' impact. By applying both time consistency and router consistency, we obtained the first category, Simple Link failure. However this pattern could only explain a small part of the loop records. Introducing a failure propagation assumption by loosing the time constraints granted us the second category, Complex Failure Propagation. Potential causes for the rest part of records that couldn't be explained by the above two reasons might be done in the futurte work. For the following part, we only consider the 366 records we obtained by IP approach.
 
@@ -661,15 +664,24 @@ We then tried to figure out a mapped from loop records onto IS-IS failures to re
 
 Suppose a trace-route arrived at destination without any unexpected failures. A simple link failure may occur in any link on the normal path. Then the router would have to forward packets to other routers which actually could not help reach the destination and finally lead to a loop.
 
-%\begin{figure}[h!]
-%\centering
-%\includegraphics[scale=0.4]{plot/simple_link_failure.eps}
-%\caption{Simple link Failure}
-%\label{fig:asdf}
-%\end{figure}
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.4]{plot/simple_link_failure.eps}
+\caption{Simple link Failure}
+\label{fig:asdf}
+\end{figure}
 
 
 \textbf{Complex Failure Propagation}\\
+
+While considering the direct influence of failure in the above part, it was also possible that some failures might leave impact on the network even after they were revocered. Suppose a trace-route arrived at destination without any unexpected failures and then a failure occur in one link on the path. Then the routers ahead the failure node might detect that forwarding packets to the failure node was useless. Finally these routers would try other ways. If unfortunately these ways didn't work either, then loop would happen again.    
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.4]{plot/complex_failure_propagation.eps}
+\caption{Complex Failure Propagation}
+\label{fig:asdf}
+\end{figure}
 
 While considering the direct influence of failure in the above part, it was also possible that some failures might leave impact on the network even after they were revocered. Suppose a trace-route arrived at destination without any unexpected failures and then a failure occur in one link on the path. Then the routers ahead the failure node might detect that forwarding packets to the failure node was useless. Finally these routers would try other ways. If unfortunately these ways didn't work either, then loop would happen again.    
 
@@ -821,9 +833,9 @@ In this paper, we show an approach to extract the network failure information of
 
 % use section* for acknowledgment
 \section*{Acknowledgment}
-
 We'd like to thank Prefessor Snoeren and Siva's advice on this project. And we do really appreciate the help from Dr Daniel Turner who provided most of the data and patiently answered every single question we asked. Unfortunately, this project is not funded by any fundation.
 
+We'd like to thank Prefessor Snoeren and Siva's advice on this project. And we do really appreciate the help from Dr Daniel Turner who provided most of the data and patiently answered every single question we asked. Unfortunately, this project is not funded by any fundation.
 
 % trigger a \newpage just before the given reference
 % number - used to balance the columns on the last page

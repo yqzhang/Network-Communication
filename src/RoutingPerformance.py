@@ -58,7 +58,7 @@ class RoutingPerformance:
 			if self.ifDetectable(path):
 				count += 1
 				actualWeight = self.linkMap.calWeight(path)
-				optimalWeight = self.linkMap.getRealtimeShortestPath(self.getFirstHop(path), self.getLastHop(path), ping[0], self.failureList)[1]
+				optimalWeight = self.linkMap.getShortestPath(self.getFirstHop(path), self.getLastHop(path))[1]
 				if actualWeight == optimalWeight:
 					equal += 1
 				#print("Actual:" + str(actualWeight) + " Optimal:" + str(optimalWeight))

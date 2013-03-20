@@ -27,6 +27,22 @@ class PingFailureVerifier:
                 path[hops[i]] = i
         return 0
 
+    def loopDetectByRouter(self, record):
+        hops = record[4]
+        path = {}
+        for i in range(1, len(hops)):
+            if hops[i] == '* *':
+                continue
+            router = self.util.LookUp(hops[i], '', float(record[0]))
+            if None ==router:
+                continue
+            router = router.split(',')[0]
+            if router in path:
+                return i - path[router]
+            else:
+                path[router] = i
+        return 0
+
     def nonExistentLinkDetect(self, record):
         result = []
         hops = record[4]
@@ -195,6 +211,20 @@ class PingFailureVerifier:
         for record in self.util.FindPing('',''):
             count += 1
             has_loop = self.loopDetect(record)
+            if has_loop > 0:
+                if has_loop in result:
+                    result[has_loop].append(record)
+                else:
+                    result[has_loop] = [record]
+        print "records, ", count
+        return result
+
+    def getLoopsByRouter(self):
+        result = {}
+        count = 0
+        for record in self.util.FindPing('',''):
+            count += 1
+            has_loop = self.loopDetectByRouter(record)
             if has_loop > 0:
                 if has_loop in result:
                     result[has_loop].append(record)
@@ -378,11 +408,16 @@ class PingFailureVerifier:
         result.append([self.util.LookUp(hop.strip(), '', record[0]).strip() for hop in record[4] if (not '* *' in hop) and (not self.util.LookUp(hop.strip(), '', record[0]) == None) ])
         return [str(r) for r in result]
 
-#p = PingFailureVerifier()
+p = PingFailureVerifier()
 #for record in p.util.FindPing('',''):
 #    path = p.getPath(record)
 #    w = p.link_map.calWeight(path)
 #r = p.getNonExistentLinks()
 #r1 = p.weightFilter(r)
 #print len(r1)
-#p.getLoops()
+loops = p.getLoopsByRouter()
+for i in loops:
+    print i, len(loops[i])
+    if i > 2:
+        for r in loops[i]:
+            print p.getPath(r)
