@@ -367,22 +367,17 @@
   \IEEEauthorblockN{ }
 }
 
-%\author{\IEEEauthorblockN{Michael Shell}
-%\IEEEauthorblockA{School of Electrical and\\Computer Engineering\\
-%Georgia Institute of Technology\\
-%Atlanta, Georgia 30332--0250\\
-%Email: http://www.michaelshell.org/contact.html}
-%\and
-%\IEEEauthorblockN{Homer Simpson}
-%\IEEEauthorblockA{Twentieth Century Fox\\
-%Springfield, USA\\
-%Email: homer@thesimpsons.com}
-%\and
-%\IEEEauthorblockN{James Kirk\\ and Montgomery Scott}
-%\IEEEauthorblockA{Starfleet Academy\\
-%San Francisco, California 96678-2391\\
-%Telephone: (800) 555--1212\\
-%Fax: (888) 555--1212}}
+\author{\IEEEauthorblockN{Yunqi Zhang}
+\IEEEauthorblockA{UC San Diego\\
+yqzhang@ucsd.edu}
+\and
+\IEEEauthorblockN{Wangfan Fu}
+\IEEEauthorblockA{UC San Diego\\
+wafu@ucsd.edu}
+\and
+\IEEEauthorblockN{Dexin Qi}
+\IEEEauthorblockA{UC San Diego\\
+deqi@ucsd.edu}}
 
 % conference papers do not typically use \thanks and this command
 % is locked out in conference mode. If really needed, such as for
@@ -588,6 +583,20 @@ Basically, we meant the performance on calculating the shortest routing path by 
 
 \item{Optimal route} Here we just simply implemented the Dijkstra's Algorithm to calculate the optimal shortest path.
 
+\item{Congestion} With 70831 trace-route records, we measured the time each
+  record lasts, use it as an indicator of congestion in the network. We then
+  plot a graph to show the trend between trace-route lasting time and failure
+  amount with respect to time.We have normalized the failure data, and cut some extremely high spike.
+  We can see that they share a similar trend there in figure\ref{fig:TraceToFailure}. That
+  means, failures of links do cause congestion problem.
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.3]{plot/TraceToFailure.eps}
+\caption{Red is for traceroute data, blue is for failures amount. X axis is time
+and Y axis is a normalized scale.}
+\label{fig:TraceToFailure}
+\end{figure}
+
 \end{enumerate}
 
 In addition, we had to get rid of the first few hops within local area networks for both optimal route and actual one since we didn't have the link weights of them.
@@ -624,7 +633,19 @@ To validate the network history we reconstructed from the traceroute data, we tr
 For these 40073 detected failures, we had pinged at least one end of the failure link. And for 39505 out of 40073 (98.58\%) failures, we had pinged both ends at least once. Consequently, we believed our data is very representative for our analysis.
 
 \subsection{Statistices of Unexpected Network Behavior (Loops \& Non-existent Links)}
-80 nonexistent links out of 70831 traceroute records. They are classified into 5 categories,  45 in normal route shift, 9 in complex route shift, 3 in shortcut, 15 in trapped in loop, 8 in cannot verify. Among all these 80 nonexistent links, only 8 are directly involved with failures, and 18 of them happens when failures occured in the network other then themself. 
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.6]{plot/Statistic.eps}
+\caption{Statistics of Unexpected Network Behavior}
+\label{fig:statistics}
+\end{figure}
+%80 nonexistent links out of 70831 traceroute records. They are classified into 5 categories,  45 in normal route shift, 9 in complex route shift, 3 in shortcut, 15 in trapped in loop, 8 in cannot verify. Among all these 80 nonexistent links, only 8 are directly involved with failures, and 18 of them happens when failures occured in the network other then themself. 
+From table \ref{fig:statistics} we see that, loops have very different
+charasteristics than nonexistent links. Loops happens much more often than
+nonexistent links, and were much more likely to cause a failure in traceroute
+record. On the other hand, most of the traceroute with nonexistent links still
+get to the destination at last. This pointed out that, loop is always a threat
+in a network, and should always be avoided.
 
 \subsection{Measurement Bias}
 
@@ -646,7 +667,7 @@ For IP approach, we categorized these 366 records by the length of loop and foun
 \centering
 \includegraphics[scale=0.4]{plot/loop_length1.eps}
 \caption{Loop Length Statistics}
-\label{fig:asdf}
+\label{fig:asdf1}
 \end{figure}
 
 For Router approach, we categorized these 395 records by the length of loop and found that more than 90\% (359 out of 395) of loops are jumping between only 2 routers. As of the long loop records, at least 24 of 36 would also fall into a two-router trap finally. We also found that there were 29 records that finally arrived at the destination. 26 of the 29 records shared loop length of 2 while 2 records had length of 4 and the last one 6. 26 of 29 records only experienced 1 round of loop.
@@ -655,7 +676,7 @@ For Router approach, we categorized these 395 records by the length of loop and 
 \centering
 \includegraphics[scale=0.4]{plot/loop_length2.eps}
 \caption{Loop Length Statistics}
-\label{fig:asdf}
+\label{fig:asdf2}
 \end{figure}
 
 We then tried to figure out a mapped from loop records onto IS-IS failures to reveal what caused such undesired routing behavior. We categorized the loop records by the potential pattern of failures' impact. By applying both time consistency and router consistency, we obtained the first category, Simple Link failure. However this pattern could only explain a small part of the loop records. Introducing a failure propagation assumption by loosing the time constraints granted us the second category, Complex Failure Propagation. Potential causes for the rest part of records that couldn't be explained by the above two reasons might be done in the futurte work. For the following part, we only consider the 366 records we obtained by IP approach.
@@ -668,7 +689,7 @@ Suppose a trace-route arrived at destination without any unexpected failures. A 
 \centering
 \includegraphics[scale=0.4]{plot/simple_link_failure.eps}
 \caption{Simple link Failure}
-\label{fig:asdf}
+\label{fig:asdf3}
 \end{figure}
 
 
@@ -680,7 +701,7 @@ While considering the direct influence of failure in the above part, it was also
 \centering
 \includegraphics[scale=0.4]{plot/complex_failure_propagation.eps}
 \caption{Complex Failure Propagation}
-\label{fig:asdf}
+\label{fig:asdf4}
 \end{figure}
 
 While considering the direct influence of failure in the above part, it was also possible that some failures might leave impact on the network even after they were revocered. Suppose a trace-route arrived at destination without any unexpected failures and then a failure occur in one link on the path. Then the routers ahead the failure node might detect that forwarding packets to the failure node was useless. Finally these routers would try other ways. If unfortunately these ways didn't work either, then loop would happen again.    
