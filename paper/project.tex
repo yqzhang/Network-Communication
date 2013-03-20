@@ -359,13 +359,6 @@
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
-\author{
-  \IEEEauthorblockN{ }
-  \and
-  \IEEEauthorblockN{ }
-  \and
-  \IEEEauthorblockN{ }
-}
 
 \author{\IEEEauthorblockN{Yunqi Zhang}
 \IEEEauthorblockA{UC San Diego\\
@@ -444,13 +437,6 @@ We propose a much cheaper approach to perform such failure analysis by carefully
 % creates the second title. It will be ignored for other modes.
 \IEEEpeerreviewmaketitle
 
-
-\begin{abstract}
-
-The network services today are having an significant increase of the requirement on the availability of the network, while at the same time the growing size and comple 
-
-\end{abstract}
-
 \section{Introduction}
 \label{sec:sec1}
 
@@ -474,7 +460,7 @@ In \cite{Markopoulou:2008:CFO:1453698.1453699} Athina and his colleagues analyze
 
 While in \cite{Shaikh:2002:CSO:637201.637236, Gill:2011:UNF:2018436.2018477}, researchers carried detailed analysis under large enterpise data centers. In \cite{Shaikh:2002:CSO:637201.637236}, Shaikh and his colleagues focused on OSPF behavior. They tracked 205 router for a month, described how LSAs works, and gave corresponding explainations. Although they are intended to gave a clear illustration of how LSAs behaves, they offered a valuable insight of network failures at the same time. On the other hand, in \cite{Gill:2011:UNF:2018436.2018477}, Phillipa and his colleagues aimed to find out how failures behaves inside a larege enterpise data center. Since they get to access the data center directly, they are able to classify all kinds of hardware failures and software failures. They gave a lot of statics about how failures happens, and how redundancy performs in dealing with these failures. 
 
-The work mentioned above all involves accessing large scale of network infrastructure. In \cite{turner2010california}, Daniel together with other researchers did a detailed analysis over the CENIE network in california, with only the syslog history, mailing list and configuration setting of the routers. They successfully established correlations between these datas and found some interesting statics of the network.
+The work mentioned above all involves accessing large scale of network infrastructure. In \cite{turner2010california}, Daniel together with other researchers did a detailed analysis over the CENIC network in california, with only the syslog history, mailing list and configuration setting of the routers. They successfully established correlations between these datas and found some interesting statics of the network.
 
 In this paper, we continue to work on the data extracted from CENIC network, on a more detailed granuality, and more focus on the automated data instead of messages like mailing lists.
 
@@ -589,6 +575,7 @@ Basically, we meant the performance on calculating the shortest routing path by 
   amount with respect to time.We have normalized the failure data, and cut some extremely high spike.
   We can see that they share a similar trend there in figure\ref{fig:TraceToFailure}. That
   means, failures of links do cause congestion problem.
+
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.3]{plot/TraceToFailure.eps}
@@ -633,6 +620,7 @@ To validate the network history we reconstructed from the traceroute data, we tr
 For these 40073 detected failures, we had pinged at least one end of the failure link. And for 39505 out of 40073 (98.58\%) failures, we had pinged both ends at least once. Consequently, we believed our data is very representative for our analysis.
 
 \subsection{Statistices of Unexpected Network Behavior (Loops \& Non-existent Links)}
+
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.6]{plot/Statistic.eps}
@@ -640,19 +628,13 @@ For these 40073 detected failures, we had pinged at least one end of the failure
 \label{fig:statistics}
 \end{figure}
 %80 nonexistent links out of 70831 traceroute records. They are classified into 5 categories,  45 in normal route shift, 9 in complex route shift, 3 in shortcut, 15 in trapped in loop, 8 in cannot verify. Among all these 80 nonexistent links, only 8 are directly involved with failures, and 18 of them happens when failures occured in the network other then themself. 
-From table \ref{fig:statistics} we see that, loops have very different
-charasteristics than nonexistent links. Loops happens much more often than
-nonexistent links, and were much more likely to cause a failure in traceroute
-record. On the other hand, most of the traceroute with nonexistent links still
-get to the destination at last. This pointed out that, loop is always a threat
-in a network, and should always be avoided.
+From table \ref{fig:statistics} we see that, loops have very different charasteristics than nonexistent links. Loops happens much more often than nonexistent links, and were much more likely to cause a failure in traceroute record. On the other hand, most of the traceroute with nonexistent links still get to the destination at last. This pointed out that, loop is always a threat in a network, and should always be avoided.
 
 \subsection{Measurement Bias}
 
 First of all, the granularity of the network failures and the traceroute data could potentially affect our analysis of the network behaviors. As discussed ealier, the ISIS failures were probed at the granularity of one second, while many of them lasted less than couple seconds actually. This reduced the number of interesting traceroutes since they could not even reflect the effects of such short failures. We believed that a much finer granularity of the failures would be very helpful for further analysis.
 
-Additionally, our failure detection mechanism is based on adjacency status reported by the underlying routing protocol. For example, to ensure connectivity, the IS-IS protocol requires routers to send and
-receive hello messages. By default, a router sends a hello message once every ten seconds and declares a link disconnected if no hello message is received for thirty seconds. Consequently, the failure detection could have up to 30 seconds of delay, which could reduce the accuracy of the mapping between the failure and corresponding traceroutes. In addition, this would probably affect our analysis about how the failures affected the network behaviors.
+Additionally, our failure detection mechanism is based on adjacency status reported by the underlying routing protocol. For example, to ensure connectivity, the IS-IS protocol requires routers to send and receive hello messages. By default, a router sends a hello message once every ten seconds and declares a link disconnected if no hello message is received for thirty seconds. Consequently, the failure detection could have up to 30 seconds of delay, which could reduce the accuracy of the mapping between the failure and corresponding traceroutes. In addition, this would probably affect our analysis about how the failures affected the network behaviors.
 
 \section{Data Analysis}
 \label{sec:sec6}
@@ -660,7 +642,7 @@ receive hello messages. By default, a router sends a hello message once every te
 \subsection{Loop Characterization}
  
 In the 70831 traceroute records, we detected 366 records by IP approach and 395 records by router approach that contain loops in total. 
-yesi
+
 For IP approach, we categorized these 366 records by the length of loop and found that more than 95\% (350 out of 366) of loops were jumping between only 2 routers. The longest loop had a length of As of the long loop records, at least 11 of 16 would also fall into a two-router trap finally. We also found that there were onl 11 rcordes fthat naally arrived at the destination. aAll of the 11 records shared loop length of 2. 9 of 11 records only experienced 1 round of loop. Another interesting phenomenon was that 344 of 366 records were trapped into a loop that consisted of 2 adjacent IP addresses.
 
 \begin{figure}[h!]
@@ -681,7 +663,7 @@ For Router approach, we categorized these 395 records by the length of loop and 
 
 We then tried to figure out a mapped from loop records onto IS-IS failures to reveal what caused such undesired routing behavior. We categorized the loop records by the potential pattern of failures' impact. By applying both time consistency and router consistency, we obtained the first category, Simple Link failure. However this pattern could only explain a small part of the loop records. Introducing a failure propagation assumption by loosing the time constraints granted us the second category, Complex Failure Propagation. Potential causes for the rest part of records that couldn't be explained by the above two reasons might be done in the futurte work. For the following part, we only consider the 366 records we obtained by IP approach.
 
-\textbf{Simple Link Failure}\\
+\textbf{Simple Link Failure}
 
 Suppose a trace-route arrived at destination without any unexpected failures. A simple link failure may occur in any link on the normal path. Then the router would have to forward packets to other routers which actually could not help reach the destination and finally lead to a loop.
 
@@ -693,7 +675,7 @@ Suppose a trace-route arrived at destination without any unexpected failures. A 
 \end{figure}
 
 
-\textbf{Complex Failure Propagation}\\
+\textbf{Complex Failure Propagation}
 
 While considering the direct influence of failure in the above part, it was also possible that some failures might leave impact on the network even after they were revocered. Suppose a trace-route arrived at destination without any unexpected failures and then a failure occur in one link on the path. Then the routers ahead the failure node might detect that forwarding packets to the failure node was useless. Finally these routers would try other ways. If unfortunately these ways didn't work either, then loop would happen again.    
 
@@ -715,96 +697,76 @@ While considering the direct influence of failure in the above part, it was also
 
 \subsection{Non-Existent Links Charaterization}
 
-Among the 70831 trace-route records, there were 80 records has non-existent links
-in them. 
-We classify these records into 5 categories, with respect to the complexity of
-their cause. They are: normal route shift, complex route shift, shortcut,
-trapped in loop, cannot verify. They are distributed as in
-figure:\ref{fig:PieChart}\\
+Among the 70831 trace-route records, there were 80 records has non-existent links in them. We classify these records into 5 categories, with respect to the complexity of their cause. They are: normal route shift, complex route shift, shortcut, trapped in loop, cannot verify. They are distributed as in Figure:\ref{fig:PieChart}.
+
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.8]{plot/PieChart.eps}
   \caption{Piechart of different types of missed links}
   \label{fig:PieChart}
-\end{figure}\\
-\textbf{Normal Route Shift}\\
-Consider a trace-route with max hops 5. In most situation, a certain route won't
-change during the process of trace-route. However, it is possible for router to
-choose another path during this process. An example is shown in figure:
-\ref{fig:NormalRouteShift}.\\
+\end{figure}
+
+\textbf{Normal Route Shift}
+
+Consider a trace-route with max hops 5. In most situation, a certain route won't change during the process of trace-route. However, it is possible for router to choose another path during this process. An example is shown in Figure \ref{fig:NormalRouteShift}.
+
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.5]{plot/RouteShift.eps}
   \caption{A Normal Route Shift example}
   \label{fig:NormalRouteShift}
-\end{figure}\\
-It is important to notice in figure:\ref{fig:NormalRouteShift} that, both of the
-two routes reached destination $E$, with $C$ on the third hop and $M$ on the fourth
-hop. We identify this kind of links by finding valid route with the same node on
-the same hop. 45 out of the 80 records fall into this category.\\
-\textbf{Complex Route Shift}\\
-This was a more complicated situation than in the first case. There were three
-key differences with the first category. First, a complex route
-shift may shift among more than 2 routes in a trace-route. Second, the picked route
-is allowed to be a route that did not reach the destination.
-Third, it is possible that none of other trace-route record can match a node on
-a certain hop of a complex route shift. Still, consider a
-trace-route with max hops 5. An example is shown in figure:
-\ref{fig:ComplexRouteShift}.\\
+\end{figure}
+
+It is important to notice in figure:\ref{fig:NormalRouteShift} that, both of the two routes reached destination $E$, with $C$ on the third hop and $M$ on the fourth hop. We identify this kind of links by finding valid route with the same node on the same hop. 45 out of the 80 records fall into this category.
+
+\textbf{Complex Route Shift}
+
+This was a more complicated situation than in the first case. There were three key differences with the first category. First, a complex route shift may shift among more than 2 routes in a trace-route. Second, the picked route is allowed to be a route that did not reach the destination. Third, it is possible that none of other trace-route record can match a node on a certain hop of a complex route shift. Still, consider a trace-route with max hops 5. An example is shown in Figure \ref{fig:ComplexRouteShift}.
+
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.5]{plot/ComplexRouteShift.eps}
   \caption{A Complex Route Shift example}
   \label{fig:ComplexRouteShift}
-\end{figure}\\
-From figure:\ref{fig:ComplexRouteShift}, we cannot tell what exactly happened.
-Although we see node $A$ on hop 4, we can see no $A$ on hop 4 from any other
-record. This means, we have no idea of how and why trace-route reached B on the
-fourth hop. Hop 5 behaves similar with normal route shift. There were 9 records
-fall into this category.\\
-\textbf{Shortcut}\\
-Short cut is a special case of a normal route shift, with one of the route in
-the shift to be an invalid route. An example is shown in
-figure:\ref{fig:Shortcut}.\\
+\end{figure}
+
+From Figure \ref{fig:ComplexRouteShift}, we cannot tell what exactly happened. Although we see node $A$ on hop 4, we can see no $A$ on hop 4 from any other record. This means, we have no idea of how and why trace-route reached B on the fourth hop. Hop 5 behaves similar with normal route shift. There were 9 records fall into this category.
+
+\textbf{Shortcut}
+
+Short cut is a special case of a normal route shift, with one of the route in the shift to be an invalid route. An example is shown in figure:\ref{fig:Shortcut}.
+
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.5]{plot/Shortcut.eps}
   \caption{A Shortcut example}
   \label{fig:Shortcut}
-\end{figure}\\
-To explain this phenomenon in a more intuitive way, suppose one of the router is
-down, trace-route cannot get to the destination due to the router failure. Then,
-during the trace-route, the router is fixed and back to work, trace-route got
-the destination directly on the next hop. There were 3 records fall into this
-category.\\
-\textbf{Trapped in loop}\\
-This is another special case of normal route shift, with one of the route is a
-loopy route. An example is shown in figure:\ref{fig:TrappedInLoop}.\\
+\end{figure}
+
+To explain this phenomenon in a more intuitive way, suppose one of the router is down, trace-route cannot get to the destination due to the router failure. Then, during the trace-route, the router is fixed and back to work, trace-route got the destination directly on the next hop. There were 3 records fall into this category.
+
+\textbf{Trapped in loop}
+
+This is another special case of normal route shift, with one of the route is a loopy route. An example is shown in figure:\ref{fig:TrappedInLoop}.
+
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.5]{plot/TrappedInLoop.eps}
   \caption{Route Trapped in Loop example}
   \label{fig:TrappedInLoop}
-\end{figure}\\
-There were 15 records fall into this category.\\
-\textbf{Cannot verify}\\
-The rest 8 records fall into this category. For these records, there exist some
-node that is never seen in other trace-route records with the same source and
-destination. Thus, there is no way we can tell what happened with such
-records.\\ 
+\end{figure}
 
-In order to further analyze why these nonexistent links occurred, we tried to
-find out the relationship of nonexistent links with network failures.\\
-26 out of the 80 nonexistent links happened at the same time as a failure some
-where in the network. But only 8 among these 26 records has one of it's
-nonexistent link involved in a failure. Thus, generally speaking, network
-failures were not the main cause of nonexistent links. Also, only 11 out of the
-80 records with nonexistent links failed to reach the destination. \\
-In conclusion, nonexistent links occurred in a very small fraction of data, and
-has no great impact on the performance of network, since most of them arrived at
-the destination anyway.
+There were 15 records fall into this category.
 
+\textbf{Cannot verify}
 
+The rest 8 records fall into this category. For these records, there exist some node that is never seen in other trace-route records with the same source and destination. Thus, there is no way we can tell what happened with such records.
+
+In order to further analyze why these nonexistent links occurred, we tried to find out the relationship of nonexistent links with network failures.
+
+26 out of the 80 nonexistent links happened at the same time as a failure some where in the network. But only 8 among these 26 records has one of it's nonexistent link involved in a failure. Thus, generally speaking, network failures were not the main cause of nonexistent links. Also, only 11 out of the 80 records with nonexistent links failed to reach the destination.
+
+In conclusion, nonexistent links occurred in a very small fraction of data, and has no great impact on the performance of network, since most of them arrived at the destination anyway.
 
 \subsection{Failure Analysis}
 
@@ -854,8 +816,6 @@ In this paper, we show an approach to extract the network failure information of
 
 % use section* for acknowledgment
 \section*{Acknowledgment}
-We'd like to thank Prefessor Snoeren and Siva's advice on this project. And we do really appreciate the help from Dr Daniel Turner who provided most of the data and patiently answered every single question we asked. Unfortunately, this project is not funded by any fundation.
-
 We'd like to thank Prefessor Snoeren and Siva's advice on this project. And we do really appreciate the help from Dr Daniel Turner who provided most of the data and patiently answered every single question we asked. Unfortunately, this project is not funded by any fundation.
 
 % trigger a \newpage just before the given reference
