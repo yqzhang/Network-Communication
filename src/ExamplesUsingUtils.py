@@ -22,12 +22,53 @@ test = Utils()
 
 # this next line must be done in order to execute the line after it.
 test.ReadFormatedPingDataIntoMemory()
-count = 0
-for i in test.FindPing('',''):
-	print i
-	count += 1
-	if count > 10:
-		break
+#++++++++++++++++++++++++++++++++#
+#pingList = dict()
+#for i in test.FindPing('',''):
+	#if i[0] in pingList:
+		#pingList[i[0]].append(i[1]-i[0])
+	#else:
+		#pingList[i[0]] = [i[1]-i[0]]
+#pingItemList = []
+#for i in pingList:
+	#pingItemList.append((i,sum(pingList[i])/len(pingList[i])))
+#pingItemList = sorted(pingItemList)
+#pingStatistic = open("pingToTime.txt",'w')
+#for i in pingItemList:
+	#pingStatistic.write("{"+str(i[0])+","+str(i[1])+"},")
+#pingStatistic.close()
+#++++++++++++++++++++++++++++++++#
+
+#++++++++++++++++++++++++++++++++#
+#stat = open("congestionTest1.csv",'r')
+#toPing = []
+#toFailure = []
+#line = stat.readline()
+#line = stat.readline()
+#line = stat.readline()
+#while line != '':
+	#s = line.split(',')
+	#startT = float(s[0])
+	#endT = float(s[1])
+	#failures = float(s[5])
+	#if s[6] != '':
+		#trace = float(s[6])
+		#toPing.append((startT,trace))
+	#toFailure.append((startT,failures))
+	#line = stat.readline()
+#timeToping = open("timePing.txt",'w')
+#timeTofailure = open("timeFailure.txt",'w')
+#for i in sorted(toPing):
+	#timeToping.write("{"+str(i[0])+","+str(i[1])+"},")
+#for i in sorted(toFailure):
+	#timeTofailure.write("{"+str(i[0])+","+str(i[1])+"},")
+#++++++++++++++++++++++++++++++++#
+
+
+
+timeToping.close()
+timeTofailure.close()
+
 
 #print test.LookUp('137.164.46.77','',1353388859)
 #print test.LookUp('137.164.46.245','',1353388859)

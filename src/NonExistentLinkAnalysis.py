@@ -99,6 +99,11 @@ def MissingLinkVarification():
 			else:
 				tmp[(linkroute1,linkroute2)] = 1
 	print "=====================Original========================"
+	countTrue = 0
+	for i in MissingLinks:
+		if i[3] == True:
+			countTrue += 1
+	print countTrue,"of nonExLink arrived at last"
 	print sorted(tmp.items(), key=itemgetter(1, 0))
 	print len(MissingLinks)
 	print len(tmp)
@@ -165,9 +170,15 @@ def MissingLinkVarification():
 						CanExplain[k] = True
 						log.write("Explain:"+str(CanExplain)+'\n')
 						log.write("Missing:"+str(i)+'\n')
-						log.write("Weight:"+str(linkmap.calWeight(p.getPath(i[:-1])))+"\n")
+						if "* *" in i[4] or None in i[4]:
+							log.write("Weight: inf \n")
+						else:
+							log.write("Weight:"+str(linkmap.calWeight(p.getPath(i[:-1])))+"\n")
 						log.write("Found:"+str(j)+'\n')
-						log.write("Weight:"+str(linkmap.calWeight(p.getPath(j)))+"\n\n")
+						if "* *" in j[4] or None in j[4]:
+							log.write("Weight: inf \n")
+						else:
+							log.write("Weight:"+str(linkmap.calWeight(p.getPath(j)))+"\n\n")
 				if False not in CanExplain:
 					break
 			if False not in CanExplain:
