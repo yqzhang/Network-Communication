@@ -1,9 +1,34 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
+
+\bibitem{Baran_1964}
+Paul Baran.
+\newblock On distributed communications: I. introduction to distributed
+  communications networks.
+\newblock {\em Volumes IXI RAND Corporation Research Documents August},
+  12(1):51, 1964.
+
+\bibitem{cenic2013online}
+CENIC.
+\newblock The corporation for education network initiatives in california.
+\newblock \url{http://www.cenic.org/}, March 2013.
+
+\bibitem{Chandra:2008:CFA:1453175.1453178}
+Abhishek Chandra, Rohini Prinja, Sourabh Jain, and ZhiLi Zhang.
+\newblock Co-designing the failure analysis and monitoring of large-scale
+  systems.
+\newblock {\em SIGMETRICS Perform. Eval. Rev.}, 36(2):10--15, August 2008.
 
 \bibitem{cunha2011predicting}
 {\'I}talo Cunha, Renata Teixeira, Darryl Veitch, and Christophe Diot.
 \newblock Predicting and tracking internet path changes.
 \newblock {\em SIGCOMM-Computer Communication Review}, 41(4):122, 2011.
+
+\bibitem{Gill:2011:UNF:2018436.2018477}
+Phillipa Gill, Navendu Jain, and Nachiappan Nagappan.
+\newblock Understanding network failures in data centers: measurement,
+  analysis, and implications.
+\newblock In {\em Proceedings of the ACM SIGCOMM 2011 conference}, SIGCOMM '11,
+  pages 350--361, New York, NY, USA, 2011. ACM.
 
 \bibitem{labovitz1999experimental}
 Craig Labovitz, Abha Ahuja, and Farnam Jahanian.
@@ -18,6 +43,12 @@ Athina Markopoulou, Gianluca Iannaccone, Supratik Bhattacharyya, Chen-Nee
 \newblock {\em IEEE/ACM Transactions on Networking (TON)}, 16(4):749--762,
   2008.
 
+\bibitem{Markopoulou:2008:CFO:1453698.1453699}
+Athina Markopoulou, Gianluca Iannaccone, Supratik Bhattacharyya, Chen-Nee
+  Chuah, Yashar Ganjali, and Christophe Diot.
+\newblock Characterization of failures in an operational ip backbone network.
+\newblock {\em IEEE/ACM Trans. Netw.}, 16(4):749--762, August 2008.
+
 \bibitem{padmanabhan2006study}
 Venkata~N Padmanabhan, Sriram Ramabhadran, Sharad Agarwal, and Jitendra Padhye.
 \newblock A study of end-to-end web access failures.
@@ -28,6 +59,12 @@ Venkata~N Padmanabhan, Sriram Ramabhadran, Sharad Agarwal, and Jitendra Padhye.
 Vern Paxson.
 \newblock End-to-end routing behavior in the internet.
 \newblock {\em Networking, IEEE/ACM Transactions on}, 5(5):601--615, 1997.
+
+\bibitem{Shaikh:2002:CSO:637201.637236}
+Aman Shaikh, Chris Isett, Albert Greenberg, Matthew Roughan, and Joel Gottlieb.
+\newblock A case study of ospf behavior in a large enterprise network.
+\newblock In {\em Proceedings of the 2nd ACM SIGCOMM Workshop on Internet
+  measurment}, IMW '02, pages 217--230, New York, NY, USA, 2002. ACM.
 
 \bibitem{turner2010california}
 Daniel Turner, Kirill Levchenko, Alex~C Snoeren, and Stefan Savage.
