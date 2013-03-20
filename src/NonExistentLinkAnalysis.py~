@@ -175,10 +175,7 @@ def MissingLinkVarification():
 						else:
 							log.write("Weight:"+str(linkmap.calWeight(p.getPath(i[:-1])))+"\n")
 						log.write("Found:"+str(j)+'\n')
-						if "* *" in j[4] or None in j[4]:
-							log.write("Weight: inf \n")
-						else:
-							log.write("Weight:"+str(linkmap.calWeight(p.getPath(j)))+"\n\n")
+						log.write("Weight:"+str(linkmap.calWeight(p.getPath(j)))+"\n\n")
 				if False not in CanExplain:
 					break
 			if False not in CanExplain:

@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.1415926-2.3-0.9997.5 (MiKTeX 2.9) (preloaded format=xelatex 2012.11.12)  19 MAR 2013 03:25
+This is XeTeX, Version 3.1415926-2.3-0.9997.5 (MiKTeX 2.9) (preloaded format=xelatex 2012.11.12)  20 MAR 2013 00:13
 entering extended mode
 **project.tex
 (C:\Users\QDX\Documents\GitHub\Network-Communication\paper\project.tex
@@ -245,61 +245,142 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 352.
 LaTeX Font Info:    ... okay on input line 352.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 352.
 LaTeX Font Info:    ... okay on input line 352.
-File: plot/failure_plot.eps Graphic file (type eps)
 
-<plot/failure_plot.eps>
 
-LaTeX Warning: `!h' float specifier changed to `!ht'.
+LaTeX Warning: Citation `Baran_1964' on page 1 undefined on input line 473.
 
-File: plot/failure_time.eps Graphic file (type eps)
-<plot/failure_time.eps>
 
-LaTeX Warning: `!h' float specifier changed to `!ht'.
+LaTeX Warning: Citation `Chandra:2008:CFA:1453175.1453178' on page 1 undefined 
+on input line 473.
+
+
+LaTeX Warning: Citation `Gill:2011:UNF:2018436.2018477' on page 1 undefined on 
+input line 473.
+
+
+LaTeX Warning: Citation `Markopoulou:2008:CFO:1453698.1453699' on page 1 undefi
+ned on input line 473.
+
+
+LaTeX Warning: Citation `Shaikh:2002:CSO:637201.637236' on page 1 undefined on 
+input line 473.
+
+
+LaTeX Warning: Citation `Markopoulou:2008:CFO:1453698.1453699' on page 1 undefi
+ned on input line 475.
+
+
+LaTeX Warning: Citation `Shaikh:2002:CSO:637201.637236' on page 1 undefined on 
+input line 477.
+
+
+LaTeX Warning: Citation `Gill:2011:UNF:2018436.2018477' on page 1 undefined on 
+input line 477.
+
+
+LaTeX Warning: Citation `Shaikh:2002:CSO:637201.637236' on page 1 undefined on 
+input line 477.
+
+
+LaTeX Warning: Citation `Gill:2011:UNF:2018436.2018477' on page 1 undefined on 
+input line 477.
 
 [1
 
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 519--521
+
+LaTeX Warning: Citation `cenic2013online' on page 2 undefined on input line 490
+.
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 496.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 496.
+[2]
+File: plot/failure_plot.eps Graphic file (type eps)
+ <plot/failure_plot.eps> [3]
+File: plot/failure_time.eps Graphic file (type eps)
+ <plot/failure_time.eps> [4]
+Underfull \hbox (badness 10000) in paragraph at lines 660--661
 
  []
 
-File: plot/failure_time.eps Graphic file (type eps)
-<plot/failure_time.eps>
+
+Underfull \hbox (badness 10000) in paragraph at lines 672--673
+
+ []
+
 File: plot/PieChart.eps Graphic file (type eps)
- <plot/PieChart.eps>
+<plot/PieChart.eps>
 File: plot/RouteShift.eps Graphic file (type eps)
  <plot/RouteShift.eps>
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 574.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 574.
 File: plot/ComplexRouteShift.eps Graphic file (type eps)
-
-<plot/ComplexRouteShift.eps>
+ <plot/ComplexRouteShift.eps>
 File: plot/Shortcut.eps Graphic file (type eps)
- <plot/Shortcut.eps>
+
+<plot/Shortcut.eps>
 File: plot/TrappedInLoop.eps Graphic file (type eps)
  <plot/TrappedInLoop.eps>
-Underfull \hbox (badness 1448) in paragraph at lines 547--627
+Underfull \hbox (badness 1448) in paragraph at lines 685--762
 []\OT1/ptm/m/n/10 Among the 70831 trace-route record-s, there were 80
  []
 
 
-Underfull \hbox (badness 2856) in paragraph at lines 547--627
-\OT1/ptm/m/n/10 From figure:6[], we can-not tel-l what ex-act-ly hap-pened.
+Underfull \hbox (badness 2856) in paragraph at lines 685--762
+\OT1/ptm/m/n/10 From figure:5[], we can-not tel-l what ex-act-ly hap-pened.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 547--627
+Underfull \hbox (badness 10000) in paragraph at lines 685--762
 
  []
 
-[2] [3]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[5]
 File: plot/accessibility.eps Graphic file (type eps)
  <plot/accessibility.eps>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
 File: plot/failure_distribution.eps Graphic file (type eps)
- <plot/failure_distribution.eps>
+<plot/failure_distribution.eps>
+Underfull \vbox (badness 1769) has occurred while \output is active []
+
+ [6]
+
+LaTeX Warning: File `plot/routing_performance.eps' not found on input line 806.
+
+
+
+! LaTeX Error: File `plot/routing_performance.eps' not found.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.806 ...[scale=0.4]{plot/routing_performance.eps}
+                                                  
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+! LaTeX Error: Cannot determine size of graphic in plot/routing_performance.eps
+ (no BoundingBox).
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.806 ...[scale=0.4]{plot/routing_performance.eps}
+                                                  
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+File: plot/routing_performance.eps Graphic file (type eps)
+<plot/routing_performance.eps>
 (C:\Users\QDX\Documents\GitHub\Network-Communication\paper\project.bbl)
 
 ** Conference Paper **
@@ -312,14 +393,18 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[4] (C:\Users\QDX\Documents\GitHub\Network-Communication\paper\project.aux) ) 
+[7] (C:\Users\QDX\Documents\GitHub\Network-Communication\paper\project.aux)
+
+LaTeX Warning: There were undefined references.
+
+ ) 
 Here is how much of TeX's memory you used:
- 2375 strings out of 430478
- 32607 string characters out of 3191501
- 94838 words of memory out of 3000000
- 5517 multiletter control sequences out of 15000+200000
+ 2384 strings out of 430478
+ 32853 string characters out of 3191501
+ 92838 words of memory out of 3000000
+ 5525 multiletter control sequences out of 15000+200000
  25356 words of font info for 55 fonts, out of 3000000 for 9000
  17 hyphenation exceptions out of 8191
  27i,8n,24p,1053b,293s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on project.pdf (4 pages).
+Output written on project.pdf (7 pages).
