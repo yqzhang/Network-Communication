@@ -6,6 +6,7 @@ import os
 import LinkMap
 import Utils
 import ISISFailure
+import numpy
 
 class PingFailureVerifier:
     def __init__(self):
@@ -408,16 +409,90 @@ class PingFailureVerifier:
         result.append([self.util.LookUp(hop.strip(), '', record[0]).strip() for hop in record[4] if (not '* *' in hop) and (not self.util.LookUp(hop.strip(), '', record[0]) == None) ])
         return [str(r) for r in result]
 
+    def pingTimeStatistics(self):
+        time  = {}
+        for record in self.util.FindPing('',''):
+            t = record[1] - record[0]
+            if t in time:
+                time[t] += 1
+            else:
+                time[t] = 1
+        with open('./timeStatistics.csv', 'w') as f:
+            for t in time:
+                f.write(str(t) + ',' + str(time[t]) + '\r')
+
+    def failureTimeStatistics(self):
+        time  = {}
+        loops = self.getLoopsByRouter()
+        for item in loops:
+            for record in loops[item]:
+                t = record[1] - record[0]
+                if t in time:
+                    time[t] += 1
+                else:
+                    time[t] = 1
+        links = self.getNonExistentLinks()
+        for record in links:
+            t = record[1] - record[0]
+            if t in time:
+                time[t] += 1
+            else:
+                time[t] = 1
+        with open('./timeStatistics1.csv', 'w') as f:
+            for t in time:
+                f.write(str(t) + ',' + str(time[t]) + '\r')
+
+    def getTimeRange(self):
+        first = float('inf')
+        last = 0
+        for record in self.util.FindPing('',''):
+            if first > record[0]:
+                first = record[0]
+            if last < record[1]:
+                last = record[1]
+        for record in self.isis_failure.traverse():
+            if first > record[4]:
+                first = record[4]
+            if last < record[5]:
+                last = record[5]
+        return first, last
+
+    def congestionTest(self, gran):
+        time = {}
+        first, last = self.getTimeRange()
+        for i in range(int((last-first-1)/gran)+1):
+            time[first+gran*i] = {'failure': 0, 'traceroute': []}
+        for record in self.util.FindPing('',''):
+            t = record[1] - record[0]
+            i = int((record[1]-first)/gran)
+            time[first+gran*i]['traceroute'].append(t)
+        for record in self.isis_failure.traverse():
+            i = int((record[5]-first)/gran)
+            time[first+gran*i]['failure'] += 1
+        with open('./congestionTest.csv', 'w') as f:
+            f.write('Granularity: ' + str(gran) + '\r')
+            f.write(','.join(['Start Time', 'EndTime', '#Failures', 'Mean Traceroute', 'StdErr Traceroute']) + '\r')
+            for t in time:
+                if len(time[t]['traceroute']) > 0:
+                    tmean = numpy.mean(time[t]['traceroute'])
+                    tvar = numpy.sqrt(numpy.var(time[t]['traceroute']))
+                    f.write(','.join([str(t), str(t+gran), str(time[t]['failure']), str(tmean), str(tvar)]) + '\r')
+                else :
+                    f.write(','.join([str(t), str(t+gran), str(time[t]['failure'])]) + '\r')
+ 
+
 p = PingFailureVerifier()
+#p.pingTimeStatistics()
+p.congestionTest(50000)
 #for record in p.util.FindPing('',''):
 #    path = p.getPath(record)
 #    w = p.link_map.calWeight(path)
 #r = p.getNonExistentLinks()
 #r1 = p.weightFilter(r)
-#print len(r1)
-loops = p.getLoopsByRouter()
-for i in loops:
-    print i, len(loops[i])
-    if i > 2:
-        for r in loops[i]:
-            print p.getPath(r)
+###print len(r1)
+##loops = p.getLoopsByRouter()
+##for i in loops:
+##    print i, len(loops[i])
+##    if i > 2:
+##        for r in loops[i]:
+##            print p.getPath(r)
