@@ -57,5 +57,5 @@ class FailureStatistics:
 			output_buffer += str(i) + "\t" + str(float(accum) / float(count)) + "\n"
 		dis.write(output_buffer)
 
-fs = FailureStatistics()
-fs.failurePlot()
+#fs = FailureStatistics()
+#fs.failurePlot()

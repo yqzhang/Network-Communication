@@ -70,5 +70,5 @@ class RoutingPerformance:
 		perf.write(output_buffer)
 					
 
-rp = RoutingPerformance()
-rp.parsePerformance()
+#rp = RoutingPerformance()
+#rp.parsePerformance()

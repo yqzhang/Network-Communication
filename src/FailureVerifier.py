@@ -481,9 +481,9 @@ class PingFailureVerifier:
                     f.write(','.join([str(t), str(t+gran), str(time[t]['failure'])]) + '\r')
  
 
-p = PingFailureVerifier()
+#p = PingFailureVerifier()
 #p.pingTimeStatistics()
-p.congestionTest(50000)
+#p.congestionTest(50000)
 #for record in p.util.FindPing('',''):
 #    path = p.getPath(record)
 #    w = p.link_map.calWeight(path)

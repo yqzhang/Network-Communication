@@ -223,11 +223,11 @@ class LoopVerifier:
                     loop.write('    ' + '\r    '.join(result) + '\r')
         print count, c
 
-p = LoopVerifier()
+#p = LoopVerifier()
 #p.lengthStatistics()
 #rs = p.roundStatistics()
 #p.adjacencyStatistics()
-p.findsuccessLoop2()
+#p.findsuccessLoop2()
 #p.test()
 #p.test_2()
                 
