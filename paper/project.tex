@@ -410,9 +410,9 @@ deqi@ucsd.edu}}
 
 \begin{abstract}
 
-The network services today are having an significant increase of the requirement on the availability, while at the same time the growing size and complexity of the networks we are building makes it even more challenging to provide such property. We believe a better understanding of the failures should be quite helpful to reduce them. However, the high expense and performance overhead of the traditional approaches eliminates the feasibility to perform such study across the network.
+The network services today are having a significant increase of the requirement on the availability, while at the same time the growing size and complexity of the networks we are building makes it even more challenging to provide such property. In order to provide better network avilability we will need to reduce the failures, that we believe a better understanding of the failure itself should be considerably helpful. However, the high expense and performance overhead of the traditional approaches eliminates the feasibility to perform such study across the production network.
 
-We propose a much cheaper approach to perform such failure analysis by carefully extracting the information from syslog which is commonly provided by most production networks today. And we present a methodology to analyze and categorize the unexpected network behaviors including routing loops and non-existent links. In addition, we evaluate the performance of the routing protocols with the extracted data. To validate our mechanism, we carry out a series of analysis in a fairly large network.
+We propose a much cheaper approach to deliver such failure analysis by carefully extracting useful information from syslog, which is commonly provided by most production networks today. And we present a methodology to analyze and categorize the unexpected network behaviors including routing loops and non-existent links. In addition, we evaluate the performance of the routing protocols on calculating the shortest paths and adapting to the failures. To validate our mechanism, we carry out a series of analysis in CENIC, which is fairly large and general.
 
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
@@ -440,34 +440,33 @@ We propose a much cheaper approach to perform such failure analysis by carefully
 \section{Introduction}
 \label{sec:sec1}
 
-As more and more enterprises heavily rely on the networks, there is clearly an increase in importance to provide better availability or even uninterrupted service more aggressively. However, it brings us a much challenging work to deliver such promise as we are building much more complex and larger networks comparing to years ago. Although tons of research projects have been trying to work it out, it is still not very well solved. As well as many previous work shown \cite{labovitz1999experimental, markopoulou2008characterization, padmanabhan2006study}, we believe the better analysis of the network failures should be considerably helpful for us to understand how the failures occur, how they affect the network behaviors and how to eliminate them in order to provide better availability.
+As more and more enterprises are heavily relying on the networks, there is clearly an increase in importance to provide better availability, or even uninterrupted service more aggressively. However, it brings us a much more challenging work to provide such promise as we are building much more complex and larger networks comparing to years ago. Although tons of research projects have been trying to work it out, it is still not very well solved. As well as many previous work shown \cite{labovitz1999experimental, markopoulou2008characterization, padmanabhan2006study}, we believe the better analysis of the network failures should be considerably helpful for us to understand how the failures occur, how they affect the network behaviors and how to eliminate them in order to provide better availability.
 
-To deliver such network failure analysis in practice, one will need much information about the causes, time lasted, influence to the network and many other specifics that are clearly not intuitively provided by the network protocols in use currently. Thus, the traditional approaches \cite{paxson1997end, cunha2011predicting} for doing this kind of analysis is to build some extra software or hardware support, which would incur large amount of expense and perhaps performance overhead. Consequently, most of such failure analysis are performed in the research community. To our knowledge, California Fault Lines \cite{turner2010california} is the first piece of work that trying to extract these information from commonly used production networks today.
+To deliver such network failure analysis in practice, one will need large amount of information about the causes, time lasted, influence to the network and many other specifics that are clearly not intuitively provided by the network protocols in use today. Thus, the traditional approaches \cite{paxson1997end, cunha2011predicting} for doing this kind of analysis is to build some extra software or hardware to probe the network condition actively, which would incur large amount of expense and perhaps performance overhead. Consequently, most of such failure analysis are performed in the research community. To our knowledge, California Fault Lines \cite{turner2010california} is the first research project that trying to extract these information from commonly used production networks today.
 
-Other than reconstructing historical network failure events, we are able to perform further characterization and analysis on those failures with very similar "cheap and dirty" data which we can easily obtain from today's networks. To better understand the network behavior, we describe and validate a methodology to map the routing changes to corresponding ISIS failures. In addition, we propose an approach to better understand how the failures occur and how they affect the network behaviors. Furthermore, characterization and discussion are presented about the unexpected network behaviors including routing loops and non-existent links.
+Other than reconstructing historical network failure events, we are able to perform further characterization and analysis about network failures with very similar "cheap and dirty" data which we can easily obtain from today's networks. To better understand the network behavior, we describe and validate a methodology to map the routing changes to corresponding network failures to understand how failures affect the network behaviors. In addtion, characterization and discussion are presented about the unexpected network behaviors including routing loops and non-existent links. Furthermore, we analyze the performance of the routing protocols on how well they are doing in calculating the shortest path and how fast they could adapt to the link failures.
 
-Specifically, we set up six source machines respectively at UC Berkeley, UC San Diego, UC Los Angeles, UC Santa Barbara, UC Davis and UC Santa Cruz, all in CENIC (the Corporation for Education Network Initiatives in California) which is the autonomous system we are trying to analyze. Each of the six machines are supposed to send a series of traceroute requests to the end hosts of the failing link when it is detected with the help of syslog messages automatically sent by CENIC. Firstly, we map the traceroute data back to corresponding network failures for further study, and validate how well the failure detection and traceroute are working based on the mapping. Secondly, we detect the routing loops and non-existent links in the traceroute data, and carry out some statistics and characterization on these unexpected network behaviors as well as the ISIS failures. At last, with the help of link weights of CENIC, we evaluate how well the network protocols work on routing and analyze how the failures affect the network behaviors.
+Specifically, we set up six source machines respectively at UC Berkeley, UC San Diego, UC Los Angeles, UC Santa Barbara, UC Davis and UC Santa Cruz, all in CENIC (the Corporation for Education Network Initiatives in California) which is the autonomous system we are trying to analyze. Each of the six machines are supposed to send a series of traceroute requests to the end hosts of the failing link when it is detected with the help of syslog messages automatically sent by CENIC. Firstly, we map the traceroute data back to corresponding network failures for further study, and validate how well the failure detection and traceroute are working based on the mapping results. Secondly, we detect the routing loops and non-existent links in the traceroute data, and carry out some statistics and characterization on these unexpected network behaviors as well as the network failures. At last, with the help of link weights of CENIC, we compare the optimal shortest route and the actual one described by traceroute, and evaluate how well the network protocols are working and analyze how the failures affect the network behaviors.
 
 The rest of the paper is organized as follows. We begin with the discussion of related work in Section \ref{sec:sec2}. Then the data we use in this work is introduced in Section \ref{sec:sec3}. Section \ref{sec:sec4} presents the our methodology for the characterization and analysis, and they are validated in Section \ref{sec:sec5}. We present our analysis in Section \ref{sec:sec6} and conclude in Section \ref{sec:sec7}.
 
 \section{Related work}
 \label{sec:sec2}
 
-Network failure analysis has long been an interesting topic since the born of
-the Internet\cite{Baran_1964}. Researchers have done a lot work in charaterizing all kinds of network failure\cite{  Chandra:2008:CFA:1453175.1453178, Gill:2011:UNF:2018436.2018477, Markopoulou:2008:CFO:1453698.1453699, Shaikh:2002:CSO:637201.637236, turner2010california}. They see network failures from different perstives.
+Network failure analysis has long been an interesting topic since the born of the Internet\cite{Baran_1964}. Researchers have done a lot work in charaterizing all kinds of network failures \cite{Chandra:2008:CFA:1453175.1453178, Gill:2011:UNF:2018436.2018477, Markopoulou:2008:CFO:1453698.1453699, Shaikh:2002:CSO:637201.637236, turner2010california}. These research projects all did thorough studies on the network failures from differenct perspectives.
 
-In \cite{Markopoulou:2008:CFO:1453698.1453699} Athina and his colleagues analyzed failures in a IP backbone operated by Sprint. Their analysis are based on the IS-IS data they get from the backbone network. They categorized these failure data by cause, and obtained some statics on these data. However, they did not dig into the acutal character of each failure.
+In \cite{Markopoulou:2008:CFO:1453698.1453699} Athina and his colleagues analyzed failures in a IP backbone operated by Sprint.Based on the IS-IS data they got from the backbone network, they categorized these failure data by causes, and did some statisitic work on these data. However, they did not dig too much into the acutal characteristics of different failures.
 
-While in \cite{Shaikh:2002:CSO:637201.637236, Gill:2011:UNF:2018436.2018477}, researchers carried detailed analysis under large enterpise data centers. In \cite{Shaikh:2002:CSO:637201.637236}, Shaikh and his colleagues focused on OSPF behavior. They tracked 205 router for a month, described how LSAs works, and gave corresponding explainations. Although they are intended to gave a clear illustration of how LSAs behaves, they offered a valuable insight of network failures at the same time. On the other hand, in \cite{Gill:2011:UNF:2018436.2018477}, Phillipa and his colleagues aimed to find out how failures behaves inside a larege enterpise data center. Since they get to access the data center directly, they are able to classify all kinds of hardware failures and software failures. They gave a lot of statics about how failures happens, and how redundancy performs in dealing with these failures. 
+While in \cite{Shaikh:2002:CSO:637201.637236, Gill:2011:UNF:2018436.2018477}, researchers carried detailed analysis under large enterpise data centers. In \cite{Shaikh:2002:CSO:637201.637236}, Shaikh and his colleagues focused on OSPF behavior. They tracked 205 routers for a month, described how LSAs works, and gave convincing corresponding explainations. Although they are intended to gave a clear illustration of how LSAs behaves, they offered a valuable insight of network failures at the same time. On the other hand, in \cite{Gill:2011:UNF:2018436.2018477}, Phillipa and his colleagues aimed to find out how failures behaves inside a larege enterpise data center. Since they got access to the data center directly, they were able to classify all kinds of hardware and software failures. They gave a lot of statistics about how failures happened, and how redundancy performed in dealing with these failures. 
 
-The work mentioned above all involves accessing large scale of network infrastructure. In \cite{turner2010california}, Daniel together with other researchers did a detailed analysis over the CENIC network in california, with only the syslog history, mailing list and configuration setting of the routers. They successfully established correlations between these datas and found some interesting statics of the network.
+The work mentioned above all involved hardware or software infrastructures to probe the network condition actively. In \cite{turner2010california}, Daniel together with other researchers did a detailed analysis about failures over the CENIC network, with only the syslog history, mailing list and configuration setting of the involved routers. They successfully reconstructed the history of the network and found many interesting behaviors.
 
-In this paper, we continue to work on the data extracted from CENIC network, on a more detailed granuality, and more focus on the automated data instead of messages like mailing lists.
+In contrast, we continued to work on the data extracted from commonly available sources of modern network, and presented a analysis than is generally applicable on most production networks today. We believe our study is the first effort that focuses on analyzing and characterizing the network behaviors with such dirty but cheap data.
 
 \section{Data sources}
 \label{sec:sec3}
 
-We delivered this piece of work in CENIC, from which we got several sets of data. In order to set the context for our further analysis and characterization, we described the particular data sources we used as follows.
+We delivered this piece of work in CENIC, from which we got several different sets of data. In order to set the context for our further analysis and characterization, we described the particular data sources we used as follows. We extracted these data to make it as neat as we could since the raw data was much more messy then described below.
 
 \subsection{The CENIC Network}
 
@@ -475,7 +474,7 @@ The Corporation for Education Network Initiatives in California (CENIC), was a s
 
 \subsection{ISIS Failure}
 
-This failure data was detected by the underlying routing protocol based on the adjacency status. The protocols running across the ISs required the routers to send and receive \textit{hello} messages. By default, each router were supposed to send a \textit{hello} message to its neighbors every 10 seconds. And if one router hadn't heard from one of its neighbors for 30 seconds, it was declared as disconnected.
+This failure data was detected by the underlying routing protocol based on the adjacency status. The protocols running across the ISs required the routers to send and receive \textit{hello} messages. By default, each router were supposed to send a \textit{hello} message to its neighbors every 10 seconds. And if one router hadn't heard from one of its neighbors for 30 seconds, it was declared as disconnected. Thus a IS-IS failure was reported as the link between the router and its neighbor. After the router heard from the failed neighbor again, the failure was marked as resolved.
 
 For each of these failures, it followed the format shown below. The fields $failure_{start}$ and $failure_{end}$ were formatted in UNIX timestamp.
 
@@ -483,7 +482,7 @@ $\{router_1, port_1, router_2, port_2, failure_{start}, failure_{end}\}$
 
 \subsection{IP-Router Mapping}
 
-As different IP addresses were assigned different routers at different time, there had to be a table describe the mapping between IP address and router at some point of time. And each record contained a field showing the IP address assignment was valid until a certain time.
+As different IP addresses were assigned to different routers at different time, there was a table describing the mapping between IP address and router at some point of time. And each record contained a field showing the IP address assignment was valid until a certain time. Consequently, the assignment became valid right after the last assignment of the same IP address became invalid.
 
 For each record, it followed the format shown below. The field $time_{valid\_till}$ was formatted in UNIX timestamp.
 
@@ -491,7 +490,7 @@ $\{IP address, router, port, time_{valid\_till}\}$
 
 \subsection{Link Map}
 
-The link map described the available links in CENIC and their valid time period. Each of the record contained the two routers and two ports the link connected, and the valid time period.
+The link map described the available links in CENIC and their valid time period. Each of the record contained the two routers and two ports the link connected, and the valid time period. If there wasn't a record for two particular routers, it meant that they were not connected.
 
 For each link, it followed the format shown below. The fields $link_{start}$ and $link_{end}$ were formatted in UNIX timestamp where the links that are still valid right now were marked huge numbers in $link_{end}$.
 
@@ -499,7 +498,7 @@ $\{router_1, port_1, router_2, port_2, link_{start}, link_{end}\}$
 
 \subsection{Link Weights}
 
-The link weights were presented with the two routers it connected and one integer weight. The weights were typically assigned to the links by configuration files, and the values were not consecutive.
+The link weights were presented with the two routers it connected and one integer weight value. The weights were typically assigned to the links by configuration files, and the values were not consecutive. The smaller the weight is, the more likely the routers would select it as a shorter path.
 
 For each record, it followed the format shown below.
 
@@ -513,9 +512,9 @@ The traceroute data were simply the original output of the traceroute applicatio
 
 \begin{enumerate}
 
-\item{Hops with local area network} Typically, the first few hops of the traceroute were within the local area network, which we were not actually interested in. Consequently, we could verify whether the hop was within LAN or in CENIC by looking up if there was an IP address assigned to it.
+\item{Hops with local area network} The source machines we set up were within particular universities. Typically, the first few hops of the traceroute were within the local area network, which we were not actually interested in because they were not involved in CENIC actually. Consequently, we needed to verify whether the hop was within LAN or in CENIC by looking up if there was an IP address assigned to it.
 
-\item{Unrecognizable hops} Not all the routers in CENIC support the UDP traceroute application, so some of them would just reponse as ** when they were traced. We were not able to get rid of it, thus we had to be careful with it in the following analysis.
+\item{Unrecognizable hops} Not all the routers in CENIC support the UDP traceroute application we used to get the actual routing information, so some of them would just reponse as ** when they were traced. We were not able to get rid of it, thus we had to be careful with it in the following analysis.
 
 \end{enumerate}
 
@@ -524,13 +523,23 @@ The traceroute data were simply the original output of the traceroute applicatio
 
 \subsection{Reconstruction of the Network History}
 
-Before doing any other analysis or characterizations, we needed to reconstruct the network history and topology from the data sets we had. First of all, we parsed the raw data of ISIS failures, mapping of router and IP address and available links within CENIC. Most of these data were timely, that for instance one IP address could be assigned to many other routers or end hosts after it expired for one router. So we stored these data with timestamp at the granularity of one second, which was exactly the granularity provided by these data, and kept track of them timely.
+Before doing any other analysis or characterizations, we needed to reconstruct the network history and topology from the data sets we had. First of all, we parsed the raw data of ISIS failures, mapping of router and IP address and available links within CENIC. Most of these were timely, that for instance one IP address could be assigned to many other routers or end hosts after it expired for one router. So we stored these data with timestamp at the granularity of one second, which was exactly the granularity provided by the raw data, and kept track of them timely.
 
-Then we parsed the traceroute data, which was a little bit more complex since there were many trivial issues we needed to take care. For most of the traceroutes, the first few hops were not actually the routers or end hosts in CENIC, instead they were basically the routers within the local area network of which we would like to get rid. In addition, there were some routers in CENIC that didn't support UDP traceroute, which meant the traceroute could give us nothing more than ** since the router was not recognizable. And there was also an issue about the destination of traceroute, that it turned out that the traceroute stopped when the reach the same router of the destination regardless of the port indeed. So we would need to check whethre the last hop of traceroute and the destination are on the same router rather than exact same port and IP address.
+Then we parsed the traceroute data, which was a little bit more complex since there were many trivial issues we needed to take care.
+
+\begin{enumerate}
+
+\item{} For most of the traceroutes, the first few hops were not actually the routers or end hosts in CENIC, instead they were basically the routers within the local area network which we were not actually interested in as we mentioned ealier.
+
+\item{} In addition, there were some routers in CENIC that didn't support UDP traceroute, which meant the traceroute could give us nothing more than ** showing that the router was not recognizable.
+
+\item{} And there was also an issue about the destination of traceroute, it turned out that the traceroute stopped when it reached the same router of the destination regardless of the port indeed. So we would need to check whethre the last hop of traceroute and the destination are on the same router rather than exact same port and IP address.
+
+\end{enumerate}
 
 \subsection{Mapping between ISIS Failures and Traceroutes}
 
-We would like to map the ISIS failures to corresponding traceroutes and vice versa not only to validate how the failure detection and traceroute were working, but also for further characterization and analysis. In order to do so, we had two rules to establish the correlation between them.
+We would like to map the ISIS failures to corresponding traceroutes and vice versa not only to validate how the failure detection and traceroute were working, but also for further characterization and analysis. In order to do so, we had two rules to establish the correlation between them. Based on the mapping information, we were able to compare the traceroutes data and looking for the changes and which failure caused them.
 
 \begin{enumerate}
 
@@ -541,27 +550,31 @@ We would like to map the ISIS failures to corresponding traceroutes and vice ver
 \end{enumerate}
 
 \subsection{Non-existent Link Detection}
-We then extracted the nonexistent links from the traceroute data, as a part of the unexpected router behavior. We traversed through all the traceroute data, assuming there should be a link between any adjacent hops in the record. This is verifried by looking up in the linkmap to see if there is a link between these two routers at that time. Although it seemed to be fairly straight forward, we have to apply some constraints to the process in order to avoid useless data.
+We then extracted the nonexistent links from the traceroute data, as a part of the unexpected routing behavior. We traversed through all the traceroute data, assuming there should be a link between any adjacent hops in the records. This is verifried by looking up in the linkmap to see if there is a link between these two routers at that time. Although it seemed to be fairly straight forward, we have to apply some constraints to the process in order to avoid useless data including time and route consistency.
 
 \begin{enumerate}
 
-\item{Look up by router} We say there is a link between the two hops if there is a link betwee the two routers on the hop, without considering the port. Since the weights used to calculate path in the network is given by router, ignoring ports would eliminate useless data. In addition, traceroute check router, instead of router with port, to see if it has reached the destination too. 
+\item{Look up by router} We could say there was a link between the two hops if there was a link between the two routers on the hop, without considering the port. Since the weights used to calculate the route in the network is given by routers, ignoring ports would eliminate useless data. In addition, traceroute checked router, instead of router with port, to see if it had reached the destination too. 
 
-\item{No respones} During this process, we ignored those hops that failed to respond to traceroute, which appeared in the record in the form of "* *", as well as those routers outside CENIC network. 
+\item{No respones} During this process, we ignored those hops that failed to respond to traceroute, which appeared in the record in the form of **, as well as those routers out of CENIC network. 
 
 \end{enumerate}
-
 
 \subsection{Routing Loop Detection}
 
-We also extracted loops from the traceroute data, as the other part of the unexpected routing behavior. We parsed all the traceroute records and detected loops following two different rules. 
+We also extracted routing loops from the traceroute data, as the other part of the unexpected routing behavior. We parsed all the traceroute records and detected loops following two different rules as described below.
+
 \begin{enumerate}
-\item{Verify by IP} We could verify whether a traceroute record contained loop by checking if there existed an IP address appearing more than once. 
-\item{Verify by router} We could verify whether a traceroute record contained loop by checking if there existed a router appearing more than once. This approach should at least return all records that IP-approach returned.
+
+\item{Verify by IP} We could verify whether a traceroute record contained loop by checking if there existed an IP address appearing more than once.
+
+\item{Verify by router} We could verify whether a traceroute record contained loop by checking if there existed a router appearing more than once. This approach should at least return all records that previous approach returned.
+
 \end{enumerate}
+
 \subsection{Routing Performance Characterization}
 
-Basically, we meant the performance on calculating the shortest routing path by saying routing performance. Given the link weights of each links in the CENIC, we were able to calculate the sum of the weights for each of the traceroute record while regardless of the first few hops within the local area network, as well as the weight of the global optimal one. However, there were some issues we needed to pay attention for both of these calculations.
+Basically, we were focusing the performance on calculating the shortest routing path by saying routing performance. Given the link weights of each links in the CENIC, we were able to calculate the sum of the weights for each of the traceroute record while regardless of the first few hops within their local area network, as well as the weight of the global optimal one. However, there were some issues we needed to pay attention for both of these calculations.
 
 \begin{enumerate}
 
@@ -569,31 +582,25 @@ Basically, we meant the performance on calculating the shortest routing path by 
 
 \item{Optimal route} Here we just simply implemented the Dijkstra's Algorithm to calculate the optimal shortest path.
 
-\item{Congestion} With 70831 trace-route records, we measured the time each
-  record lasts, use it as an indicator of congestion in the network. We then
-  plot a graph to show the trend between trace-route lasting time and failure
-  amount with respect to time.We have normalized the failure data, and cut some extremely high spike.
-  We can see that they share a similar trend there in figure\ref{fig:TraceToFailure}. That
-  means, failures of links do cause congestion problem.
+\end{enumerate}
+
+In addition, we had to get rid of the first few hops within local area networks for both optimal route and actual one since we didn't have the link weights of them.
+
+Then with 70831 traceroute records, we measured the time each record lasted as an indicator of congestion condition in the network. We then plotted a graph to show the trend between traceroute lasting time and the number of failures with respect to time. We had normalized the failure data, and cutted some extremely high spike. We could see that they share a similar trend there in Figure \ref{fig:TraceToFailure}, which meant it was likely that the failures of links did affect the congestion condition of the network.
 
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.3]{plot/TraceToFailure.eps}
-\caption{Red is for traceroute data, blue is for failures amount. X axis is time
-and Y axis is a normalized scale.}
+\caption{Comparison between traceroute performance and the number of failures in the network. The red line was the normalized lasting time of the traceroute request, which meant how much time it took to finish one request. And the blue line was the normalized number of failures happening in the network at same time. What we could tell from this figure is that they were very likely to follow the similar trends.}
 \label{fig:TraceToFailure}
 \end{figure}
-
-\end{enumerate}
-
-In addition, we had to get rid of the first few hops within local area networks for both optimal route and actual one since we didn't have the link weights of them.
 
 \section{Validation}
 \label{sec:sec5}
 
 \subsection{Network History}
 
-Assuming the active probing of the certain network could give us a complete history of it, we had this history of the CENIC from 10/20/2012 to 02/09/2013. There were 40074 ISIS failures during this period in total.
+Assuming the failure detection of the certain network could give us a complete history of it, we had this history of the CENIC from 10/20/2012 to 02/09/2013. There were 40074 ISIS failures during this period in total.
 
 \begin{figure}[h!]
 \centering
@@ -602,12 +609,12 @@ Assuming the active probing of the certain network could give us a complete hist
 \label{fig:failureplot}
 \end{figure}
 
-Since we would like to do a comparison among the route before, during and after the failure to better understand how failure affects the network behaviors, it was useful to find out how long each failure last for. Thus, the CDF of failure recovery time was shown in Figure \ref{fig:failuretime}. Surprisingly, there were 77.87\% of the failures that were recovered in 0 seconds, which means they didn't actually affect the network in the granularity of second that we used. And more than 95\% failures were recovered within 6 seconds, which could potentially make the corresponding traceroutes much less interesting. 
+Since we would like to do a comparison among the route before, during and after the failure to better understand how failure affected the network behaviors, it was useful to find out how long each failure lasted. Thus, the CDF of failure recovery time was shown in Figure \ref{fig:failuretime}. Surprisingly, there were 77.87\% of the failures that were recovered in 0 seconds, which means they didn't actually affect the network in the granularity of second that we used. And more than 95\% failures were recovered within 6 seconds, which could potentially make the corresponding traceroutes much less interesting. 
 
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.4]{plot/failure_time.eps}
-\caption{Network failure recovery time CDF of CENIC where more than 95\% failures recovered within 6 seconds.}
+\caption{Network failure recovery time CDF of CENIC where more than 95\% failures recovered within 6 seconds. The short recovery time was a good indicator for better network availability, while on the other hand reduced the number of interesting data we could analyze since a large portion of the failures had already recovered before we were able to send out the traceroute request. }
 \label{fig:failuretime}
 \end{figure}
 
@@ -615,11 +622,11 @@ Because of the relatively short recovery time, it is very likely that the failur
 
 \subsection{Network History Reconstruction}
 
-To validate the network history we reconstructed from the traceroute data, we tried to map the probed failures to corresponding traceroutes. Based on the link and router map of CENIC we had successfully mapped 40073 ISIS failures to corresponding traceroute data out of the total 40074. The only one that had not been mapped was because we didn't have the IP address of the link. Thus, we believed it is save to say our failure detection works pretty well from this point.
+To validate the network history we reconstructed from the traceroute data, we tried to map the probed failures to corresponding traceroutes. Based on the link and router map of CENIC we had successfully mapped 40073 ISIS failures to corresponding traceroute data out of the total 40074. The only one that had not been mapped was because we didn't have the IP address of the link which meant the router was probably not within CENIC. Thus, we believed it was save to say our failure detection worked pretty well from this point.
 
 For these 40073 detected failures, we had pinged at least one end of the failure link. And for 39505 out of 40073 (98.58\%) failures, we had pinged both ends at least once. Consequently, we believed our data is very representative for our analysis.
 
-\subsection{Statistices of Unexpected Network Behavior (Loops \& Non-existent Links)}
+\subsection{Statistices of Unexpected Network Behaviors (Loops \& Non-existent Links)}
 
 \begin{figure}[h!]
 \centering
@@ -627,32 +634,33 @@ For these 40073 detected failures, we had pinged at least one end of the failure
 \caption{Statistics of Unexpected Network Behavior}
 \label{fig:statistics}
 \end{figure}
+
 %80 nonexistent links out of 70831 traceroute records. They are classified into 5 categories,  45 in normal route shift, 9 in complex route shift, 3 in shortcut, 15 in trapped in loop, 8 in cannot verify. Among all these 80 nonexistent links, only 8 are directly involved with failures, and 18 of them happens when failures occured in the network other then themself. 
-From table \ref{fig:statistics} we see that, loops have very different charasteristics than nonexistent links. Loops happens much more often than nonexistent links, and were much more likely to cause a failure in traceroute record. On the other hand, most of the traceroute with nonexistent links still get to the destination at last. This pointed out that, loop is always a threat in a network, and should always be avoided.
+From Figure \ref{fig:statistics}, we could find that loops have very different charasteristics comparing to non-existent links. Loops happened much more often than non-existent links, and were much more likely to cause a failure in traceroute records. On the other hand, most of the traceroute with non-existent links could still get to the destination at last. This pointed out that, routing loop was often a great threat to a network, and should always be avoided if possible.
 
 \subsection{Measurement Bias}
 
-First of all, the granularity of the network failures and the traceroute data could potentially affect our analysis of the network behaviors. As discussed ealier, the ISIS failures were probed at the granularity of one second, while many of them lasted less than couple seconds actually. This reduced the number of interesting traceroutes since they could not even reflect the effects of such short failures. We believed that a much finer granularity of the failures would be very helpful for further analysis.
+First of all, the granularity of the network failures and the traceroute data could potentially affect our analysis of the network behaviors. As discussed ealier, the ISIS failures were probed at the granularity of one second, while many of them lasted less than couple seconds actually. This reduced the number of interesting traceroutes since they could not even reflect the effects of such short failures. We believed that a much finer granularity of the failure detection would be very helpful for further analysis.
 
-Additionally, our failure detection mechanism is based on adjacency status reported by the underlying routing protocol. For example, to ensure connectivity, the IS-IS protocol requires routers to send and receive hello messages. By default, a router sends a hello message once every ten seconds and declares a link disconnected if no hello message is received for thirty seconds. Consequently, the failure detection could have up to 30 seconds of delay, which could reduce the accuracy of the mapping between the failure and corresponding traceroutes. In addition, this would probably affect our analysis about how the failures affected the network behaviors.
+Additionally, our failure detection mechanism was based on adjacency status reported by the underlying routing protocol. For example, to ensure connectivity, the IS-IS protocol required routers to send and receive \textit{hello} messages. By default, a router sent a \textit{hello} message once every ten seconds and declared a link disconnected if no \textit{hello} message was received for thirty seconds. Consequently, the failure detection could have up to 30 seconds of delay, which could reduce the accuracy of the mapping between the failure and corresponding traceroutes. In addition, this would probably affect our analysis about how the failures affected the network behaviors.
 
 \section{Data Analysis}
 \label{sec:sec6}
 
 \subsection{Loop Characterization}
  
-In the 70831 traceroute records, we detected 366 records by IP approach and 395 records by router approach that contain loops in total. 
+In the 70831 traceroute records, we detected 366 records by IP approach and 395 records by router approach that contain loops in total.
 
-For IP approach, we categorized these 366 records by the length of loop and found that more than 95\% (350 out of 366) of loops were jumping between only 2 routers. The longest loop had a length of As of the long loop records, at least 11 of 16 would also fall into a two-router trap finally. We also found that there were onl 11 rcordes fthat naally arrived at the destination. aAll of the 11 records shared loop length of 2. 9 of 11 records only experienced 1 round of loop. Another interesting phenomenon was that 344 of 366 records were trapped into a loop that consisted of 2 adjacent IP addresses.
+For IP approach, we categorized these 366 records by the length of loop and found that more than 95\% (350 out of 366) of loops were jumping between only 2 routers. The longest loop had a length of 8. As of the long loop records, at least 11 out of 16 would also fall into a two-router trap finally. We also found that there were only 11 rcordes that arrived at the destination eventually. All of the 11 records shared loop length of 2. And 9 out of 11 records only experienced 1 round of loop. Another interesting phenomenon was that 344 of 366 records were trapped into a loop that consisted of only 2 adjacent IP addresses.
 
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.4]{plot/loop_length1.eps}
-\caption{Loop Length Statistics}
+\caption{Loop length statistics. Most of the routing loops were fairly short that 350 out of 366 (about 95\%) had a length of 2. And the longest loop had a length of 8 partly because the traceroute we sent had a constraint of maximal number of hops as 15.}
 \label{fig:asdf1}
 \end{figure}
 
-For Router approach, we categorized these 395 records by the length of loop and found that more than 90\% (359 out of 395) of loops are jumping between only 2 routers. As of the long loop records, at least 24 of 36 would also fall into a two-router trap finally. We also found that there were 29 records that finally arrived at the destination. 26 of the 29 records shared loop length of 2 while 2 records had length of 4 and the last one 6. 26 of 29 records only experienced 1 round of loop.
+For Router approach, we categorized these 395 records by the length of loop and found that more than 90\% (359 out of 395) of loops are jumping between only 2 routers. As of the long loop records, at least 24 of 36 would also fall into a two-router trap eventually. We also found that there were 29 records that finally arrived at the destination. 26 of the 29 records shared loop length of 2 while 2 records had length of 4, and 6 for the last one. 26 of 29 records only experienced 1 round of loop.
 
 \begin{figure}[h!]
 \centering
@@ -661,112 +669,130 @@ For Router approach, we categorized these 395 records by the length of loop and 
 \label{fig:asdf2}
 \end{figure}
 
-We then tried to figure out a mapped from loop records onto IS-IS failures to reveal what caused such undesired routing behavior. We categorized the loop records by the potential pattern of failures' impact. By applying both time consistency and router consistency, we obtained the first category, Simple Link failure. However this pattern could only explain a small part of the loop records. Introducing a failure propagation assumption by loosing the time constraints granted us the second category, Complex Failure Propagation. Potential causes for the rest part of records that couldn't be explained by the above two reasons might be done in the futurte work. For the following part, we only consider the 366 records we obtained by IP approach.
+We then tried to figure out a map from loop records to IS-IS failures to reveal what caused such unexpected routing behavior. We categorized the loop records by the potential pattern of failures' impact. By applying both time consistency and router consistency, we obtained the first category, Simple Link failure. However this pattern could only explain a small portion of the loop records. Introducing a failure propagation assumption by loosing the time constraints granted us the second category, Complex Failure Propagation. Potential causes for the rest part of records that couldn't be explained by the two reasons above might be done in futurte work. For the following part, we only consider the 366 records we obtained by IP approach.
 
 \textbf{Simple Link Failure}
 
-Suppose a trace-route arrived at destination without any unexpected failures. A simple link failure may occur in any link on the normal path. Then the router would have to forward packets to other routers which actually could not help reach the destination and finally lead to a loop.
+Suppose a trace-route arrived at destination without any unexpected failures. A simple link failure may occur in any links on the normal path. Then the router would have to forward packets to other routers which actually could not help reach the destination and finally result in a loop.
 
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.4]{plot/simple_link_failure.eps}
-\caption{Simple link Failure}
+\caption{Simple link failures, where the newly introduced hop did really help to forward the packet to the destination, so the last two hops fell into a small loop.}
 \label{fig:asdf3}
 \end{figure}
 
-
 \textbf{Complex Failure Propagation}
-
-While considering the direct influence of failure in the above part, it was also possible that some failures might leave impact on the network even after they were revocered. Suppose a trace-route arrived at destination without any unexpected failures and then a failure occur in one link on the path. Then the routers ahead the failure node might detect that forwarding packets to the failure node was useless. Finally these routers would try other ways. If unfortunately these ways didn't work either, then loop would happen again.    
 
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.4]{plot/complex_failure_propagation.eps}
-\caption{Complex Failure Propagation}
+\caption{Complex failure propagation, where none of the alternative routes could work out to forward the packet successfully.}
 \label{fig:asdf4}
 \end{figure}
 
-While considering the direct influence of failure in the above part, it was also possible that some failures might leave impact on the network even after they were revocered. Suppose a trace-route arrived at destination without any unexpected failures and then a failure occur in one link on the path. Then the routers ahead the failure node might detect that forwarding packets to the failure node was useless. Finally these routers would try other ways. If unfortunately these ways didn't work either, then loop would happen again.    
-
-%\begin{figure}[h!]
-%\centering
-%\includegraphics[scale=0.4]{plot/complex_failure_propagation.eps}
-%\caption{Complex Failure Propagation}
-%\label{fig:asdf}
-%\end{figure}
+While considering the direct influence of failure in the above part, it was also possible that some failures might leave impact on the network even after they were revocered. Suppose a traceroute arrived at destination without any unexpected failures and then a failure occurred at one link on the path. Then the routers ahead the failure node might detect that forwarding packets to the failure node was useless. Eventually these routers would try some other routes. Unfortunately sometimes none of these routes worked at all, then a loop would happen again.
 
 \subsection{Non-Existent Links Charaterization}
 
-Among the 70831 trace-route records, there were 80 records has non-existent links in them. We classify these records into 5 categories, with respect to the complexity of their cause. They are: normal route shift, complex route shift, shortcut, trapped in loop, cannot verify. They are distributed as in Figure:\ref{fig:PieChart}.
+Among the 70831 trace-route records, there were 80 records had non-existent links in them. We classified these records into 5 categories, with respect to the complexity of their cause.
+
+\begin{enumerate}
+
+\item{normal route shift}
+
+\item{complex route shift}
+
+\item{shortcut}
+
+\item{trapped in loop}
+
+\item{cannot verified}
+
+\end{enumerate}
+
+They are distributed as Figure: \ref{fig:PieChart} shown.
 
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.8]{plot/PieChart.eps}
-  \caption{Piechart of different types of missed links}
+  \caption{Distribution of the non-existent links, where more than half of them were normal route shifts.}
   \label{fig:PieChart}
 \end{figure}
 
 \textbf{Normal Route Shift}
 
-Consider a trace-route with max hops 5. In most situation, a certain route won't change during the process of trace-route. However, it is possible for router to choose another path during this process. An example is shown in Figure \ref{fig:NormalRouteShift}.
+Suppose we had a traceroute with 5 as the max number of hops. In most situation, a certain route wouldn't change during the process of traceroute because the traceroute lasted for relatively short time period. However, it was possible for routers to choose another route during this process. An example is shown in Figure \ref{fig:NormalRouteShift}.
 
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.5]{plot/RouteShift.eps}
-  \caption{A Normal Route Shift example}
+  \caption{Example for normal route shift, where the route changed during the two ping requests of the same traceroute.}
   \label{fig:NormalRouteShift}
 \end{figure}
 
-It is important to notice in figure:\ref{fig:NormalRouteShift} that, both of the two routes reached destination $E$, with $C$ on the third hop and $M$ on the fourth hop. We identify this kind of links by finding valid route with the same node on the same hop. 45 out of the 80 records fall into this category.
+It was important to notice in Figure\ref{fig:NormalRouteShift} that, both of the two routes reached destination $E$, with $C$ on the third hop and $M$ on the fourth hop. We identified this kind of links by finding valid route with the same router on the same hop. 45 out of the 80 records fell into this category.
 
 \textbf{Complex Route Shift}
 
-This was a more complicated situation than in the first case. There were three key differences with the first category. First, a complex route shift may shift among more than 2 routes in a trace-route. Second, the picked route is allowed to be a route that did not reach the destination. Third, it is possible that none of other trace-route record can match a node on a certain hop of a complex route shift. Still, consider a trace-route with max hops 5. An example is shown in Figure \ref{fig:ComplexRouteShift}.
+This was a more complicated situation than in the first case. There were three key differences comparing with the first category.
+
+\begin{enumerate}
+
+\item{} A complex route shift may shift among more than 2 routes within a traceroute.
+
+\item{} The newly introduced route was allowed to be a route that did not reach the destination.
+
+\item{} It was possible that none of other traceroutes record could match a node on a certain hop of a complex route shift.
+
+\end{enumerate}
+
+Considering a traceroute with 5 hops, an example was shown in Figure \ref{fig:ComplexRouteShift}.
 
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.5]{plot/ComplexRouteShift.eps}
-  \caption{A Complex Route Shift example}
+  \caption{Example for complex route shift we extracted from the traceroute data.}
   \label{fig:ComplexRouteShift}
 \end{figure}
 
-From Figure \ref{fig:ComplexRouteShift}, we cannot tell what exactly happened. Although we see node $A$ on hop 4, we can see no $A$ on hop 4 from any other record. This means, we have no idea of how and why trace-route reached B on the fourth hop. Hop 5 behaves similar with normal route shift. There were 9 records fall into this category.
+From Figure \ref{fig:ComplexRouteShift}, it was hard to tell what exactly happened. Although we saw node $A$ on hop 4, we could not find $A$ again on the 4th hop from any other records. Hop 5 behaved similar with normal route shift. There were 9 records fall into this category in total.
 
 \textbf{Shortcut}
 
-Short cut is a special case of a normal route shift, with one of the route in the shift to be an invalid route. An example is shown in figure:\ref{fig:Shortcut}.
+Shortcut was a special case of a normal route shift, with one of the route in the shift to be an invalid route. An example is shown in figure:\ref{fig:Shortcut}.
 
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.5]{plot/Shortcut.eps}
-  \caption{A Shortcut example}
+  \caption{Example for shortcut, that one of the routers on the route found and switched immediately to another route.}
   \label{fig:Shortcut}
 \end{figure}
 
-To explain this phenomenon in a more intuitive way, suppose one of the router is down, trace-route cannot get to the destination due to the router failure. Then, during the trace-route, the router is fixed and back to work, trace-route got the destination directly on the next hop. There were 3 records fall into this category.
+To explain this phenomenon in a more intuitive way, we could assume that one of the router is down, so traceroute could not get to the destination due to the router failure. Then, during the traceroute request, the router was fixed and went back to work and traceroute got to the destination immediately on the next hop. There were 3 records fell into this category.
 
 \textbf{Trapped in loop}
 
-This is another special case of normal route shift, with one of the route is a loopy route. An example is shown in figure:\ref{fig:TrappedInLoop}.
+This was another special case of normal route shift, where one of the route was a loopy one. An example was shown in figure:\ref{fig:TrappedInLoop}.
 
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.5]{plot/TrappedInLoop.eps}
-  \caption{Route Trapped in Loop example}
+  \caption{Example for trapped in loop, where one of the router in the route was a loopy one.}
   \label{fig:TrappedInLoop}
 \end{figure}
 
-There were 15 records fall into this category.
+There were 15 records in total fell into this category.
 
-\textbf{Cannot verify}
+\textbf{Cannot verified}
 
-The rest 8 records fall into this category. For these records, there exist some node that is never seen in other trace-route records with the same source and destination. Thus, there is no way we can tell what happened with such records.
+The remained 8 records fell into this category. For these records, there existed some node that was never seen in other traceroute records with the same source and destination. Thus, there was no way we can tell what happened with such records.
 
-In order to further analyze why these nonexistent links occurred, we tried to find out the relationship of nonexistent links with network failures.
+In order to further analyze why these non-existent links occurred, we tried to find out the correlation between these links and the failures.
 
-26 out of the 80 nonexistent links happened at the same time as a failure some where in the network. But only 8 among these 26 records has one of it's nonexistent link involved in a failure. Thus, generally speaking, network failures were not the main cause of nonexistent links. Also, only 11 out of the 80 records with nonexistent links failed to reach the destination.
+26 out of the 80 non-existent links happened at the same time as one failure somewhere in the network. But only 8 among these 26 records had one of its nonexistent link involved in the failure. Thus, generally speaking, network failures were not the main cause of nonexistent links. In addition, only 11 out of the 80 records with non-existent links failed to reach the destination.
 
-In conclusion, nonexistent links occurred in a very small fraction of data, and has no great impact on the performance of network, since most of them arrived at the destination anyway.
+In conclusion, non-existent links occurred in a very small fraction of data, and had relatively small impact on the performance of network, since most of them arrived at the destination eventually and many of them turned out to be normal routing changes of the network.
 
 \subsection{Failure Analysis}
 

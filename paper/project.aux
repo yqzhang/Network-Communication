@@ -5,13 +5,13 @@
 \citation{Baran_1964}
 \citation{Chandra:2008:CFA:1453175.1453178,Gill:2011:UNF:2018436.2018477,Markopoulou:2008:CFO:1453698.1453699,Shaikh:2002:CSO:637201.637236,turner2010california}
 \citation{Markopoulou:2008:CFO:1453698.1453699}
-\citation{Shaikh:2002:CSO:637201.637236,Gill:2011:UNF:2018436.2018477}
-\citation{Shaikh:2002:CSO:637201.637236}
-\citation{Gill:2011:UNF:2018436.2018477}
 \@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}}
 \newlabel{sec:sec1}{{I}{1}}
 \@writefile{toc}{\contentsline {section}{\numberline {II}Related work}{1}}
 \newlabel{sec:sec2}{{II}{1}}
+\citation{Shaikh:2002:CSO:637201.637236,Gill:2011:UNF:2018436.2018477}
+\citation{Shaikh:2002:CSO:637201.637236}
+\citation{Gill:2011:UNF:2018436.2018477}
 \citation{turner2010california}
 \citation{cenic2013online}
 \@writefile{toc}{\contentsline {section}{\numberline {III}Data sources}{2}}
@@ -22,61 +22,66 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {III-D}}Link Map}{2}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {III-E}}Link Weights}{2}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {III-F}}Traceroute}{2}}
-\@writefile{toc}{\contentsline {section}{\numberline {IV}Methodology}{2}}
-\newlabel{sec:sec4}{{IV}{2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {IV-A}}Reconstruction of the Network History}{2}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Methodology}{3}}
+\newlabel{sec:sec4}{{IV}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {IV-A}}Reconstruction of the Network History}{3}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {IV-B}}Mapping between ISIS Failures and Traceroutes}{3}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {IV-C}}Non-existent Link Detection}{3}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {IV-D}}Routing Loop Detection}{3}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {IV-E}}Routing Performance Characterization}{3}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Red is for traceroute data, blue is for failures amount. X axis is time and Y axis is a normalized scale.}}{3}}
-\newlabel{fig:TraceToFailure}{{1}{3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Comparison between traceroute performance and the number of failures in the network. The red line was the normalized lasting time of the traceroute request, which meant how much time it took to finish one request. And the blue line was the normalized number of failures happening in the network at same time. What we could tell from this figure is that they were very likely to follow the similar trends.}}{4}}
+\newlabel{fig:TraceToFailure}{{1}{4}}
 \@writefile{toc}{\contentsline {section}{\numberline {V}Validation}{4}}
 \newlabel{sec:sec5}{{V}{4}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {V-A}}Network History}{4}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Network failures distribution of CENIC from 10/20/2012 to 02/09/2013, where Y-axis is the failure link. Most of the failures lasted for a fairly short time period and there were 192 links had failed at least once during this time period.}}{4}}
 \newlabel{fig:failureplot}{{2}{4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {V-B}}Network History Reconstruction}{4}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Network failure recovery time CDF of CENIC where more than 95\% failures recovered within 6 seconds.}}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Network failure recovery time CDF of CENIC where more than 95\% failures recovered within 6 seconds. The short recovery time was a good indicator for better network availability, while on the other hand reduced the number of interesting data we could analyze since a large portion of the failures had already recovered before we were able to send out the traceroute request. }}{4}}
 \newlabel{fig:failuretime}{{3}{4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {V-C}}Statistices of Unexpected Network Behavior (Loops \& Non-existent Links)}{4}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Statistics of Unexpected Network Behavior}}{4}}
-\newlabel{fig:statistics}{{4}{4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {V-D}}Measurement Bias}{4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {V-B}}Network History Reconstruction}{4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {V-C}}Statistices of Unexpected Network Behaviors (Loops \& Non-existent Links)}{5}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Statistics of Unexpected Network Behavior}}{5}}
+\newlabel{fig:statistics}{{4}{5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {V-D}}Measurement Bias}{5}}
 \@writefile{toc}{\contentsline {section}{\numberline {VI}Data Analysis}{5}}
 \newlabel{sec:sec6}{{VI}{5}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {VI-A}}Loop Characterization}{5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Loop Length Statistics}}{5}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Loop length statistics. Most of the routing loops were fairly short that 350 out of 366 (about 95\%) had a length of 2. And the longest loop had a length of 8 partly because the traceroute we sent had a constraint of maximal number of hops as 15.}}{5}}
 \newlabel{fig:asdf1}{{5}{5}}
 \@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Loop Length Statistics}}{5}}
 \newlabel{fig:asdf2}{{6}{5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Simple link Failure}}{5}}
-\newlabel{fig:asdf3}{{7}{5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Complex Failure Propagation}}{5}}
-\newlabel{fig:asdf4}{{8}{5}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Simple link failures, where the newly introduced hop did really help to forward the packet to the destination, so the last two hops fell into a small loop.}}{6}}
+\newlabel{fig:asdf3}{{7}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Complex failure propagation, where none of the alternative routes could work out to forward the packet successfully.}}{6}}
+\newlabel{fig:asdf4}{{8}{6}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {VI-B}}Non-Existent Links Charaterization}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Piechart of different types of missed links}}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Distribution of the non-existent links, where more than half of them were normal route shifts.}}{6}}
 \newlabel{fig:PieChart}{{9}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces A Normal Route Shift example}}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Example for normal route shift, where the route changed during the two ping requests of the same traceroute.}}{6}}
 \newlabel{fig:NormalRouteShift}{{10}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces A Complex Route Shift example}}{6}}
-\newlabel{fig:ComplexRouteShift}{{11}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces A Shortcut example}}{6}}
-\newlabel{fig:Shortcut}{{12}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Route Trapped in Loop example}}{6}}
-\newlabel{fig:TrappedInLoop}{{13}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Example for complex route shift we extracted from the traceroute data.}}{7}}
+\newlabel{fig:ComplexRouteShift}{{11}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Example for shortcut, that one of the routers on the route found and switched immediately to another route.}}{7}}
+\newlabel{fig:Shortcut}{{12}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Example for trapped in loop, where one of the router in the route was a loopy one.}}{7}}
+\newlabel{fig:TrappedInLoop}{{13}{7}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {VI-C}}Failure Analysis}{7}}
 \@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces Percentage CDF of accessible pings during the link failure time. 74.40\% of the 125 failures which had caused route changes hadn't affected the accessibility of the end hosts, which meant the routing protocaol worked pretty well during those failures.}}{7}}
 \newlabel{fig:accessibility}{{14}{7}}
-\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces The distribution CDF of the failure links. Most of the failure links had very small numbers of failures, where 74.48\% of them had occurred less or equal 10 failures. However, there are some links had very frequent failures that were more than 8000 times during this period.}}{7}}
-\newlabel{fig:distribution}{{15}{7}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {VI-D}}Routing Performance Characterization}{7}}
 \bibdata{main}
 \bibcite{Baran_1964}{1}
 \bibcite{cenic2013online}{2}
 \bibcite{Chandra:2008:CFA:1453175.1453178}{3}
 \bibcite{cunha2011predicting}{4}
 \bibcite{Gill:2011:UNF:2018436.2018477}{5}
+\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces The distribution CDF of the failure links. Most of the failure links had very small numbers of failures, where 74.48\% of them had occurred less or equal 10 failures. However, there are some links had very frequent failures that were more than 8000 times during this period.}}{8}}
+\newlabel{fig:distribution}{{15}{8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {VI-D}}Routing Performance Characterization}{8}}
+\@writefile{lof}{\contentsline {figure}{\numberline {16}{\ignorespaces The actual route weight compared with the optimal route weight calculating with the link weights. 48426 out of 52431 (92.36\%) traceroutes successfully chose the global optimal route, which meant the routing protocols were working relatively well on this.}}{8}}
+\newlabel{fig:routingperformance}{{16}{8}}
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Conclusion}{8}}
+\newlabel{sec:sec7}{{VII}{8}}
+\@writefile{toc}{\contentsline {section}{References}{8}}
 \bibcite{labovitz1999experimental}{6}
 \bibcite{markopoulou2008characterization}{7}
 \bibcite{Markopoulou:2008:CFO:1453698.1453699}{8}
@@ -85,8 +90,3 @@
 \bibcite{Shaikh:2002:CSO:637201.637236}{11}
 \bibcite{turner2010california}{12}
 \bibstyle{plain}
-\@writefile{lof}{\contentsline {figure}{\numberline {16}{\ignorespaces The actual route weight compared with the optimal route weight calculating with the link weights. 48426 out of 52431 (92.36\%) traceroutes successfully chose the global optimal route, which meant the routing protocols were working relatively well on this.}}{8}}
-\newlabel{fig:routingperformance}{{16}{8}}
-\@writefile{toc}{\contentsline {section}{\numberline {VII}Conclusion}{8}}
-\newlabel{sec:sec7}{{VII}{8}}
-\@writefile{toc}{\contentsline {section}{References}{8}}
